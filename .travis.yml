@@ -6,7 +6,7 @@ addons:
     - texlive-fonts-extra
     - texlive-science
     - texlive-bibtex-extra
-    - biblatex-biber
+    - biblatex
     - latexmk
 
 script:
