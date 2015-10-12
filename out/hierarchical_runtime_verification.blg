@@ -1,5 +1,0 @@
-[0] Config.pm:324> INFO - This is Biber 2.1
-[1] Config.pm:327> INFO - Logfile is '../out/hierarchical_runtime_verification.blg'
-[91] biber:276> INFO - === Mon Oct 12, 2015, 20:38:38
-[91] Biber.pm:333> INFO - Reading '../out/hierarchical_runtime_verification.bcf'
-[392] Utils.pm:146> WARN - No data sources defined!
