@@ -1,5 +1,13 @@
-install:
-  - sudo apt-get install texlive texlive-latex-extra texlive-fonts-extra texlive-science texlive-bibtex-extra biblatex-biber
+addons:
+  apt:
+    packages:
+    - texlive
+    - texlive-latex-extra
+    - texlive-fonts-extra
+    - texlive-science
+    - texlive-bibtex-extra
+    - biblatex-biber
+    - latexmk
 
 script:
   - make
