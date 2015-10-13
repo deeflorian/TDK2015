@@ -8,9 +8,9 @@ addons:
     - texlive
     - texlive-latex-extra
     - texlive-fonts-extra
-    - texlive-science
     - texlive-bibtex-extra
-    - biblatex
+    - texlive-science
+    - bibtex
     - latexmk
 
 script:
