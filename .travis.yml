@@ -13,5 +13,5 @@ addons:
 
 script:
   - cd src
-  - latexmk -pdf main.pdf
+  - latexmk -pdf main.tex
   - cp main.pdf ../hierarchical_runtime_verification.pdf
