@@ -6,6 +6,7 @@ addons:
     - texlive
     - texlive-latex-extra
     - texlive-fonts-extra
+    - lmodern
     - texlive-science
     - texlive-bibtex-extra
     - biblatex
