@@ -1,9 +1,0 @@
-[0] Config.pm:324> INFO - This is Biber 2.1
-[0] Config.pm:327> INFO - Logfile is '/Developer/Projects/TDK2015/src/.texpadtmp/main.blg'
-[89] biber:276> INFO - === Mon Oct 12, 2015, 20:36:56
-[89] Biber.pm:333> INFO - Reading '/Developer/Projects/TDK2015/src/.texpadtmp/main.bcf'
-[395] Biber.pm:645> INFO - Found 0 citekeys in bib section 0
-[396] Utils.pm:146> WARN - The file '/Developer/Projects/TDK2015/src/.texpadtmp/main.bcf' does not contain any citations!
-[416] bbl.pm:505> INFO - Writing '/Developer/Projects/TDK2015/src/.texpadtmp/main.bbl' with encoding 'UTF-8'
-[420] bbl.pm:596> INFO - Output to /Developer/Projects/TDK2015/src/.texpadtmp/main.bbl
-[421] Biber.pm:106> INFO - WARNINGS: 1
