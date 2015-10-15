@@ -52,11 +52,9 @@ These parameters are coupled, the higher the camera the less FOV we need. Most o
 
 Our chosen \textls{FOV} became \ang{120}, because the cameras with these \textls{FOV} values are inexpensive, and easy to find. With a placement height of 120~\si{\centi\meter}, we can fully assemble the project virtually in any room.
 
-\subsection{Computer vision}
+\subsection{Introducing to OpenCV}
 
 One key point of this study from technological viewpoint is computer vision. It is a non intrusive add-on to the existing hardware, which allows us to monitor the board with fairly big precision and reliability, if the correct techniques and materials are used.
-
-\subsection{Introducing to OpenCV}
 
 We needed a fast, reliable, efficient library to use with the camera, and develop the detection algorithm. Our choose was the OpenCV\footnote{\url{http://opencv.org/}} library, which is an industry leading, open source computer vision library. It implements various algorithms with effective implementation in mind e.g., using the latest streaming vector instruction sets. The main programming language -- and what we used -- is \textls{C++}, but it has many binding to other popular languages like Java, and Python.
 
@@ -86,9 +84,7 @@ As explained in \cref{fig:case_study:opencv_math}, circular patterns are well su
 	\label{fig:case_study:marker}
 \end{figure}
 
-\subsection{Software}
-
-\subsubsection{Mathematical solution}
+\subsection{Mathematical solution for marker detection}
 \label{fig:case_study:opencv_math}
 
 Dimensions mentioned in \cref{sec:case_study:total_view} cause various environmental lighting conditions across the board. This is a challenging problem, because we must detect every circle despite we defined it as a perfect black circle, and every maker have its own lighting condition. 
@@ -97,9 +93,26 @@ This problem, and the fact that these markers have perspective distortion when t
 
 This method is the commonly used technique of transforming and processing a signal -- in our case a picture -- in frequency domain.
 
-\subsubsubsection{Convolution method}
+\subsubsection{Convolution method}
 
+Our method is based on the convolution of two mathematical function.
 
+\begin{dfn}
+	A \emph{computer bitmap} is a 2 dimensional discrete function $I[x,y]$
+
+	\begin{equation}
+		\big\{I[x, y] = (R,G,B) \:|\: x,y \in \NN \ \text{and}\ R,G,B \in [0,1] \big\}
+	\end{equation}
+\end{dfn}
+
+\begin{dfn}
+	The convolution of image function $I_1, I_2$ is \partitions
+	\begin{equation}
+		I_3 = \mathscr{F}^{-1}(\mathscr{F}(I_1) \cdot \mathscr{F}(I_2))
+	\end{equation}
+\end{dfn}
+
+\subsection{Software}
 
 \subsubsection{\textls{CPU} implementation}
 Az első implementáció gyors bemutatása.
