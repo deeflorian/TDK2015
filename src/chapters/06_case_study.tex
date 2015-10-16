@@ -80,7 +80,7 @@ As explained in \cref{fig:case_study:opencv_math}, circular patterns are well su
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/opencv_3}
-	\caption{The final marker design}
+	\caption{The final marker design with a blue ID circle}
 	\label{fig:case_study:marker}
 \end{figure}
 
@@ -95,24 +95,57 @@ This method is the commonly used technique of transforming and processing a sign
 
 \subsubsection{Convolution method}
 
-Our method is based on the convolution of two mathematical function.
+Our method is based on the convolution of two bitmap images, one from the camera, and one generated pattern.
 
 \begin{dfn}
-	A \emph{computer bitmap} is a 2 dimensional discrete function $I[x,y]$
-
+	The convolution of image functions $I_1, I_2$ is:
 	\begin{equation}
-		\big\{I[x, y] = (R,G,B) \:|\: x,y \in \NN \ \text{and}\ R,G,B \in [0,1] \big\}
+		\label{equ:case_study:convolution}
+		I_1 \ast I_2 = \mathscr{F}^{-1}(\mathscr{F}(I_1) \cdot \mathscr{F}(I_2))
 	\end{equation}
 \end{dfn}
 
-\begin{dfn}
-	The convolution of image function $I_1, I_2$ is \partitions
-	\begin{equation}
-		I_3 = \mathscr{F}^{-1}(\mathscr{F}(I_1) \cdot \mathscr{F}(I_2))
-	\end{equation}
-\end{dfn}
+As \cref{equ:case_study:convolution} denoted, we can multiply two spectrums element-wise, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectra matches.
+
+\subsubsection{Pattern properties}
+
+
+
+\begin{figure}[h]
+	\centering
+
+	%\includegraphics[width=0.65\linewidth]{include/figures/chapter_6/math_1}
+	%\caption{A real life example from a test capture}
+	%\label{fig:case_study:webcam_image}
+	%\vspace*{4ex}
+
+	\includegraphics[valign=c,width=.65\linewidth]{include/figures/chapter_6/math_2}
+	\rlap{\hspace{5pt}\begin{tabular}[c]{@{}cr@{}}
+		\toprule
+		\tikz \node [minimum width=1ex,minimum height=1ex,fill=black] {}; & $-1$ \\
+		\tikz \node [minimum width=1ex,minimum height=1ex,fill=patternGreen] {}; & $0$ \\
+		\tikz \node [minimum width=1ex,minimum height=1ex,fill=white,draw=black] {}; & $1$ \\
+		\bottomrule
+	\end{tabular}}
+	\caption{A generated circle pattern}
+	\label{fig:case_study:convoluter_image}
+
+\end{figure}
 
 \subsection{Software}
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{@{}lll@{}}
+	  \toprule
+	  Stage \# & Details & Example image \\
+	  \midrule
+	  Stage 1 & Loading an image from the camera \\ 
+	  \bottomrule
+	\end{tabular}
+	\caption{Computer vision processing pipeline}
+	\label{table:case_study:pipeline}
+\end{table}
 
 \subsubsection{\textls{CPU} implementation}
 Az első implementáció gyors bemutatása.
