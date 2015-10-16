@@ -94,6 +94,7 @@ This problem, and the fact that these markers have perspective distortion when t
 This method is the commonly used technique of transforming and processing a signal -- in our case a picture -- in frequency domain.
 
 \subsubsection{Convolution method}
+\label{sec:case_study:convolution}
 
 Our method is based on the convolution of two bitmap images, one from the camera, and one generated pattern.
 
@@ -107,18 +108,39 @@ Our method is based on the convolution of two bitmap images, one from the camera
 
 As \cref{equ:case_study:convolution} denoted, we can multiply two spectrums element-wise, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectra matches.
 
-\subsubsection{Pattern properties}
+\subsubsection{Pattern bitmap properties}
 
-
+While generating the pattern bitmap, we should consider it's properties:
+\begin{itemize}
+	\item The bitmap must be the same size as the raw image we applying it to.
+	\item While the pattern can be placed anywhere in the bitmap, there will be an offset from the origin to our pattern center point. For example if we put the circular pattern in the upper left corner (let the upper left corner be the origin of the bitmap), the matching pattern will have an offset error of $[r, r]$ (\cref{fig:case_study:offset_example}). Instead of correcting this offset, we can use the periodicity of the Fourier transform, therefore we can put our pattern in the corners. In case of this placement, the center will be the out patterns imaginary\footnote{Naturally our shapes could be more complicated, where we have our imaginary center of the shape} center like the marker in \cref{fig:case_study:convoluter_image}.
+\end{itemize}
 
 \begin{figure}[h]
 	\centering
+	\begin{minipage}[b]{0.49\linewidth}
+		\centering
+		\includegraphics[width=0.8\linewidth]{include/figures/chapter_6/math_3}
+		\caption{A test pattern}
+		\label{fig:case_study:offset_example}
+	\end{minipage}%
+	\begin{minipage}[b]{0.49\linewidth}
+		\centering
+		\includegraphics[width=0.8\linewidth]{include/figures/chapter_6/math_4}
+		\caption{A example of offset error}
+		\label{fig:case_study:offset_example}
+	\end{minipage}
+\end{figure}
 
-	%\includegraphics[width=0.65\linewidth]{include/figures/chapter_6/math_1}
-	%\caption{A real life example from a test capture}
-	%\label{fig:case_study:webcam_image}
-	%\vspace*{4ex}
+The pattern itself needs to be generated with values according to the shape we would like to match (\cref{fig:case_study:convoluter_image}). The raw pixels are multiplied by this value. The meaning of these values in the bitmap are the following: 
+\begin{itemize}
+	\item \bm{$value = 0$}: Doesn't affect the match.
+	\item \bm{$value > 0$}: The multiplied raw pixel summed positively to the result of the convolution.
+	\item \bm{$value < 0$}: The multiplied raw pixel summed negatively to the result of the convolution.
+\end{itemize}
 
+\begin{figure}[h]
+	\centering
 	\includegraphics[valign=c,width=.65\linewidth]{include/figures/chapter_6/math_2}
 	\rlap{\hspace{5pt}\begin{tabular}[c]{@{}cr@{}}
 		\toprule
@@ -127,20 +149,24 @@ As \cref{equ:case_study:convolution} denoted, we can multiply two spectrums elem
 		\tikz \node [minimum width=1ex,minimum height=1ex,fill=white,draw=black] {}; & $1$ \\
 		\bottomrule
 	\end{tabular}}
-	\caption{A generated circle pattern}
+	\caption{Pattern bitmap placement and value example}
 	\label{fig:case_study:convoluter_image}
-
 \end{figure}
 
 \subsection{Software}
 
 \begin{table}[ht]
 	\centering
-	\begin{tabular}{@{}lll@{}}
+	\setlength{\fboxsep}{0pt}
+	\setlength{\fboxrule}{1pt}
+	\begin{tabular}{@{}lm{4cm}l@{}}
 	  \toprule
-	  Stage \# & Details & Example image \\
+	  Stage \# & Description &  \\
 	  \midrule
-	  Stage 1 & Loading an image from the camera \\ 
+	  Stage 1 & Loading an image from the camera &\fbox{\includegraphics[valign=c,width=0.5\linewidth]{include/figures/chapter_6/stages/s1}} \\[10.5ex]
+	  Stage 2 & Convert the image to grayscale & \fbox{\includegraphics[valign=c,width=0.5\linewidth]{include/figures/chapter_6/stages/s2}} \\[10.5ex]
+	  Stage 3 & Convolve the image with the pattern & \fbox{\includegraphics[valign=c,width=0.5\linewidth]{include/figures/chapter_6/stages/s3}} \\[10.5ex]
+	  Stage 4 & Apply a thresold & \fbox{\includegraphics[valign=c,width=0.5\linewidth]{include/figures/chapter_6/stages/s4}} \\[10.5ex]
 	  \bottomrule
 	\end{tabular}
 	\caption{Computer vision processing pipeline}
