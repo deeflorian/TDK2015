@@ -19,8 +19,8 @@ Many software is available for code generation. Unfortunately the available solu
 The language allows a specification to consist of multiple statecharts. This feature led to of the main strengths of the language: the definition of statechart templates, which can be parametrically instantiated multiple times. This results in short descriptions for otherwise complex, homogenious systems. Statechart parameters can be of any type supported by the TTMC::Constraint language. Separate statecharts can communicate with each other using signals or global variables.
   \subsection{Parametric signals}
 Signals can also be parameterized with any integer type variable. These parameters then can be used to discriminate between signals with the same name, which also results in more readable code, allowing transitions to use the same signal as their trigger.
-\section{Statechart specification language for enginneering models}
-%#####TODO Brackets are used to indicate the scope of each block. Naming conventions, allowed names, etc... Scoping for named instances. Timing of transitions, when they are taken, etc.
+\section{The statechart language}
+Each system description consists of a single file, which holds the specification of all components.
   \subsection{The specification}
 A specification can consist of multiple statecharts. Statechart definitions must be in the form of \\statechart NAME(...) { ... }\\, where the \\{ ... }\\ part contains the description of the statechart. The braces are optional and are only needed for the parameters of statechart templates. For statechart declarations, the description can be omitted. Each specification must have at least one defined statechart. Parameterized statecharts can be created from existing templates by providing a value for each parameter.
   \subsection{Variables}
@@ -30,29 +30,32 @@ Variables can be used in expressions. Expressions can have an arbitrarily comple
   \subsection{Parametric signals}
 Statecharts can communicate with the outside world and each other using signals. As such, these signals are declared directly in the specification and not in the statecharts themselves. Signals can be used with a single integer parameter (which can be either a constant or a variable). This allows for much simpler syntax when dealing with communication, as a statechart can raise a signal and pass a value simultaneusly. It also leaves room for a later expansion to a token based automata with reentry.
   \subsection{Timeouts}
-Raising a signal can be offset by a certain amout of time. For the formal model, the value is measured in units, for the monitors, this value corresponds to the milliseconds elapsed since the timeout was set. Timeouts and signals can be used interchangeably.
-  \subsection{Entry and exit actions}
-%#####TODO
+Raising a signal can be offset by a certain amout of time. For the formal model, the value is measured in units, for monitors, this value corresponds to the milliseconds elapsed since the timeout was set. Apart from their delayed nature, timeouts and signals can be used interchangeably.
+  \subsection{Actions}
+Raising signals, setting timeouts, and variable assignments are called actions. They represent operations that might result in a change of the model's state.
   \subsection{Regions}
-Statecharts are structured by the usage of regions. Regions have both states and transitions, and play a fundament part in the scoping of elements. The syntax for regions is: \\region NAME { ... }\\ Each region must contain at least an initial state for the model to be valid.
+Statecharts are structured by regions. Regions have both states and transitions, and play a fundament part in the scoping of elements. The syntax for regions is: \\region NAME { ... }\\ Each region must contain at least an initial state for the model to be valid.
   \subsection{Transitions}
-
-    \subsubsection{Transition actions}
+Transitions describe the possible state changes. A transition can only occure if the source state is active. After the transition fired, the source state becomes inactive and the target state active. Furthermore, a transition can have a trigger, a guard condition, and an arbitrary number of actions associated with it.
+    \subsubsection{Transition trigger}
+Any transition can have triggers, which are signals that enable the transition to fire when any one of them arrived. Enabled transitions without a trigger occure on the next timestep after the source state becomes active.
     \subsubsection{Transition guards}
-    \subsubsection{Transition timing}
+Transitions can have guard conditions, which are expressions that evaluate to a boolean value. If the guard condition evaluates to true, the transition is enabled, otherwise it is blocked.
+    \subsubsection{Transition actions}
+A transition can have any number of actions associated with it. These actions are performed when the transition fires.
   \subsection{State nodes}
-Each region can contain multiple state nodes. A state node can either be a state or a pseudo state. States create the base structure of the model, while pseudo states help to describe the functionality. Pseudo states can either be an initial, a fork, a join, or a choice state.
+Each region can contain multiple state nodes. A state node can either be a state or a pseudo state. States create the base structure of the model, while pseudo states help to describe the functionality. Pseudo states can either be initial-, fork-, join-, or choice states.
     \subsubsection{States}
-States can either be atomic states or composite states. An atomic state is a state which does not contain inner regions. All states can contain entry and exit actions. Composite states contain one or more inner regions, each with at least an inner initial state. A state's parent is it's containing region's containing state, or if that region does not have containing state, the region's containing statechart. The inverse of this relation is called of it's child. Composite states help maintaining a clean model by the introduction of hierarchy, allowing common actions to be described in a parent state.
+States can either be atomic states or composite states. An atomic state is a state which does not contain inner regions. All states can contain entry and exit actions, which are performed when entering or exiting from the state. Composite states contain one or more inner regions, each with at least an initial state. A state's parent is it's containing region's containing state, or if that region does not have containing state, the region's containing statechart. Composite states help maintaining a clean model by the introduction of hierarchy, allowing common actions to be described in a parent state.
+    \subsubsection{Initial states}
+Initial states can be found in all regions - if the region's containing state is entered, these inner states become active.
     \subsubsection{Fork and join states}
-A fork state is a pseudo state that has a single 
-    \subsubsection{Composite state}
-    
-    
-%#####TODO Entry actions can be assignments and signal raises.
-
-
-  \subsection{Error states, propagation}
+A fork state is a pseudo state that has a single incoming transition and any number of outgoing transitions. The outgoing transitions cannot have triggers, guards, or actions associated with them. If the incoming transition fired, all the outgoing transitions fire as well, and the fork state itself is not entered. This results in the activation of multiple states.
+A join state is a pseudo state that has a single outgoing transition and multiple incoming transitions. The incoming transitions cannot have triggers, guards, or actions associated with them. The outgoing transition is enabled when it's guard is true and all the incoming transitions' source states are active. Triggers can be declared on the outgoing transition.
+  \subsection{Signaling errors, error propagation}
+States and transitions can be labeled as errors. The syntax is \\state/transition [Error label] ...\\ where the label is a description given by the user. This is only used for the generation of error messages in the monitor.
+  \subsection{Timing of transitions, actions}
+Transitions are fired one by one. The firing of a transition means that the triggering signal is consumed. This can result in nondeterministic runs if two transitions share the same trigger and can be enabled simultaneously. Such models can be created but the order of the transitions are not guaranteed. Actions on the current transition being taken are processed in a single step.
 \section{Formal representation}
   \subsection{Signals}
   \subsection{Variables}
