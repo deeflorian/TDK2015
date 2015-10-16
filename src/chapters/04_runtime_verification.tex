@@ -4,15 +4,15 @@
 \section{Intro}
 A statechart language was created to enable the high level design, verification, and monitoring of complex systems. The aim was to use a simple and straightforward syntax to keep the language’s learning curve gentle. Statecharts were chosen as they are used widely for modeling in various branches of engineering.
 \section{Goal}
-#####TODO
+  %#####TODO
   \subsection{Simple, generic, useable}
-#####TODO
+  %#####TODO
   \subsection{Verification}
-#####TODO
+  %#####TODO
   \subsection{Monitor generation}
-#####TODO
+  %#####TODO
 \section{Why not upgrade previous solutions}
-#####TODO
+  %#####TODO
 Validation software is... 
 Many software is available for code generation. Unfortunately the available solutions either provide poor quality code or have a limited syntax, thus making the creation and understanding of the models more time consuming than necessairy. Our approach was to generate easily readable, extendable, object oriented code that can run in a limited resource environment.
   \subsection{Parametric statechart declaration}
@@ -20,7 +20,7 @@ The language allows a specification to consist of multiple statecharts. This fea
   \subsection{Parametric signals}
 Signals can also be parameterized with any integer type variable. These parameters then can be used to discriminate between signals with the same name, which also results in more readable code, allowing transitions to use the same signal as their trigger.
 \section{Statechart specification language for enginneering models}
-#####TODO Brackets are used to indicate the scope of each block. Naming conventions, allowed names, etc... Scoping for named instances. Timing of transitions, when they are taken, etc.
+%#####TODO Brackets are used to indicate the scope of each block. Naming conventions, allowed names, etc... Scoping for named instances. Timing of transitions, when they are taken, etc.
   \subsection{The specification}
 A specification can consist of multiple statecharts. Statechart definitions must be in the form of \\statechart NAME(...) { ... }\\, where the \\{ ... }\\ part contains the description of the statechart. The braces are optional and are only needed for the parameters of statechart templates. For statechart declarations, the description can be omitted. Each specification must have at least one defined statechart. Parameterized statecharts can be created from existing templates by providing a value for each parameter.
   \subsection{Variables}
@@ -32,7 +32,7 @@ Statecharts can communicate with the outside world and each other using signals.
   \subsection{Timeouts}
 Raising a signal can be offset by a certain amout of time. For the formal model, the value is measured in units, for the monitors, this value corresponds to the milliseconds elapsed since the timeout was set. Timeouts and signals can be used interchangeably.
   \subsection{Entry and exit actions}
-#####TODO
+%#####TODO
   \subsection{Regions}
 Statecharts are structured by the usage of regions. Regions have both states and transitions, and play a fundament part in the scoping of elements. The syntax for regions is: \\region NAME { ... }\\ Each region must contain at least an initial state for the model to be valid.
   \subsection{Transitions}
@@ -49,7 +49,7 @@ A fork state is a pseudo state that has a single
     \subsubsection{Composite state}
     
     
-#####TODO Entry actions can be assignments and signal raises.
+%#####TODO Entry actions can be assignments and signal raises.
 
 
   \subsection{Error states, propagation}
