@@ -3,10 +3,9 @@
 
 \section{Overview}
 
-The goal of this chapter is to present a case study of a hierarchical runtime verification technology based on the previous chapters. The motive of this study is the related report from 2014 \citep{tdk2014}, which goal was a distributed, model based security logic. Their case study called the \emph{Model Railway Project}, and our study integrates their work, and finds ways to integrate it with other sensor sources for a hierarchical, more reliable security logic.
+The goal of our case study introduced in this chapter is to show the application of hierarchical runtime verification. The motivation of this study is the related report from 2014 \citep{tdk2014}, where the goal was a distributed, model based security logic. The work of [1] focused on the model driven development of a safety logic and its application in the Model Railway Project. Our work builds on the hardware and software of [1], however our work extends it with the a mulitple layer safety logic being able to ensure the correctness of the overall system in the whole lifecycle.
 
-Because of this close relation to this railroad project, our focus will stay on railroad technologies and standards, it's important to notice our solution is a general approach for any critical system. This approach is based on controllability, observability, and hierarchy to increase a system general reliability, even when some of it's components are failing.
-
+Because of this close relation to this railroad project, our focus will stay on railroad technologies and standards, it's important to notice our solution is a general approach for any critical system.
 \begin{minipage}{\textwidth}
 	\centering
 	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/overview_1}
@@ -29,9 +28,7 @@ Because of this close relation to this railroad project, our focus will stay on 
 
 In case of a computer vision (\textls{CV}) based approach, it is critical to choose the appropriate hardware. We had two parameters in the selection of the camera: height above the board, and \textls{FOV}.
 
-\begin{dfn}
 	Field of View (\textls{FOV}) is the extent of the observable world that is seen at any given moment. See \cref{fig:case_study:fov} for visual explanation.
-\end{dfn}
 
 \begin{figure}[h]
 	\centering
@@ -42,21 +39,13 @@ In case of a computer vision (\textls{CV}) based approach, it is critical to cho
 
 These parameters are coupled, the higher the camera the less FOV we need. Most of the cameras on the market have horizontal FOV values approximately \ang{60}.
 
-\begin{example}
-	The board is 2.8~\si{\meter} wide. So if we assume we have a camera with a \ang{60} \textls{FOV}, using the result of \cref{equ:case_study:board_fov}, we need to place the camera 242 centimeters high. This would be is impossible to realize with average ceiling heights.
-	\begin{equation}
-		\label{equ:case_study:board_fov}
-		242.48~\si{\centi\meter} = \frac{140~\si{\centi\meter}}{\tan(\ang{30})}
-	\end{equation}
-\end{example}
-
 Our chosen \textls{FOV} became \ang{120}, because the cameras with these \textls{FOV} values are inexpensive, and easy to find. With a placement height of 120~\si{\centi\meter}, we can fully assemble the project virtually in any room.
 
-\subsection{Introducing to OpenCV}
+\subsection{OpenCV}
 
-One key point of this study from technological viewpoint is computer vision. It is a non intrusive add-on to the existing hardware, which allows us to monitor the board with fairly big precision and reliability, if the correct techniques and materials are used.
+One key point of this study from the technological viewpoint is computer vision. It is a non intrusive add-on to the existing hardware, which allows us to monitor the board with fairly big precision and reliability, if the correct techniques and materials are used.
 
-We needed a fast, reliable, efficient library to use with the camera, and develop the detection algorithm. Our choose was the OpenCV\footnote{\url{http://opencv.org/}} library, which is an industry leading, open source computer vision library. It implements various algorithms with effective implementation in mind e.g., using the latest streaming vector instruction sets. The main programming language -- and what we used -- is \textls{C++}, but it has many binding to other popular languages like Java, and Python.
+We needed a fast, reliable, efficient library to use with the camera, and develop the detection algorithm. Our choice was the OpenCV\footnote{\url{http://opencv.org/}} library, which is an industry leading, open source computer vision library. It implements various algorithms with effective implementation e.g., using the latest streaming vector instruction sets. The main programming language -- and what we used -- is \textls{C++}, but it has many binding to other popular languages like Java, and Python.
 
 \subsection{Marker design}
 
@@ -73,19 +62,14 @@ The first step was to consider the usage of an external library, named \textls{A
 
 The problem with the library was the lack of tolerance in quality, and motion blur. Other limiting factor is the shape of the marker. A square marker scaled up to provide good visibility for the camera 120~\si{\centi\meter} above the board extends greatly over the width of a railway car. Because these negative properties of the existing libraries, we implemented a marker detection algorithm for our needs.
 
-After the implementation was in our hands, we could make markers which suits our needs. The optimal marker covers the railroad car. This means the marker is narrow and long to fill the top dimensions of the car, but not exceed it.
+After the implementation was in our hands, we could make markers which suits our needs. The chosen size of the marker was the size of the model railroad car as it will provide the proper accuracy.
 
 As explained in \cref{fig:case_study:opencv_math}, circular patterns are well suited for these applications. The final design consists two detection circle, and a color circle for identification between the detection circles.
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/opencv_3}
-	\caption{The final marker design with a blue ID circle}
-	\label{fig:case_study:marker}
-\end{figure}
-
 \subsection{Mathematical solution for marker detection}
 \label{fig:case_study:opencv_math}
+
+%According to the various conditions, the marker detection has to be robust.
 
 Dimensions mentioned in \cref{sec:case_study:total_view} cause various environmental lighting conditions across the board. This is a challenging problem, because we must detect every circle despite we defined it as a perfect black circle, and every maker have its own lighting condition. 
 
@@ -99,14 +83,14 @@ This method is the commonly used technique of transforming and processing a sign
 Our method is based on the convolution of two bitmap images, one from the camera, and one generated pattern.
 
 \begin{dfn}
-	The convolution of image functions $I_1, I_2$ is:
+	The convolution of image functions by using Fourier transform $\mathscr{F}$, on image $I_1, and I_2$ is:
 	\begin{equation}
 		\label{equ:case_study:convolution}
 		I_1 \ast I_2 = \mathscr{F}^{-1}(\mathscr{F}(I_1) \cdot \mathscr{F}(I_2))
 	\end{equation}
 \end{dfn}
 
-As \cref{equ:case_study:convolution} denoted, we can multiply two spectrums element-wise, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectra matches.
+As \cref{equ:case_study:convolution} shows, we can multiply two spectrums element-wise, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectrums match.
 
 \subsubsection{Pattern bitmap properties}
 

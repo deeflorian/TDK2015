@@ -9,7 +9,7 @@ goto :end
 if not exist "out\" mkdir "out\"
 if not exist "out\include\" mkdir "out\include\"
 if not exist "out\chapters\" mkdir "out\chapters\"
-latexmk -pdf -cd -outdir=../out -jobname=stochastic_analysis -interaction=nonstopmode -file-line-error ./src/main
+latexmk -pdf -cd -outdir=../out -jobname=hierarchical_runtime_verification -interaction=nonstopmode -file-line-error ./src/main
 copy out\stochastic_analysis.pdf >nul
 goto end
 
