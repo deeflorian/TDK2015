@@ -9,29 +9,38 @@ The goal of our case study introduced in this chapter is to show the application
 	\item The correctness of the overall system.
 \end{itemize}
 
-In this section at first we overview those concepts of the Model Railway Project which are important from our point of view. Then the extended runtime verification architecture is introduced both the hardware and software components.
-<<<<<<< HEAD
-
-It's important to notice that our solution is not tailored to this special problem but it is a general approach for any critical system.
-
-=======
-
-It's important to notice that our solution is not tailored to this special problem but it is a general approach for any critical system.
-
->>>>>>> 7d07230
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/overview_1}
-	\caption{Overview of the hierarchical system}
-<<<<<<< HEAD
-	\label{fig:case_study:fov} 
-=======
+	\caption{Overview of the hierarchical runtime verification system}
 	\label{fig:case_study:fov}
->>>>>>> 7d07230
 \end{figure}
 
+In this section at first we overview those concepts of the Model Railway Project which are important from our point of view. Then the extended runtime verification architecture is introduced both the hardware and software components.
+
+It's important to notice that our solution is not tailored to this special problem but it is a general approach for any critical system.
+
 \section{Concept}
-	Ábrák megvalósítása, használt technológiák hierarchiájának
+
+Our main goal with this study is to develop a method which can integrate multiple safety logic into a global runtime verification, increasing the reliability of the complete system.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/concept_1}
+	\caption{Associations between operation, and runtime verification components}
+	\label{fig:case_study:concept_component}
+\end{figure}
+
+\cref{fig:case_study:concept_component} shows the main relation between the operation, and runtime verification domain. With component level verification -- in out case with embedded monitors -- we can verify each component runtime state. The system level verification observes the overall state of the system. If any of the components reports failure, we can make a decision based on the remaining components abilities to support the system verification. If we can provide safety despite component failures, the system can continue operation.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/concept_2}
+	\caption{Sensor, and monitor relation}
+	\label{fig:case_study:concept_communication}
+\end{figure}
+
+In our case (\cref{fig:case_study:concept_communication}), there are embedded components, and one system level component.
 
 \section{System level verification with computer vision}
 
@@ -144,6 +153,9 @@ We used GPU acceleration trough pipeline stage 1--4. The acceleration is impleme
 	\caption{Computer vision processing pipeline}
 	\label{table:case_study:pipeline}
 \end{table}
+
+\section{Summary}
+With this implementation, we can follow the system real-time, providing the high-level logic another independent source of information. This can lead to a more robust system with added redundancy.
 
 \newpage
 \section{Model railroad}
