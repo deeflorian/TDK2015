@@ -57,12 +57,17 @@ States and transitions can be labeled as errors. The syntax is \\state/transitio
   \subsection{Timing of transitions, actions}
 Transitions are fired one by one. The firing of a transition means that the triggering signal is consumed. This can result in nondeterministic runs if two transitions share the same trigger and can be enabled simultaneously. Such models can be created but the order of the transitions are not guaranteed. Actions on the current transition being taken are processed in a single step.
 \section{Formal representation}
-  \subsection{Signals}
+Formal verification methods requires a flatter model that the statechart language described above. Therefore, complex concepts are mapped to an easily verifiable one.
+  \subsection{Signals and expressions}
+In the formal model, signals are represented as boolean variables. The variable is true if the signal has been raised since the previous timestep was taken. Expressions need no further simplification.
   \subsection{Variables}
-  \subsection{Expressions}
+Variable types are the same as in the statechart model. Local variables' scoping and names are change. All variables use the same, global scope, which could introduce name clashes. To avoid such problems, local variables' names are changed to a unique one, using their location in the hierarchical system.
   \subsection{States}
+States are mapped to boolean variables that signal whether the state is currently active or not. Entry and exit actions are passed to the incoming and outgoing transitions for simplicity and unified handling.
   \subsection{Timouts}
+%#####TODO
   \subsection{Transitions}
+Transitions between states are transitions in the formal model too. If the guard condition is true, the source state is currently enabled, and the transition has no trigger or the triggering signal was raised, the transition can be taken. When the transition fires in the formal model, the exit actions of the appropriate states, the actions of the transition, and the needed entry actions occur.
 \section{Accepting monitor}
   \subsection{Variables}
   \subsection{Signals}
