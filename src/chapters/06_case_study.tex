@@ -3,21 +3,27 @@
 
 \section{Overview}
 
-The goal of our case study introduced in this chapter is to show the application of hierarchical runtime verification. The motivation of this study is the related report from 2014 \citep{tdk2014}, where the goal was a distributed, model based security logic. The work of [1] focused on the model driven development of a safety logic and its application in the Model Railway Project. Our work builds on the hardware and software of [1], however our work extends it with the a mulitple layer safety logic being able to ensure the correctness of the overall system in the whole lifecycle.
+The goal of our case study introduced in this chapter is to show the application and working of our hierarchical runtime verification framework. The motivation of this study is the related report from 2014 \citep{tdk2014}, where the goal was a distributed, model based security logic. The work of [1] focused on the model driven development of a safety logic and its application in the Model Railway Project. Our work builds on the hardware and software of [1] and extends it with the runtime verification of:
+\begin{itemize}
+	\item The working of the safety logic in the embedded controllers.
+	\item The correctness of the overall system.
+\end{itemize}
 
-Because of this close relation to this railroad project, our focus will stay on railroad technologies and standards, it's important to notice our solution is a general approach for any critical system.
+In this section at first we overview those concepts of the Model Railway Project which are important from our point of view. Then the extended runtime verification architecture is introduced both the hardware and software components.
+
+It's important to notice that our solution is not tailored to this special problem but it is a general approach for any critical system.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/overview_1}
 	\caption{Overview of the hierarchical system}
-	\label{fig:case_study:fov} 
+	\label{fig:case_study:fov}
 \end{figure}
 
 \section{Concept}
-	A koncepció magyarázata, szép összefoglaló ábrával, és annak az összefoglalása, hogy mit tudunk ezzel elérni.
+	Ábrák megvalósítása, használt technológiák hierarchiájának
 
-\section{Computer vision}
+\section{System level verification with computer vision}
 
 \subsection{Hardware}
 \label{sec:case_study:hardware}
@@ -68,14 +74,6 @@ This method is the commonly used technique of transforming and processing a sign
 \label{sec:case_study:convolution}
 
 Our method is based on the convolution of two bitmap images, one from the camera, and one generated pattern.
-
-\begin{dfn}
-	The convolution of image functions by using Fourier transform $\mathscr{F}$, on image $I_1, and I_2$ is:
-	\begin{equation}
-		\label{equ:case_study:convolution}
-		I_1 \ast I_2 = \mathscr{F}^{-1}(\mathscr{F}(I_1) \cdot \mathscr{F}(I_2))
-	\end{equation}
-\end{dfn}
 
 As \cref{equ:case_study:convolution} shows, we can multiply two spectrums element-wise, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectrums match.
 
@@ -168,7 +166,7 @@ The core of the railroad hardware are the Arduino microcontrollers which collect
 	\label{fig:case_study:master_slave}
 \end{figure}
 
-\section{Physical - logical mapping}
+\section{???}
 In this section we proceed through the design of the physical to logical mapping. We operate our safety on this logical model, so it is very important to map all the details of the physical world we need correctly in this model.
 
 \subsection{Physical elements}
