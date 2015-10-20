@@ -48,8 +48,16 @@
 				A file shouldn't be opened for writing and reading without a close event between the two different opens.
 				The possible parametrized events are : Open(file, mode), Close(file), Read(file), Write(file). Mode is either "R" or "W" which stands for Read and Write respectively.
 			\subsubsection{Solution}
-				We are looking for these patterns : open(f,"W") -> NOT close(f)\{ *\} -> open(f,"R"); open(f,"R") -> NOT close(f)\{ *\} -> open(f,"W");
-				open(f,"W") -> NOT close(f)\{ *\} -> read(f); open(f,"R") -> NOT close(f)\{ *\} -> write(f)
+				We are looking for these patterns : 
+				
+				open(f,"W") -> NOT close(f)$\{\ast\}$ -> open(f,"R");
+				
+				open(f,"R") -> NOT close(f)$\{\ast\}$ -> open(f,"W");
+				
+				open(f,"W") -> NOT close(f)$\{\ast\}$ -> read(f);
+				
+				open(f,"R") -> NOT close(f)$\{\ast\}$ -> write(f);
+				
 				\begin{figure}[h]
 				\centering
 				\includegraphics[width=0.5\linewidth]{include/figures/chapter_5/fileautomaton}
