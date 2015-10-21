@@ -3,47 +3,61 @@
 
 \section{Overview}
 
-The goal of our case study introduced in this chapter is to show the application of hierarchical runtime verification. The motivation of this study is the related report from 2014 \citep{tdk2014}, where the goal was a distributed, model based security logic. The work of [1] focused on the model driven development of a safety logic and its application in the Model Railway Project. Our work builds on the hardware and software of [1], however our work extends it with the a mulitple layer safety logic being able to ensure the correctness of the overall system in the whole lifecycle.
+The goal of our case study introduced in this chapter is to show the application and working of our hierarchical runtime verification framework. The motivation of this study is the related report from 2014 \citep{tdk2014}, where the goal was a distributed, model based security logic. The work of [1] focused on the model driven development of a safety logic and its application in the Model Railway Project. Our work builds on the hardware and software of [1] and extends it with the runtime verification of:
+\begin{itemize}
+	\item The working of the safety logic in the embedded controllers.
+	\item The correctness of the overall system.
+\end{itemize}
 
-Because of this close relation to this railroad project, our focus will stay on railroad technologies and standards, it's important to notice our solution is a general approach for any critical system.
-\begin{minipage}{\textwidth}
+\begin{figure}[h]
 	\centering
-	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/overview_1}
-\end{minipage}
+	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/overview_1}
+	\caption{Overview of the hierarchical runtime verification system}
+	\label{fig:case_study:fov}
+\end{figure}
 
-\section{Architecture}
-	\subsection{Total view}
-	\label{sec:case_study:total_view}
-	Itt átvesszük a hardware alapjait, hogy egyáltalán miről van szó, hogy néz ki, mit tud.
-	\subsection{Hardware}
-	Itt az arduino alapú vezérlést emelném ki röviden, az ezzel felmerült problémákat, illetve a jövőbeli fejlesztések rövid bemutatását.
+In this section at first we overview those concepts of the Model Railway Project which are important from our point of view. Then the extended runtime verification architecture is introduced both the hardware and software components.
+
+It's important to notice that our solution is not tailored to this special problem but it is a general approach for any critical system.
 
 \section{Concept}
-	A koncepció magyarázata, szép összefoglaló ábrával, és annak az összefoglalása, hogy mit tudunk ezzel elérni.
 
-\section{Computer vision as a source of information}
+Our main goal with this study is to develop a method which can integrate multiple safety logic into a global runtime verification, increasing the reliability of the complete system.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/concept_1}
+	\caption{Associations between operation, and runtime verification components}
+	\label{fig:case_study:concept_component}
+\end{figure}
+
+\cref{fig:case_study:concept_component} shows the main relation between the operation, and runtime verification domain. With component level verification -- in out case with embedded monitors -- we can verify each component runtime state. The system level verification observes the overall state of the system. If any of the components reports failure, we can make a decision based on the remaining components abilities to support the system verification. If we can provide safety despite component failures, the system can continue operation.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/concept_2}
+	\caption{Sensor, and monitor relation}
+	\label{fig:case_study:concept_communication}
+\end{figure}
+
+In our case (\cref{fig:case_study:concept_communication}), there are embedded components, and one system level component.
+
+\section{System level verification with computer vision}
 
 \subsection{Hardware}
 \label{sec:case_study:hardware}
 
-In case of a computer vision (\textls{CV}) based approach, it is critical to choose the appropriate hardware. We had two parameters in the selection of the camera: height above the board, and \textls{FOV}.
+In case of a computer vision (\textls{CV}) based approach, it is critical to choose the appropriate hardware. We had two parameters in the selection of the camera: height above the board, and \textls{FOV}. The camera we used have these parameters:
+\begin{itemize}
+	\item Resolution: 1920x1080
+	\item Horitontal FOV: \ang{120}
+\end{itemize}
 
-	Field of View (\textls{FOV}) is the extent of the observable world that is seen at any given moment. See \cref{fig:case_study:fov} for visual explanation.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/opencv_1}
-	\caption{Visual explanation of \textls{FOV}}
-	\label{fig:case_study:fov}
-\end{figure}
-
-These parameters are coupled, the higher the camera the less FOV we need. Most of the cameras on the market have horizontal FOV values approximately \ang{60}.
-
-Our chosen \textls{FOV} became \ang{120}, because the cameras with these \textls{FOV} values are inexpensive, and easy to find. With a placement height of 120~\si{\centi\meter}, we can fully assemble the project virtually in any room.
+The camera have an installation height of $120$\si{\centi\meter}. This is a perfect value for using the case study in any room, and not suffer serious perspective distortions.
 
 \subsection{OpenCV}
 
-One key point of this study from the technological viewpoint is computer vision. It is a non intrusive add-on to the existing hardware, which allows us to monitor the board with fairly big precision and reliability, if the correct techniques and materials are used.
+One key point of this study from the technological viewpoint is computer vision. It is a new extension of the hardware, which allows us to monitor the board with fairly big precision and reliability, if the correct techniques and materials are used.
 
 We needed a fast, reliable, efficient library to use with the camera, and develop the detection algorithm. Our choice was the OpenCV\footnote{\url{http://opencv.org/}} library, which is an industry leading, open source computer vision library. It implements various algorithms with effective implementation e.g., using the latest streaming vector instruction sets. The main programming language -- and what we used -- is \textls{C++}, but it has many binding to other popular languages like Java, and Python.
 
@@ -51,27 +65,25 @@ We needed a fast, reliable, efficient library to use with the camera, and develo
 
 One of the steps of the \textls{CV} implementation was the design of the markers, which should provide an easy detection, and identification of the marked objects.
 
-The first step was to consider the usage of an external library, named \textls{ArUco}\footnote{\url{http://www.uco.es/investiga/grupos/ava/node/26}}. This library provides the generation (see \cref{fig:case_study:aruco_markers}), and detection library of markers.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.35\linewidth]{include/figures/chapter_6/opencv_2}
-	\caption{Example markers generated by \textls{ArUco}}
-	\label{fig:case_study:aruco_markers}
-\end{figure}
-
-The problem with the library was the lack of tolerance in quality, and motion blur. Other limiting factor is the shape of the marker. A square marker scaled up to provide good visibility for the camera 120~\si{\centi\meter} above the board extends greatly over the width of a railway car. Because these negative properties of the existing libraries, we implemented a marker detection algorithm for our needs.
+The first step was to consider the usage of an external library, named \textls{ArUco}\footnote{\url{http://www.uco.es/investiga/grupos/ava/node/26}}. This library provides the generation and detection library of markers. The problem with the library was the lack of tolerance in quality, and motion blur. Because these negative properties of the existing libraries, we implemented a marker detection algorithm for our needs.
 
 After the implementation was in our hands, we could make markers which suits our needs. The chosen size of the marker was the size of the model railroad car as it will provide the proper accuracy.
 
-As explained in \cref{fig:case_study:opencv_math}, circular patterns are well suited for these applications. The final design consists two detection circle, and a color circle for identification between the detection circles.
+As explained in \cref{fig:case_study:opencv_math}, circular patterns are well suited for these applications. The final design consists two detection circle, and a color circle for identification between the detection circles (\cref{fig:case_study:final_marker}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/opencv_finalmarker}
+	\caption{The final marker design}
+	\label{fig:case_study:final_marker} 
+\end{figure}
 
 \subsection{Mathematical solution for marker detection}
 \label{fig:case_study:opencv_math}
 
 %According to the various conditions, the marker detection has to be robust.
 
-Dimensions mentioned in \cref{sec:case_study:total_view} cause various environmental lighting conditions across the board. This is a challenging problem, because we must detect every circle despite we defined it as a perfect black circle, and every maker have its own lighting condition. 
+According to the various condition in lighting, and used materials, the marker detection has to be robust.
 
 This problem, and the fact that these markers have perspective distortion when they are near to the visible region of the camera motived us to develop a processing technique coming from controlling theory.
 
@@ -82,39 +94,11 @@ This method is the commonly used technique of transforming and processing a sign
 
 Our method is based on the convolution of two bitmap images, one from the camera, and one generated pattern.
 
-\begin{dfn}
-	The convolution of image functions by using Fourier transform $\mathscr{F}$, on image $I_1, and I_2$ is:
-	\begin{equation}
-		\label{equ:case_study:convolution}
-		I_1 \ast I_2 = \mathscr{F}^{-1}(\mathscr{F}(I_1) \cdot \mathscr{F}(I_2))
-	\end{equation}
-\end{dfn}
-
 As \cref{equ:case_study:convolution} shows, we can multiply two spectrums element-wise, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectrums match.
 
 \subsubsection{Pattern bitmap properties}
 
-While generating the pattern bitmap, we should consider it's properties:
-\begin{itemize}
-	\item The bitmap must be the same size as the raw image we applying it to.
-	\item While the pattern can be placed anywhere in the bitmap, there will be an offset from the origin to our pattern center point. For example if we put the circular pattern in the upper left corner (let the upper left corner be the origin of the bitmap), the matching pattern will have an offset error of $[r, r]$ (\cref{fig:case_study:offset_example}). Instead of correcting this offset, we can use the periodicity of the Fourier transform, therefore we can put our pattern in the corners. In case of this placement, the center will be the out patterns imaginary\footnote{Naturally our shapes could be more complicated, where we have our imaginary center of the shape} center like the marker in \cref{fig:case_study:convoluter_image}.
-\end{itemize}
-
-\begin{figure}[h]
-	\centering
-	\begin{minipage}[b]{0.49\linewidth}
-		\centering
-		\includegraphics[width=0.8\linewidth]{include/figures/chapter_6/math_3}
-		\caption{A test pattern}
-		\label{fig:case_study:offset_example}
-	\end{minipage}%
-	\begin{minipage}[b]{0.49\linewidth}
-		\centering
-		\includegraphics[width=0.8\linewidth]{include/figures/chapter_6/math_4}
-		\caption{A example of offset error}
-		\label{fig:case_study:offset_example}
-	\end{minipage}
-\end{figure}
+The prerequisite of the pattern is the pattern must be the same size of the raw image, and the raw image must be a grayscale image.
 
 The pattern itself needs to be generated with values according to the shape we would like to match (\cref{fig:case_study:convoluter_image}). The raw pixels are multiplied by this value. The meaning of these values in the bitmap are the following: 
 \begin{itemize}
@@ -139,39 +123,109 @@ The pattern itself needs to be generated with values according to the shape we w
 
 \subsection{Software}
 
-\begin{table}[ht]
+With the OpenCV library, we implemented a processing pipeline which can process the live video feed from the camera. We forward this data to the high level safety logic, which can decide the following actions. The \cref{table:case_study:pipeline} shows all the essential steps in the processing pipeline of the computer vision.
+
+We used GPU acceleration trough pipeline stage 1--4. The acceleration is implemented by OpenCV, and can be used with CUDA capable NVidia video accelerators.
+
+\begin{table}[p]
 	\centering
 	\setlength{\fboxsep}{0pt}
 	\setlength{\fboxrule}{1pt}
-	\begin{tabular}{@{}lm{4cm}l@{}}
-	  \toprule
-	  Stage \# & Description &  \\
-	  \midrule
-	  Stage 1 & Loading an image from the camera &\fbox{\includegraphics[valign=c,width=0.5\linewidth]{include/figures/chapter_6/stages/s1}} \\[10.5ex]
-	  Stage 2 & Convert the image to grayscale & \fbox{\includegraphics[valign=c,width=0.5\linewidth]{include/figures/chapter_6/stages/s2}} \\[10.5ex]
-	  Stage 3 & Convolve the image with the pattern & \fbox{\includegraphics[valign=c,width=0.5\linewidth]{include/figures/chapter_6/stages/s3}} \\[10.5ex]
-	  Stage 4 & Apply a thresold & \fbox{\includegraphics[valign=c,width=0.5\linewidth]{include/figures/chapter_6/stages/s4}} \\[10.5ex]
-	  \bottomrule
-	\end{tabular}
+	\begin{tabularx}{\textwidth}{cm{5cm}X}
+		\toprule
+		Stage \# & Description & Example images  \\
+		\midrule
+		1 & Loading an image from the camera &\fbox{\includegraphics[valign=c,width=\linewidth]{include/figures/chapter_6/stages/s1}} \\[10.5ex]
+		2 & Convert the image to grayscale & \fbox{\includegraphics[valign=c,width=\linewidth]{include/figures/chapter_6/stages/s2}} \\[10.5ex]
+		3 & Convolve the image with the pattern & \fbox{\includegraphics[valign=c,width=\linewidth]{include/figures/chapter_6/stages/s3}} \\[8.5ex]
+	\end{tabularx}
+	\begin{tabularx}{\textwidth}{cX}
+		\toprule
+		Stage \# & Description  \\
+		\midrule
+		4 & Applying a threshold to filter the brightest spots \\
+		5 & Finding the contours of the enclosed shapes \\
+		6 & Calculating the center point of the contours \\
+		7 & Find possible markers by distance \\
+		8 & ID the marker by the center \\
+		\bottomrule
+	\end{tabularx}
 	\caption{Computer vision processing pipeline}
 	\label{table:case_study:pipeline}
 \end{table}
 
-\subsubsection{\textls{CPU} implementation}
-Az első implementáció gyors bemutatása.
-\subsubsection{\textls{CUDA implementation}}
-A GPU által gyorsított verzió bemutatása, mit tapasztaltunk ennek során, hogyan segített a fejlesztésben.
+\section{Summary}
+With this implementation, we can follow the system real-time, providing the high-level logic another independent source of information. This can lead to a more robust system with added redundancy.
 
-\section{Physical - logical mapping}
-	\subsection{Elements of physical mapping}
-		Az általunk használható architektúra részletes bemutatása.
-	\subsection{Elements of logical mapping}
-		Azoknak az elemeknek, elképzeléseknek az áttekintése, amik szerepelhetnek a modellünkben, még teljesen független módon.
-	\subsection{Introducing to EMF}
-		Az EMF bemutatása röviden.
-	\subsection{Building the EMF model}
-		Az elkészült EMF metamodell bemutatása, és összevetése az elképzelésekkel.
-	\subsection{Introducing the IncQuery}
-		Az IncQuery bemutatása.
-	\subsection{Building the IncQuery patterns}
-		A biztonsági lokikai patternek bemutatása.
+\newpage
+\section{Model railroad}
+In this section we briefly overview the railroad and the controlling hardware.
+
+\subsection{Overview}
+
+\noindent The model railroad (\cref{fig:case_study:total_map}) contains the following hardware elements:
+\begin{itemize}
+	\item 15 powerable section
+	\item 6 railroad switch
+	\item 6 Arduino controllers for each switch
+	\item 3 remotely controllable train
+\end{itemize}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\linewidth]{include/figures/chapter_6/total_view_1}
+	\caption{The railroad network with section IDs}
+	\label{fig:case_study:total_map}
+\end{figure}
+
+\subsection{Hardware}
+The core of the railroad hardware are the Arduino microcontrollers which collects information, and control the sections. For every railroad switch there is an associated controller which can control the power of the sections nearby with the slave units connected to it (\cref{fig:case_study:master_slave}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\linewidth]{include/figures/chapter_6/railroad_ms}
+	\caption{Master-slave associations}
+	\label{fig:case_study:master_slave}
+\end{figure}
+
+\section{???}
+In this section we proceed through the design of the physical to logical mapping. We operate our safety on this logical model, so it is very important to map all the details of the physical world we need correctly in this model.
+
+\subsection{Physical elements}
+The only external source of information is the computer vision. The CV forward a train ID (determined by marker color) and position (x, y coordinates) to the model, and we must discretize these informations to make it searchable by our safety logic for hazardous events.
+
+Let us take a look on the main components of the physical system, and what challenges we face:
+\begin{itemize}
+	\item \textbf{Section}: Either a rail, or railroad switch. Every section has a distinctive identifier.
+	\item \textbf{Rail}: The rail is a variable length curve. The main challenge is the determination of the next section. Only the rail can be powered down, so our safety logic must act, when the train is on a rail.
+	\item \textbf{Switch}: The switch is a region, where we know the entry and outgoing section by its setting. The switch is always powered, so we cannot affect the train on the switch.
+\end{itemize}
+
+\subsection{Logical breakdown of physical elements}
+After we designated the physical elements, and their properties, we started to build a logical concept what are our model elements, and what are the connections between them.
+
+We will follow a bottom-up structure because it helps the graph search (\cref{sec:case_study:pattern_building}), and review the main components of the logical elements.
+
+
+\begin{itemize}
+	\item \textbf{Trackable}: The atomic abstract element of our model, the \emph{trackable} is the smallest unit of measurement.
+	\item \textbf{SectionTrackable}: Specialized trackable, which is a part of a powerable section.
+	\item \textbf{SwitchTrackable}: Specialized trackable. Because we did not intrested in the position inside the switch, the entire
+\end{itemize}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=\linewidth]{include/figures/chapter_6/sectionmodel}
+	\caption{EMF model} 
+	\label{fig:case_study:model}
+\end{figure}
+
+\subsection{Introducing to EMF}
+Az EMF bemutatása röviden.
+\subsection{Building the EMF model}
+Az elkészült EMF metamodell bemutatása, és összevetése az elképzelésekkel.
+\subsection{Introducing the IncQuery}
+Az IncQuery bemutatása.
+\subsection{Building the IncQuery patterns}
+\label{sec:case_study:pattern_building}
+A biztonsági lokikai patternek bemutatása.
