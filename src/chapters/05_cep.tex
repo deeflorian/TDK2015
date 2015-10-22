@@ -8,8 +8,9 @@
 		\subsection{VEPL}
 			Our choice for the event pattern definition is the VIATRA Event Pattern Language (VEPL).
 			Currently this is the only CEP which can be easily integrated to a live model, where 
-			you can define multiple patterns over the model, and define atomic events for the (dis)appereance
-			of these patterns.
+			you can define multiple graph patterns over the model, and define atomic events for the
+			appearance and disappearance of these patterns.
+			
 			
 			TODO define complex event processing
 			
@@ -20,9 +21,9 @@
 Operator name &	Denotation & Meaning \\
 followed by & p1 $\rightarrow$ p2 & Both patterns have to appear in the specified order. \\
 or &	p1 OR p2 &	One of the patterns has to appear. \\
-and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter. Rule: p1 AND p2 === ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
+and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter. Rule: p1 AND p2 $\equiv$ ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
 negation &	NOT p &	On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
-multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer. Rule: p\{n\} === p1 $\rightarrow$ p1 $\rightarrow$ ... p1, n times. \\
+multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer. Rule: p\{n\} $\equiv$ p1 $\rightarrow$ p1 $\rightarrow$ \dots p1, n times. \\
 "at least once" multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
 "infinite" multiplicity &	p\{*\} &	The pattern can appear 0 to infinite times. \\
 within timewindow &	p[t] &	Once the first element of the pattern is observed (i.e. the patterns "starts to build up"), the rest of the pattern has to be observed within t milliseconds.
@@ -32,16 +33,16 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 		\subsection{Timed Regular Expression}
 			\begin{dfn}
 				Timed Regular Expressions over an alphabet $\Sigma$ (also referred to as $\Sigma$-expressions)
-				are defined using the following families of rules.
+				are defined using the following families of rules~\citep{tre}~.
 				\begin{enumerate}
-					\item{\underline{a} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions}
+					\item{\underline{a} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.}
 					\item{If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions and $I$ is an integer-bounded interval then
-						$\langle\varphi_I\rangle, \varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions}
+						$\langle\varphi_I\rangle, \varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.}
 					\item{If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi^\circledast$ are
-						$\Sigma$-expressions}
+						$\Sigma$-expressions.}
 					\item{If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
 						for some alphabet $\Sigma_0$, and $\Theta$ : $\Sigma_0 \rightarrow \Sigma$ is
-						a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions}
+						a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions.}
 				\end{enumerate}
 			\end{dfn}
 			
@@ -58,7 +59,7 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 				$\mathcal{A} \subseteq Event$ is a finite alphabet,
 				$\delta \in (Q \times \mathcal{A} \times Guard \times Assign \times Q)$ is a finite set of transitions, 
 				$q_0 \in Q$ is an initial state, and 
-				$F \subseteq Q$ is a set of final states.
+				$F \subseteq Q$ is a set of final states\citep{qea}.
 			\end{dfn}
 			
 		\subsection{Timed Event Automaton}
@@ -94,12 +95,16 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 				Automatons states.
 			\end{dfn}
 
+		\subsection{Compilation of the Event patterns to Parametrized Event Automata}
+			
+			
+			
 	\section{Examples of Event Processing}
  
 		\subsection{File System}
 			\subsubsection{Problem}
 				File system - A file shouldn't be read when it has been opened for writing, and shouldn't be written, when opened for reading. 
-				A file shouldn't be opened for writing and reading without a close event between the two different opens.
+				A file shouldn't be opened for writing and reading without a close event between the two different opens~\citep{marq}.
 				The possible parametrized events are : 
 				Open(file, mode), 
 				Close(file), 
