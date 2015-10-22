@@ -10,12 +10,12 @@ if not exist "out\" mkdir "out\"
 if not exist "out\include\" mkdir "out\include\"
 if not exist "out\chapters\" mkdir "out\chapters\"
 latexmk -pdf -cd -outdir=../out -jobname=hierarchical_runtime_verification -interaction=nonstopmode -file-line-error ./src/main
-copy out\stochastic_analysis.pdf >nul
+copy out\hierarchical_runtime_verification.pdf >nul
 goto end
 
 :clean
 rd /q /s "out\" 2>nul
-del /q "stochastic_analysis.pdf" 2>nul
+del /q "hierarchical_runtime_verification.pdf" 2>nul
 goto :end
 
 :end
