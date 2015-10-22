@@ -1,43 +1,47 @@
 \chapter{Complex event processing}
 	\label{chap:cep}
 	\section{Intro of the Complex Event Processing}
-		In our hierarchical runtime verification project, the top level of modelling is done in an event pattern language.
-		This event pattern language (vepl) can be translated to timed regular expressions, which can be translated to 
-		timed event automatons. We'll use this to implement the event processor. 
-	\section{Background}
+		In this hierarchical runtime verification project, the top level of modelling is done in an event pattern language.
+		This event pattern language is translated to timed event automatons. These event automatons will be executed in the
+		process.
+	\section{Formal Intro of the Timed Parametrized Event Automaton}
 		\subsection{VEPL}
-			TODO add a reference to David Istvans work
-			
-			TODO define event.
+			Our choice for the event pattern definition is the VIATRA Event Pattern Language (VEPL).
+			Currently this is the only CEP which can be easily integrated to a live model, where 
+			you can define multiple patterns over the model, and define atomic events for the (dis)appereance
+			of these patterns.
 			
 			TODO define complex event processing
 			
-			The used formalism to define event patterns is the VEPL. A brief overview to this language:
-			
-			
-			Operators
+			A brief overview of the VEPL language:
 
-			\begin{figure}[h]
-			\centering
-			\includegraphics[width=0.5\linewidth]{include/figures/chapter_5/viatracepoperators}
-			\caption{Operators of the VIATRA CEP}
-			\label{fig:cep:viatracepoperators}
-			\end{figure}			
+\begin{tabular}{ccc}
+\centering
+Operator name &	Denotation & Meaning \\
+followed by & p1 $\rightarrow$ p2 & Both patterns have to appear in the specified order. \\
+or &	p1 OR p2 &	One of the patterns has to appear. \\
+and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter. Rule: p1 AND p2 === ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
+negation &	NOT p &	On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
+multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer. Rule: p\{n\} === p1 $\rightarrow$ p1 $\rightarrow$ ... p1, n times. \\
+"at least once" multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
+"infinite" multiplicity &	p\{*\} &	The pattern can appear 0 to infinite times. \\
+within timewindow &	p[t] &	Once the first element of the pattern is observed (i.e. the patterns "starts to build up"), the rest of the pattern has to be observed within t milliseconds.
+\end{tabular}	
 			
-			
+			%% Regular -> Timed Regular -> Event Automata (parametrized) -> MERGE -> Timed Event Automaton
 		\subsection{Timed Regular Expression}
 			\begin{dfn}
 				Timed Regular Expressions over an alphabet $\Sigma$ (also referred to as $\Sigma$-expressions)
 				are defined using the following families of rules.
 				\begin{enumerate}
-					\item{a for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions}
-					\item{If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions and I is an integer-bounder iterval then
-					$\langle\varphi_I\rangle, \varphi_1 \cdot \varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.}
+					\item{\underline{a} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions}
+					\item{If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions and $I$ is an integer-bounded interval then
+						$\langle\varphi_I\rangle, \varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions}
 					\item{If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi^\circledast$ are
-					$\Sigma$-expressions}
-.					\item{If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
-					for some alphabet $\Sigma_0$, and $\Theta$ : $\Sigma_0 \rightarrow \Sigma$ is
-					a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions}
+						$\Sigma$-expressions}
+					\item{If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
+						for some alphabet $\Sigma_0$, and $\Theta$ : $\Sigma_0 \rightarrow \Sigma$ is
+						a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions}
 				\end{enumerate}
 			\end{dfn}
 			
@@ -60,8 +64,8 @@
 		\subsection{Timed Event Automaton}
 			% stuff about the calendar
 			% informal definition of the calendar?
-			In discrete event simulation, a calendar (also called event list) is a data structure that
-			stores future events and the times at which these events are scheduled to occur
+			% In discrete event simulation, a calendar (also called event list) is a data structure that
+			% stores future events and the times at which these events are scheduled to occur
 			
 			% Formal definition of the calendar
 				% \begin{dfn}
@@ -73,20 +77,35 @@
 				% \end{dfn}
 			% stuff about the calender automaton
 				
+			\begin{dfn}
+				A TimedZone $\langle S,\mathcal{E},I,T \rangle $ is a tuple where $S \in$ States,
+				$T \in$ States, 
+				$\mathcal{E}~\subseteq$~States,
+				$I$ is a time value 
+			\end{dfn}
+			
+			The semantic of the TimedZone is the following: 
+				If a token enters state $S$ at $t_i$, and doesn't reach any of the $\mathcal{E}$ states before $t_j$,
+				where $t_j = t_i + I$, then the token is moved to $T$
 				
-		\subsection{Our Formalism}
-			TimedZone is a tuple $\langle StartState, EndZones, TimeoutValue, StateMoveTo  \rangle$
-			
-			If a token enters a state, and there is a TimeZone whose StartState is the state, and it doesn't enter a state which is one of the EndStates before the timeout, the token'll be moved to the StateMoveTo.
-			
-			Our Automaton = $\langle EventAutomaton, TZ \rangle$ where TZ is a Set of TimedZones
+			\begin{dfn}
+				A TEA
+				$\langle E,\mathcal{T} \rangle$ is a tuple where $E$ is an Event Automaton, and $\mathcal{T}$ is a set of Timed Zones, where all the states are one of the 
+				Automatons states.
+			\end{dfn}
+
 	\section{Examples of Event Processing}
  
-		\subsection{varphile System}
+		\subsection{File System}
 			\subsubsection{Problem}
-				varphile system - A file shouldn't be read when it has been opened for writing, and shouldn't be written, when opened for reading. 
+				File system - A file shouldn't be read when it has been opened for writing, and shouldn't be written, when opened for reading. 
 				A file shouldn't be opened for writing and reading without a close event between the two different opens.
-				The possible parametrized events are : Open(file, mode), Close(file), Read(file), Write(file). Mode is either "R" or "W" which stands for Read and Write respectively.
+				The possible parametrized events are : 
+				Open(file, mode), 
+				Close(file), 
+				Read(file), 
+				Write(file). 
+				Mode is either "R" or "W" which stands for Read and Write respectively.
 			\subsubsection{Solution}
 				We are looking for these patterns : 
 				
@@ -100,7 +119,7 @@
 				
 				\begin{figure}[h]
 				\centering
-				\includegraphics[width=0.5\linewidth]{include/figures/chapter_5/fileautomaton}
+				\includegraphics[width=0.7\linewidth]{include/figures/chapter_5/file_example_aut}
 				\caption{Automaton of the file example}
 				\label{fig:cep:fileautomaton}
 				\end{figure}
@@ -117,8 +136,26 @@
 					\item{If a task releases a resource, it can't allocate anymore}
 				\end{enumerate}
 			\subsubsection{Solution}
-				Since our implementation doesn't support guards (yet) 
+				Since our implementation doesn't support guards \emph{yet} we can only use constant amount of resources.
+				For this example, this amount will be set to two, to minimise the model of the example.
 
+				\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.7\linewidth]{include/figures/chapter_5/mars_example_aut1}
+				\caption{Automaton to forbid the reallocation}
+				\label{fig:cep:marsautomaton1}
+				\end{figure}		
+				
+				
+				\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.7\linewidth]{include/figures/chapter_5/mars_example_aut2}
+				\caption{Automaton to forbid inverse allocation}
+				\label{fig:cep:marsautomaton2}
+				\end{figure}	
+
+				
+				
 	\section{Implementation}
 		\subsection{Metamodel}
 		
@@ -129,7 +166,8 @@
 			\label{fig:cep:model}
 			\end{figure}
 		%image
-		Nyilvan ide mjd kisebb, mutatosabb, es kevesebb dolgot tartalmazo abra kell, meg nemi magyarazat
+		Nyilvan ide majd kisebb, mutatosabb, es kevesebb dolgot tartalmazo abra kell, meg nemi magyarazat
+		Egy csak timedZones resz, meg egy csak parameteres
 		\subsection{Executor}
 			The algorithm first searches for all the activated transitions.
 			If it finds an activated transition, it iterates over the tokens which are on the state. The first token with matching (non-confronting)
