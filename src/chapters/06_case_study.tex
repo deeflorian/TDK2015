@@ -59,7 +59,7 @@ The camera have an installation height of $120$\si{\centi\meter}. This is a perf
 
 One key point of this study from the technological viewpoint is computer vision. It is a new extension of the hardware, which allows us to monitor the board with fairly big precision and reliability, if the correct techniques and materials are used.
 
-We needed a fast, reliable, efficient library to use with the camera, and develop the detection algorithm. Our choice was the OpenCV\footnote{\url{http://opencv.org/}} library, which is an industry leading, open source computer vision library. It implements various algorithms with effective implementation e.g., using the latest streaming vector instruction sets. The main programming language -- and what we used -- is \textls{C++}, but it has many binding to other popular languages like Java, and Python.
+We needed a fast, reliable, efficient library to use with the camera, and develop the detection algorithm. Our choice was the OpenCV\footnote{\url{http://opencv.org/}} library, which is an industry leading, open source computer vision library. It implements various algorithms with effective implementation e.g. using the latest streaming vector instruction sets. The main programming language -- and what we used -- is \textls{C++}, but it has many binding to other popular languages like Java, and Python.
 
 \subsection{Marker design}
 
@@ -188,7 +188,7 @@ The core of the railroad hardware are the Arduino microcontrollers which collect
 	\label{fig:case_study:master_slave}
 \end{figure}
 
-\section{???}
+\section{Metamodel design}
 In this section we proceed through the design of the physical to logical mapping. We operate our safety on this logical model, so it is very important to map all the details of the physical world we need correctly in this model.
 
 \subsection{Physical elements}
@@ -198,20 +198,50 @@ Let us take a look on the main components of the physical system, and what chall
 \begin{itemize}
 	\item \textbf{Section}: Either a rail, or railroad switch. Every section has a distinctive identifier.
 	\item \textbf{Rail}: The rail is a variable length curve. The main challenge is the determination of the next section. Only the rail can be powered down, so our safety logic must act, when the train is on a rail.
-	\item \textbf{Switch}: The switch is a region, where we know the entry and outgoing section by its setting. The switch is always powered, so we cannot affect the train on the switch.
+	\item \textbf{Railroad switch}: The switch is a region, where we know the entry and outgoing section by its setting. The switch is always powered, so we cannot affect the train on the switch. There are some basic concept:
+	\begin{itemize}
+		\item A switch consists of three rails: the central rail, and two rails we can choose of, a divergent and a straight rail.
+		\item \textbf{Straight rail}: The straight rail follows the central rail without a curve.
+		\item \textbf{Divergent rail}: The divergent rail moves away from the imaginary line of the central rail.
+	\end{itemize}
 \end{itemize}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/metamodel_switch_basics}
+	\caption{Switch straight, and divergent rails}
+	\label{fig:case_study:metamodel_switch_basics}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/metamodel_switch_endi}
+	\caption{Enabled-disabled section explanation}
+	\label{fig:case_study:metamodel_switch_endi}
+\end{figure}
 
 \subsection{Logical breakdown of physical elements}
 After we designated the physical elements, and their properties, we started to build a logical concept what are our model elements, and what are the connections between them.
 
 We will follow a bottom-up structure because it helps the graph search (\cref{sec:case_study:pattern_building}), and review the main components of the logical elements.
 
-
-\begin{itemize}
-	\item \textbf{Trackable}: The atomic abstract element of our model, the \emph{trackable} is the smallest unit of measurement.
-	\item \textbf{SectionTrackable}: Specialized trackable, which is a part of a powerable section.
-	\item \textbf{SwitchTrackable}: Specialized trackable. Because we did not intrested in the position inside the switch, the entire
-\end{itemize}
+\begin{enumerate}
+	\item \textbf{SectionModel}: The root of the board model. It is separated from trains because this root element is persisted, and loaded at every start of the application, while the \emph{TrainModel} is dynamic.
+	\begin{enumerate}
+		\item \textbf{Configuration}: Contains the enabled \emph{groups} of the switch.
+		\item \textbf{SwitchSetting}: Contains a straight, and divergent \emph{configuration}.
+		\item \label{itm:case_study:region} \textbf{Region}: The atomic abstract element of our model, the \emph{region} is the smallest unit of measurement.
+		\item \textbf{SectionRegion}: Specialized region, which is a part of a \emph{powerable group}. Only powerable section can stop a train. 
+		\item \textbf{RailRegion}: Specialized region. Because we did not intrested in the position inside the switch, we declare the entire area of the switch as one region.
+		\item \label{itm:case_study:group} \textbf{Group}: The group is a collection of regions.
+		\item \textbf{PowerableGroup}: A collection of \emph{regions} which can shutted of. The equivalent to the rail concept of the modelled study.
+		\item \textbf{SwitchGroup}: A group of exacty one \emph{SwichRegion}. Have a reference to a \emph{Configuration}, describing the current switch settings.
+	\end{enumerate}
+	\item \textbf{TrainModel}: The root of all train elements.
+	\begin{enumerate}
+		\item \textbf{Train}: The train representation with an unique ID, the current and previous region (\cref{itm:case_study:region}), and the next group (\cref{itm:case_study:group}) determined by the current, and previous region.
+	\end{enumerate}
+\end{enumerate}
 
 \begin{figure}[p]
 	\centering
@@ -220,10 +250,24 @@ We will follow a bottom-up structure because it helps the graph search (\cref{se
 	\label{fig:case_study:model}
 \end{figure}
 
-\subsection{Introducing to EMF}
-Az EMF bemutatása röviden.
+\subsection{Introducing to Eclipse Modeling Framework}
+\begin{quotation}
+	``The Eclipse Modeling Framework (EMF) project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.'' \cite{EMF}
+\end{quotation}
+
+We used the EMF tool to create the metamodel of the railway. The main reason for this modeling tool is the dependency to IncQuery, but other reasons motivated the use of it:
+\begin{itemize}
+	\item Besides the POJO\footnote{Plain Old Java Object}, EMF can generate an Eclipse based editor for the model, where we can add/remove/edit all the elements, and their properties easily. TODO The editor ensure the model.
+	\item The framework ensure all the references are valid, by updating them automatically.
+	\item We can make opposite edges, which are forward/backward references across two object. The framework will maintain these references e.g. we assign object A to object B, if they have a bidirectional reference between them, the EMF will automatically update the other side of the reference, in our case the reference from A to B.
+\end{itemize}
+
 \subsection{Building the EMF model}
-Az elkészült EMF metamodell bemutatása, és összevetése az elképzelésekkel.
+
+After ...
+
+It's important while building the EMF model that every element must be a part of exactly one containament tree. If an element is not in a tree or it is in multiple, it causes failure while serializing.
+
 \subsection{Introducing the IncQuery}
 Az IncQuery bemutatása.
 \subsection{Building the IncQuery patterns}
