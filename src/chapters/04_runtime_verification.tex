@@ -2,39 +2,39 @@
 \label{chap:runtime_verification}
 
 \section{Intro}
-A statechart language was created to enable the high level design, verification, and monitoring of complex systems. The aim was to use a simple and straightforward syntax to keep the language’s learning curve gentle. Statecharts were chosen as they are used widely for modeling in various branches of engineering.
+A statechart language was developed to support the high level design, verification, and monitoring of complex systems. The aim was to use a simple and straightforward syntax to keep the language’s learning curve gentle. Statecharts were chosen as they are used widely for modelling in various branches of engineering.
 \section{Goal}
-  %#####TODO
-  \subsection{Simple, generic, useable}
-  %#####TODO
+The goal was to create a formal statechart language that resembles languages already used in engineering practices. This would shorten the learning process and enable formal verification of the resulting models, which would result in highly dependable safety critical systems with lower design and maintenance costs.
+  \subsection{Simple, generic, usable}
+Statecharts build on the concept of state machines. They are highly visual and are used by many branches of engineering as a modelling method. Statecharts can be easily used for abstraction, providing a generic way to describe small processes or whole systems. States can be refined by creating inner regions and substates, or by creating smaller, separate statecharts to model the underlying concepts in detail. One of the languages goals was to provide a simple and usable, yet generic approach to modelling using this well known method.
+%#####TODO expand?
   \subsection{Verification}
-  %#####TODO
+The development of safety critical systems require extensive testing. While well design tests can detect most of a system's faults they can't promise that all them are found. Formal verification is a more reliable approach as it guarantees that all of the (formally) specified requirements are met.
   \subsection{Monitor generation}
-  %#####TODO
-\section{Why not upgrade previous solutions}
-  %#####TODO
-Validation software is... 
-Many software is available for code generation. Unfortunately the available solutions either provide poor quality code or have a limited syntax, thus making the creation and understanding of the models more time consuming than necessairy. Our approach was to generate easily readable, extendable, object oriented code that can run in a limited resource environment.
+Even with formally verified systems, hardware errors can occur. Using runtime verification one can signal and handle malfunctions so that the system stops or remains as functional as possible. Monitors are also capable of providing traces that can unravel the propagation of errors. Therefore, the statechart language provides tools for marking erroneous states and transitions, and is capable of generating monitors that track the system's state through a signal interface. These monitors contain the state model of the described system, which makes it possible to use them as skeletons capable of reporting errors for smaller programs.
+\section{A new approach is needed}
+Many software is available for code generation and verification based on statecharts. Unfortunately the available solutions for verification and modelling provide limited syntax, and the latter usually provide poor quality code. Both results in longer creation and harder maintenance of the models and software. This leads to higher costs and a more time consuming development cycle than necessary. For these reasons, our statechart language supports the verification of statecharts with parametric signals, timers, while enabling the creation of parametric statechart. For monitor generation, our approach was to generate easily readable, extendible, object oriented code that can run in an environment with limited resources, primarily embedded systems.
   \subsection{Parametric statechart declaration}
-The language allows a specification to consist of multiple statecharts. This feature led to of the main strengths of the language: the definition of statechart templates, which can be parametrically instantiated multiple times. This results in short descriptions for otherwise complex, homogenious systems. Statechart parameters can be of any type supported by the TTMC::Constraint language. Separate statecharts can communicate with each other using signals or global variables.
+The language allows a specification to consist of multiple statecharts. This feature led to of the main strengths of the language: the definition of statechart templates, which can be parametrically instantiated multiple times. This results in short descriptions for otherwise complex, homogeneous systems. Statechart parameters can be of any type supported by the TTMC::Constraint language. Separate statecharts can communicate with each other using signals or global variables.
   \subsection{Parametric signals}
 Signals can also be parameterized with any integer type variable. These parameters then can be used to discriminate between signals with the same name, which also results in more readable code, allowing transitions to use the same signal as their trigger.
 \section{The statechart language}
 Each system description consists of a single file, which holds the specification of all components.
   \subsection{The specification}
-A specification can consist of multiple statecharts. Statechart definitions must be in the form of \\statechart NAME(...) { ... }\\, where the \\{ ... }\\ part contains the description of the statechart. The braces are optional and are only needed for the parameters of statechart templates. For statechart declarations, the description can be omitted. Each specification must have at least one defined statechart. Parameterized statecharts can be created from existing templates by providing a value for each parameter.
+A specification can consist of multiple statecharts. Statechart definitions must be in the form of: \\\verb! statechart NAME(...) {...}!\\ where \verb!(...)! is the parameter list and the \verb!{...}! part contains the description of the statechart. The braces are optional and are only needed for the parameters of statechart templates. For statechart declarations, the description can be omitted. Each specification must have at least one defined statechart. Parametrized statecharts can be created from existing templates by providing a value for each parameter.
   \subsection{Variables}
-Variables can either be global (accessible to all statecharts) or local (bound to a single statechart in which they were declared). Many types are supported chapter{ characters, integers, doubles, etc... For a complete list, see \\appendix4TTMCConstraint\\. The variable declaration is in the form of \\global|local var NAME : TYPE\\, where global or local denotes the scope of the variable.
+Variables can either be global (accessible to all statecharts) or local (bound to a single statechart in which they were declared). Many types are supported chapter{ characters, integers, doubles, etc... For a complete list, see [TODO-ref]. The variable declaration is in the form of: \\\verb!global|local var NAME : TYPE!\\ where global or local denotes the scope of the variable, and \verb!TYPE! is any one of the supported types.
   \subsection{Expressions and assignments}
-Variables can be used in expressions. Expressions can have an arbitrarily complex structure within the limits of the \\TTMC::Constraint\\ language. This allows for, among others, the use of array indexing, parenthesis, and common operators in programming languages (+, -, *, /, modulo, ...). Assignments left hand sides are a single variable while their right hand side is an expression. Logical expressions using operators are also available (for example expressions using comparison operators). Each expression is a mixature of variables, constants, and operators. For a full reference, see \\TTMC::Constraint\\.
+Variables can be used in expressions. Expressions can have an arbitrarily complex structure within the limits of [TODO-ref]. This allows for, among others, the use of array indexing, parenthesis, and common operators in programming languages such as \verb!+!, \verb!-!, \verb!*!, \verb!/!, and such. Assignments left hand sides must be a single variable while their right hand side is an expression. Logical expressions using operators are also available (for example expressions using comparison operators). Each expression is a mixture of variables, constants, and operators. For a full reference, see [TODO-ref].
   \subsection{Parametric signals}
 Statecharts can communicate with the outside world and each other using signals. As such, these signals are declared directly in the specification and not in the statecharts themselves. Signals can be used with a single integer parameter (which can be either a constant or a variable). This allows for much simpler syntax when dealing with communication, as a statechart can raise a signal and pass a value simultaneusly. It also leaves room for a later expansion to a token based automata with reentry.
+A signal can be referenced multiple times, but only one transition may be taken per statechart for a raised signal. This results in a clearer model.
   \subsection{Timeouts}
 Raising a signal can be offset by a certain amout of time. For the formal model, the value is measured in units, for monitors, this value corresponds to the milliseconds elapsed since the timeout was set. Apart from their delayed nature, timeouts and signals can be used interchangeably.
   \subsection{Actions}
 Raising signals, setting timeouts, and variable assignments are called actions. They represent operations that might result in a change of the model's state.
   \subsection{Regions}
-Statecharts are structured by regions. Regions have both states and transitions, and play a fundament part in the scoping of elements. The syntax for regions is: \\region NAME { ... }\\ Each region must contain at least an initial state for the model to be valid.
+Statecharts are structured by regions. Regions have both states and transitions, and play a fundament part in the scoping of elements. The syntax for regions is: \\\verb!region NAME { ... }!\\ Each region must contain at least an initial state for the model to be valid.
   \subsection{Transitions}
 Transitions describe the possible state changes. A transition can only occure if the source state is active. After the transition fired, the source state becomes inactive and the target state active. Furthermore, a transition can have a trigger, a guard condition, and an arbitrary number of actions associated with it.
     \subsubsection{Transition trigger}
@@ -53,21 +53,33 @@ Initial states can be found in all regions - if the region's containing state is
 A fork state is a pseudo state that has a single incoming transition and any number of outgoing transitions. The outgoing transitions cannot have triggers, guards, or actions associated with them. If the incoming transition fired, all the outgoing transitions fire as well, and the fork state itself is not entered. This results in the activation of multiple states.
 A join state is a pseudo state that has a single outgoing transition and multiple incoming transitions. The incoming transitions cannot have triggers, guards, or actions associated with them. The outgoing transition is enabled when it's guard is true and all the incoming transitions' source states are active. Triggers can be declared on the outgoing transition.
   \subsection{Signaling errors, error propagation}
-States and transitions can be labeled as errors. The syntax is \\state/transition [Error label] ...\\ where the label is a description given by the user. This is only used for the generation of error messages in the monitor.
+States and transitions can be labeled as errors. The syntax is: \\\verb!state/transition [Error label] ...!\\ where the \verb!label! is a description given by the user. This is only used for the generation of error messages in the monitor.
   \subsection{Timing of transitions, actions}
-Transitions are fired one by one. The firing of a transition means that the triggering signal is consumed. This can result in nondeterministic runs if two transitions share the same trigger and can be enabled simultaneously. Such models can be created but the order of the transitions are not guaranteed. Actions on the current transition being taken are processed in a single step.
+Transitions are fired one by one. The firing of a transition means that the triggering signal is consumed. This can result in non-deterministic runs if two transitions share the same trigger and can be enabled simultaneously. Such models can be created but should be avoided, as the order of the transitions are not guaranteed. Actions on the current transition being taken are processed in a single step.
 \section{Formal representation}
-Formal verification methods requires a flatter model that the statechart language described above. Therefore, complex concepts are mapped to an easily verifiable one.
-  \subsection{Signals and expressions}
-In the formal model, signals are represented as boolean variables. The variable is true if the signal has been raised since the previous timestep was taken. Expressions need no further simplification.
-  \subsection{Variables}
-Variable types are the same as in the statechart model. Local variables' scoping and names are change. All variables use the same, global scope, which could introduce name clashes. To avoid such problems, local variables' names are changed to a unique one, using their location in the hierarchical system.
+Formal verification methods requires a flatter model that the statechart language described above. To enable formal verification of the defined statecharts, the language can be mapped to a transition system. This means that complex concepts of the model are flattened out to easily verifiable ones. The used transition system has the following capabilities:
+\begin{itemize}
+  \item multiple systems can be defined
+  \item systems can use local and global variables
+  \item the state of a system can be defined as a vector of all referenced variables
+  \item a partition of a system's state space can be represented as an expression that restricts certain variables' values and leaves the rest unbound
+  \item such restrictions are logical formulas that may use =, <, <=, >, etc...
+  \item systems have transitions that represent changes of state using the referenced variables previous and current values
+\end{itemize}
+  \subsection{Statecharts}
+Each statechart is mapped to a separate transition system. As transition systems are treated as systems running parallelly, this models the original behaviour of the statecharts - they define systems that can communicate with each other but are running independently.
+  \subsection{Signals}
+Signals can be used for communication between statecharts. As such, each transition system that references a signal need to be able to check whether the signal was raised. Therefore, in the formal model signals are represented as a set of global boolean variables. The variable is true if the signal has been raised since the previous timestep was taken. As each statechart referencing the signal might react to it by the firing of a transition triggered by the signal, a separate global boolean is used for each statechart. Since each signal can only trigger a single transition simultaneously inside a given statechart, complexer solutions are not needed. The parameters of the signals are stored and can be referenced as global integer variables.
+  \subsection{Timeouts}
+Timeouts are signals that are raised with an offset in the time domain. Handling timeouts in a transition system is a well researched area (TODO-ref.: Transition Systems in SAL - Dutertre, Sorea). A separate timing system is created as a transition system to generate simulate timesteps. The system has a variable that stores the current time and each signal has a helper variable that represents when the signal has to be raised. If a timeout is set, the offset of the timeout is added to the current time and this value is assigned to the helper variable. The timing system has a constantly enabled transition which increments the current time if no timeout can occur. For each timeout a transition is defined that is enabled when the current time is equal to the time stored in the helper variable. When this transition happens, the signal is raised. The helper variables are set to -1 by default to prevent false signal raises based on timeouts.
+  \subsection{Variables and expressions}
+Variable types are the same as in the statechart model. Global variables remain global ones, and local variables that are declared inside statecharts are mapped to local variables inside systems. Expressions need no further flattening as the expression library used by the transition system language and the statechart language is the same.
   \subsection{States}
-States are mapped to boolean variables that signal whether the state is currently active or not. Entry and exit actions are passed to the incoming and outgoing transitions for simplicity and unified handling.
-  \subsection{Timouts}
-%#####TODO
+States are mapped to boolean variables that represent whether the state is currently active or not. As entry and exit actions are unknown concepts in a transition system, these actions are propagated to all of the incoming and outgoing transitions. This way any transition that would result in the entering or exiting of the state executes the appropriate actions.
   \subsection{Transitions}
-Transitions between states are transitions in the formal model too. If the guard condition is true, the source state is currently enabled, and the transition has no trigger or the triggering signal was raised, the transition can be taken. When the transition fires in the formal model, the exit actions of the appropriate states, the actions of the transition, and the needed entry actions occur.
+Transitions between states are transitions in the formal model too. For a transition to be enabled, guard conditions has to evaluate true for the current state of the system, the source state has to be currently enabled, meaning that the source state's boolean variable is true, and the transition should have no trigger or the triggering signal has to be raised. When the transition fires in the formal model, the exit actions of the appropriate states, the actions associated with the transition, and the needed entry actions occur.
+  \subsection{Verification}
+The verification of the transition system is based on LTL expressions. (TODO?)
 \section{Accepting monitor}
   \subsection{Variables}
   \subsection{Signals}
