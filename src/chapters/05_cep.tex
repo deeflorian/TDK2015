@@ -15,18 +15,18 @@
 			
 			A brief overview of the VEPL language:
 
-\begin{tabular}{lcm{6cm}}
-\centering
-Operator name &	Denotation & Meaning \\
-followed by & p1 $\rightarrow$ p2 & Both patterns have to appear in the specified order. \\
-or &	p1 OR p2 &	One of the patterns has to appear. \\
-and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter. Rule: p1 AND p2 $\equiv$ ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
-negation &	NOT p &	On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
-multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer. Rule: p\{n\} $\equiv$ p1 $\rightarrow$ p1 $\rightarrow$ \dots p1, n times. \\
-"at least once" multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
-"infinite" multiplicity &	p\{*\} &	The pattern can appear 0 to infinite times. \\
-within timewindow &	p[t] &	Once the first element of the pattern is observed (i.e. the patterns "starts to build up"), the rest of the pattern has to be observed within t milliseconds.
-\end{tabular}	
+		\begin{tabular}{lcm{6cm}}
+		\centering
+		Operator name &	Denotation & Meaning \\
+		followed by & p1 $\rightarrow$ p2 & Both patterns have to appear in the specified order. \\
+		or &	p1 OR p2 &	One of the patterns has to appear. \\
+		and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter. Rule: p1 AND p2 $\equiv$ ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
+		negation &	NOT p &	On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
+		multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer. Rule: p\{n\} $\equiv$ p1 $\rightarrow$ p1 $\rightarrow$ \dots p1, n times. \\
+		"at least once" multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
+		"infinite" multiplicity &	p\{*\} &	The pattern can appear 0 to infinite times. \\
+		within timewindow &	p[t] &	Once the first element of the pattern is observed (i.e. the patterns ``starts to build up''), the rest of the pattern has to be observed within t milliseconds.
+		\end{tabular}	
 			
 			%% Regular -> Timed Regular -> Event Automata (parametrized) -> MERGE -> Timed Event Automaton
 		\subsection{Timed Regular Expression}
@@ -45,28 +45,91 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 				\end{enumerate}
 			\end{dfn}
 			
-		\subsection{Finite State Machine}
+		\subsection{Automaton}
 			\begin{dfn}
-				\label{dfn:cep:fsm}
-				A FiniteStateMachine $\langle Q,\Sigma,\delta,q_0, F \rangle$ tuple where:
+				\label{dfn:cep:nfsm}
+				A NonDeterministicFiniteStateAutomaton $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where:
 					\begin{itemize}
-						\item $Q$ is a finite, non empty set. These are the states of the automaton.
-						\item $\Sigma$ is a finite, non empty set. This is the abc of the automaton.
-						\item $\delta$ : $Q \times \Sigma \rightarrow Q$, the state transition function of the automaton.
-						\item $q_0 \in Q$ a start state
-						\item $F \subseteq Q$ the set of the acceptor states 
+						\item $Q$ is a finite, non empty set. These are the states of the automaton,
+						\item $\Sigma$ is a finite, non empty set. This is the Event set of the automaton,
+						\item $\delta_d \langle Q \times \Sigma \times Q \rangle$, is a tuple,
+						\item $q_0 \in Q$ a start state,
+						\item $F \subseteq Q$ the set of the acceptor states.
 					\end{itemize}
 				
 			\end{dfn}
 			
-			\begin{dfn}
-				A NonDeterministic FiniteStateMachine $\langle Q,\Sigma,\delta,q_0, F \rangle$ where 
-				the meaning of $Q, \Sigma, q_0,$ and $F$ is the same as Definition \ref{dfn:cep:fsm},
-				except for for $\delta$ which is
-					\[ \delta(q,a) \subseteq Q \]
-				where $q \in Q$ and $a \in \Sigma \cup \{\varepsilon\}$
-			\end{dfn}
+			In simulation we can define tokens. Somehow. Not now. %%TODO
 			
+			
+			On input $e$, where $e \in \Sigma$, if the token is on State $s$ the next state will be $s'$ where 
+			$\delta_d \langle s,e,s' \rangle$ 
+			
+			% \begin{dfn}
+				% NonDeterministicTimedFiniteAutomaton
+				% $\delta = \delta_t \cup \delta_d$ where $\delta_d$ is the same as $\delta$ in Definition \cite{dfn:cep:fsm}
+				% $t$ is a clock variable $t \in R$   %todo R  
+				% $\Sigma_n = \Sigma \cup T$
+				% where $\Sigma$ is the oldSigma and T is 
+			% \end{dfn}
+			
+			% \begin{dfn}
+				% \label{dfn:cep:nsm}
+				% A NonDeterministicFiniteAutomaton $\langle Q,\Sigma,\delta,q_0, F \rangle$ where 
+				% the meaning of $Q, \Sigma, q_0,$ and $F$ is the same as Definition \ref{dfn:cep:fsm},
+				% except for for $\delta$ which is
+					% \[ \delta(q,a) \subseteq Q \]
+				% where $q \in Q$ and $a \in \Sigma \cup \{\varepsilon\}$
+			% \end{dfn}
+			
+			\begin{dfn}
+				A TimedNonDetermnisticFiniteAutomaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
+				\begin{itemize}
+					\item $Q, \Sigma, q_0,$ and $F$ are the same as in Definition \ref{dfn:cep:nfsm},
+					\item $t$ is a global clock variable $t \in \mathbb{R}$,
+					\item $T$ is a set of tuples $\langle Q, \RR \rangle$
+					\item and $\delta$ is the union of discrete and timed transitions i.e. $\delta_t \cup \delta_d$ where
+					\begin{itemize}
+						\item $\delta_d$ is defined as in Definition \ref{dfn:cep:nfsm},
+						\item and $\delta_t$ represents timed transitions and defined as the set of tuples $\langle Q \times \mathbb{R} \times Q \rangle$ 
+					\end{itemize}
+				\end{itemize}
+				
+				
+			\end{dfn}
+
+			The semantic of the Timed Nondeterministic Finite Automaton is defined as follows:
+			$Q_t \subseteq Q$ is the set of states with outgoing timed transitions, i.e. $\forall s \in Q_t$ : there exist $ \delta_t\langle s, t, s' \rangle$ where $t \in \RR$ and $s' \in Q$.
+			We have to define rules for entering states with timed outgoing transitions and we also define the general rules of changing states. 
+			\begin{enumerate}
+				\item Entering Timed State Rule: On entry to state $s$ where $s \in Q_t$ the timeout variable $t_s$ of the state is set according to the value of the global time and the timeout value of the output transition $t_{timeout}$:
+					$t_s:= t+t_{timeout}$ \TODO
+					where $T\langle s,t_s \rangle$ and $\delta_t\langle s,t_{timeouts},s' \rangle$ where $t_{timeout}$ is minimal from the set of possible $t_{timeouts}$ 
+				
+				\item Firing Transitions Rule: Nondeterministically choose an enabled transition from the set of enabled discrete or timed transitions. We have two cases, the chosen transition is:
+					\begin{enumerate}
+						\item Discrete Transition: In case of $s \notin Q_t$ than the execution of the transition is as in described formerly. If we exit state $s \in Q_t$ by a transition in $\delta_d$, 
+						then the following rule extends the firing rule of discrete transitions:
+							$t_s := \infty$
+						\item Timed Transition: The transition with the minimal timeout value is selected, i.e. transition $\delta_t$ from state $s_t$ where $\forall q \in Q_t: t_q \geq t_s$, than the following rules apply:
+						 the global time is set $t := t_s$, the local clock is set to infinity: $t_s := \infty$ and move to the next state according to $\delta_t$.
+							
+					\end{enumerate}
+					
+					% \item \label{rule:cep:tndfa2} 
+					% If a token enters $s_t$ where $s_t \in Q$ and $|\delta_t\langle s_t, i, s_j\rangle | > 0$ where $i \in \RR$ and $s_j \in Q$,
+					% at time $t'$ where $t' = t + t_{min}$ where $t$ is the time of enter and $t_{min}$ is the minimum of the $i$'s then the token will be moved to $s_{destination}$ 
+					% where $\delta_t \langle s_t,i_{min}, s_{destination} \rangle$ %refactor pls
+					% \item If a token exits by rule \ref{rule:cep:tndfa2} $t := t'$
+			
+			\end{enumerate}
+				
+
+			
+			This generates a language \dots %%TODO
+				
+			In runtime verification this will accept \dots %%TODO
+				
 			
 		
 		\subsection{Event Automaton}
@@ -87,17 +150,17 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 		\subsection{Timed Event Automaton}
 			% stuff about the calendar
 			% informal definition of the calendar?
-			% In discrete event simulation, a calendar (also called event list) is a data structure that
-			% stores future events and the times at which these events are scheduled to occur
+			In discrete event simulation, a calendar (also called event list) is a data structure that
+			stores future events and the times at which these events are scheduled to occur
 			
-			% Formal definition of the calendar
-				% \begin{dfn}
-				% A calendar is a finite set (or multiset) of the form $C = \{ \langle e_1, t_1\rangle \, \dots ,\langle e_n, t_n\rangle \}$
-				% where each $e_i$ is an event and $t_i$ is the time when event $e_i$ is scheduled to occur. All $t_i$s are real numbers.
-				% We denote by min(C) the smallest number among $\{t_1,\dots ,t_n \}$ (with min(C) = $+\infty$ if C is empty)
-				% Given a real u, we denote by $Ev_u(C)$ the subset of C that contains all events scheduled at time u:
-				% $Ev_u(C) = \{ \langle e_i, t_i \rangle  | t_i = u \wedge \langle e_i , t_i \rangle \in C \} $
-				% \end{dfn}
+			Formal definition of the calendar
+				\begin{dfn}
+				A calendar is a finite set (or multiset) of the form $C = \{ \langle e_1, t_1\rangle \, \dots ,\langle e_n, t_n\rangle \}$
+				where each $e_i$ is an event and $t_i$ is the time when event $e_i$ is scheduled to occur. All $t_i$s are real numbers.
+				We denote by min(C) the smallest number among $\{t_1,\dots ,t_n \}$ (with min(C) = $+\infty$ if C is empty)
+				Given a real u, we denote by $Ev_u(C)$ the subset of C that contains all events scheduled at time u:
+				$Ev_u(C) = \{ \langle e_i, t_i \rangle  | t_i = u \wedge \langle e_i , t_i \rangle \in C \} $
+				\end{dfn}
 			% stuff about the calender automaton
 				
 			\begin{dfn}
