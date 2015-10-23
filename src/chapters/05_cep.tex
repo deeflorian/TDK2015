@@ -103,7 +103,7 @@
 			We have to define rules for entering states with timed outgoing transitions and we also define the general rules of changing states. 
 			\begin{enumerate}
 				\item Entering Timed State Rule: On entry to state $s$ where $s \in Q_t$ the timeout variable $t_s$ of the state is set according to the value of the global time and the timeout value of the output transition $t_{timeout}$:
-					$t_s:= t+t_{timeout}$ \TODO
+					$t_s:= t+t_{timeout}$ %\TODO
 					where $T\langle s,t_s \rangle$ and $\delta_t\langle s,t_{timeouts},s' \rangle$ where $t_{timeout}$ is minimal from the set of possible $t_{timeouts}$ 
 				
 				\item Firing Transitions Rule: Nondeterministically choose an enabled transition from the set of enabled discrete or timed transitions. We have two cases, the chosen transition is:
