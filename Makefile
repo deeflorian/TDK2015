@@ -8,4 +8,6 @@ all:
 
 clean:
 	rm -rf ./out
+
+dist-clean: clean
 	rm -f hierarchical_runtime_verification.pdf

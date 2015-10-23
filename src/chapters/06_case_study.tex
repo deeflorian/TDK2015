@@ -85,7 +85,7 @@ As explained in \cref{fig:case_study:opencv_math}, circular patterns are well su
 
 According to the various condition in lighting, and used materials, the marker detection has to be robust.
 
-This problem, and the fact that these markers have perspective distortion when they are near to the visible region of the camera motived us to develop a processing technique coming from controlling theory.
+This problem, and the fact that these markers have perspective distortion when they are near to the visible region of the camera motived us to develop a processing technique coming from signal processing.
 
 This method is the commonly used technique of transforming and processing a signal -- in our case a picture -- in frequency domain.
 
@@ -94,7 +94,7 @@ This method is the commonly used technique of transforming and processing a sign
 
 Our method is based on the convolution of two bitmap images, one from the camera, and one generated pattern.
 
-As \cref{equ:case_study:convolution} shows, we can multiply two spectrums element-wise, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectrums match.
+The theorem says, we can multiply two spectrums, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectrums match.
 
 \subsubsection{Pattern bitmap properties}
 
@@ -221,6 +221,7 @@ Let us take a look on the main components of the physical system, and what chall
 \end{figure}
 
 \subsection{Logical breakdown of physical elements}
+\label{sec:case_study:logical_breakdown}
 After we designated the physical elements, and their properties, we started to build a logical concept what are our model elements, and what are the connections between them.
 
 We will follow a bottom-up structure because it helps the graph search (\cref{sec:case_study:pattern_building}), and review the main components of the logical elements.
@@ -246,13 +247,13 @@ We will follow a bottom-up structure because it helps the graph search (\cref{se
 \begin{figure}[p]
 	\centering
 	\includegraphics[width=\linewidth]{include/figures/chapter_6/sectionmodel}
-	\caption{EMF model} 
+	\caption{The metamodel of the \emph{Model Railway Project} model} 
 	\label{fig:case_study:model}
 \end{figure}
 
 \subsection{Introducing to Eclipse Modeling Framework}
 \begin{quotation}
-	``The Eclipse Modeling Framework (EMF) project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.'' \cite{EMF}
+	``The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.'' \cite{EMF}
 \end{quotation}
 
 We used the EMF tool to create the metamodel of the railway. The main reason for this modeling tool is the dependency to IncQuery, but other reasons motivated the use of it:
@@ -264,12 +265,83 @@ We used the EMF tool to create the metamodel of the railway. The main reason for
 
 \subsection{Building the EMF model}
 
-After ...
+After the conceptual design of the model, we started the design of the EMF model.
 
-It's important while building the EMF model that every element must be a part of exactly one containament tree. If an element is not in a tree or it is in multiple, it causes failure while serializing.
+It's important while building the EMF model that every element must be a part of exactly one containament tree. If an element is not in a tree or it is in multiple tree, it causes failure while serializing. In \cref{sec:case_study:logical_breakdown} the \emph{TrainModel} and \emph{SectionModel} represents the root of the model.
 
 \subsection{Introducing the IncQuery}
-Az IncQuery bemutatása.
+
+\begin{quotation}
+	EMF-IncQuery is a framework for defining declarative graph queries over EMF models, and executing them efficiently without manual coding in an imperative programming language such as Java.
+
+	With EMF-IncQuery, you can:
+	\begin{itemize}
+		\item Define model queries using a high level yet powerful query language (supported by state-of-the-art Xtext-based development tools)
+		\item Execute the queries efficiently and incrementally, with proven scalability for complex queries over large instance models
+		\item Integrate queries into your applications using essential feature APIs including IncQuery Viewers, Databinding, Validation and Query-based derived features with notifications.
+	\end{itemize}
+\end{quotation}
+
+The motivation of using IncQuery can be found in the nature of our problem. The railway can be depicted as a graph, and we can describe hazardous patterns e.g. two trains next section is the opposite trains next section. These scenarios can be declaratively described by IncQuery patterns, reducing the possibility of a coding failure. The other advantage of using the IncQuery framework is scalability. The IncQuery framework -- as its name suggest: incremental query -- is a fast, caching engine based on the RETE algorithm. This framework can follow changes in a very large environment. 
+
 \subsection{Building the IncQuery patterns}
 \label{sec:case_study:pattern_building}
-A biztonsági lokikai patternek bemutatása.
+
+Let us examine the patterns providing the essential filtering of hazardous patterns in the environment.
+\\[1ex]
+
+\begin{lstlisting}[caption={Collision detection},label=lst:case_study:train_will_collide]
+pattern trainAtNextGroup(t1: Train) {
+	Train.nextGroup(t1, ng);
+	
+	Train(t2);
+	t1 != t2;
+	
+	Train.currentlyOn(t2, co);
+	Group.regions(ng, co);
+}
+\end{lstlisting}
+
+\cref{lst:case_study:train_will_collide} shows an IncQuery example. This pattern matches \verb+t1+ which next group -- if not null, e.g. the train is stationary -- has a different train on it (\verb+t2+).
+
+This example clearly presents the advantage of this declarative expression. With the right metamodel we designed an incrementially executed scalable pattern only with 5 lines of code.
+\\[1ex]
+
+\begin{lstlisting}[caption={Collision detection},label=lst:case_study:train_at_next_powerable]
+pattern trainAtNextPowerable(t1: Train) {
+	Train.nextGroup(t1, ng);
+	Train.currentlyOn(t1, t1co);
+	
+	SwitchGroup(ng);
+	SwitchGroup.configuration.enabled(ng, enabled);
+	enabled != t1co;
+	
+	Train(t2);
+	t1 != t2;
+	Train.currentlyOn(t2, t2co);
+	Group.regions(t2g, t2co);
+	
+	enabled == t2g;
+}
+\end{lstlisting}
+
+\cref{lst:case_study:train_at_next_powerable} is a pattern for finding the next powerable group in the direction of. We must do that because the property of the switch group: a train cannot stop on that. With \cref{lst:case_study:train_will_collide} we can filter the hazards in the next group, but if we are on a switch, the train cannot be stopped; the trains might crash. This pattern is specialized in case of a train going towards a switch. We are virtually going through it, and examine the other side. If any train is present, the pattern will match, switching the power off the section.
+\\[1ex]
+
+\begin{lstlisting}[caption={Collision detection},label=lst:case_study:train_at_next_powerable]
+pattern trainFromDisabled(t: Train) {
+	SwitchGroup(sg);
+	SwitchGroup.regions(sg, region);
+	SwitchGroup.configuration.enabled(sg, enabled);
+	region != enabled;
+	
+	Train.currentlyOn(t, region);
+	Train.nextGroup(t, sg);
+}
+\end{lstlisting}
+
+\cref{lst:case_study:train_at_next_powerable} is a pattern for finding the next powerable group in the direction of. We must do that because the property of the switch group: a train cannot stop on that. With \cref{lst:case_study:train_will_collide} we can filter the hazards in the next group, but if we are on a switch, the train cannot be stopped; the trains might crash. This pattern is specialized in case of a train going towards a switch. We are virtually going through it, and examine the other side. If any train is present, the pattern will match, switching the power off the section.
+
+\section{Summary}
+
+The Train Benchmark\cite{TrainBenchmark} shows a similar railroad approach application with IncQuery based pattern matching. Their benchmark showed IncQuery can match pattern on a similar railroad model with element sizes over 80 million under 100 milliseconds after initial caching.
