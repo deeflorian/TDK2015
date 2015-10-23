@@ -1,9 +1,9 @@
 \chapter{Overview of the approach}
 \label{chap:overview}
 
-This case study concentrates on the connection between the design time and runtime domain, with the model based runtime verification with monitors. Our goal is to present a concept of a tool which facilitate the runtime verification design of systems.
+This case study concentrates on the connection between the design time and runtime domain, with model based runtime verification with monitors. Our goal is to present a concept of a tool which facilitate the runtime verification design of systems.
 
-\section{Basic concept of model transformations}
+\section{Concept of runtime verification with engineering model}
 
 \begin{figure}[h]
 	\centering
@@ -15,19 +15,19 @@ This case study concentrates on the connection between the design time and runti
 \cref{fig:overview:abstract_overview} depicts the basic concept. We have three main transformation:
 \begin{itemize}
 	\item \textbf{Engineering model $\mapsto$ Formal model}: 
-	\item \textbf{Engineering model $\mapsto$ Generated code}: From the verified model we can generate the execution logic. The generated execution then push state notifications towards the monitor.
-	\item \textbf{Engineering model $\mapsto$ Monitor}: From the verified model we can generate the monitor (\vref{chap:runtime_verification}). The monitors is a state machine, and operated by the execution logics signs. If the execution reaches invalid states, the monitor detect it. After detection the monitor can forward the event of error detection into a higher level processor.
+	\item \textbf{Engineering model $\mapsto$ Implementation}: From the verified/simulated model we can generate the execution logic. The generated execution then push state notifications towards the monitor.
+	\item \textbf{Engineering model $\mapsto$ Monitor}: From the verified/simulated model we can generate the monitor (\vref{chap:runtime_verification}). The monitor is a state machine, and operated by the generated code. If the operation reaches an invalid state, the monitor detects it. After detection the monitor can forward the event of error detection into a higher level processor.
 \end{itemize}
-Transformation tools are existing for this case, but there are no tools which integrate all these in one tool with interchangeable formalisms. 
+Transformation tools are existing for these transformations, but there are no tools which integrate all these in one tool with multiple formalisms, and with this level of automation.
 \\[1ex]
 
 \noindent Let us consider the following example:
 
 We want to design a system, where we have a logic, described by a formalism (e.g. state chart, sequence chart), and we want to:
 \begin{itemize}
-	\item Generate the implementation from model.
+	\item Generate the implementation from engineering models.
 	\item Implement runtime verification into our implementation, by monitoring it.
-	\item Ability to have multiple monitoring systems which can communicate.
+	\item Support multiple monitoring systems which can communicate.
 \end{itemize}
 
 This example covers the usual need of a distributed, embedded safety logic. We need to formally verify the model, generate code, and monitor it. Our goal is to integrate all these solutions into a generic tool. With a centralized toolchain, a developer can make a system with less effort but with more robustness thanks to the verifiable, and automated steps.
@@ -37,20 +37,20 @@ This example covers the usual need of a distributed, embedded safety logic. We n
 
 We can distinguish three levels, representing the hierarchy of our approach:
 \begin{itemize}
-	\item \textbf{Local verification with state chart}: With the generated monitor, we could handle the error states locally, e.g. if we detect an error, the monitor can react, and shut off the system as a precaution.
+	\item \textbf{Local verification with state chart}: With the generated monitor, we could handle the error states locally, e.g. if we detect an error in the generated code, the monitor can react and shut down the system as a precaution.
 	\item \textbf{Communication verification with state/sequence chart}: The monitor can verify the communication with the higher level logic, reacting to e.g. loss of communication.
-	\item \textbf{Integrating multiple system level monitor TODO}: TODO
+	\item \textbf{Integrating multiple system level monitor}: TODO
 \end{itemize}
 
-If we specify a high level specification to our overall system, which has many monitored, communicating components, we can build a high level logic on top of these components offering another level of monitoring, and robustness.
+If we specify a high level specification to our overall system, which can have many monitored, communicating components, we can build a high level logic on top of these components offering another level of monitoring, and robustness.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\linewidth]{include/figures/chapter_3/abstract_diagram}
-	\caption{TODO}
+	\caption{Conceptual draw of a hierarchical system element relations with our method}
 	\label{fig:overview:abstract_diagram}
 \end{figure}
 
 As \cref{fig:overview:abstract_diagram} shows, a hierarchical solution can be made by just defining the correct engineering model, and the high level logic can automatically intercept the error state messages.
 
-The high level logic can range from simple reaction logic to a complex system, like the complex event processing solution (\vref{chap:cep})
+The high level logic can range from simple reaction logic to a complex system, like the complex event processing solution (\vref{chap:cep}).

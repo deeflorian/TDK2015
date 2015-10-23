@@ -227,28 +227,46 @@ After we designated the physical elements, and their properties, we started to b
 We will follow a bottom-up structure because it helps the graph search (\cref{sec:case_study:pattern_building}), and review the main components of the logical elements.
 
 \begin{enumerate}
-	\item \textbf{SectionModel}: The root of the board model. It is separated from trains because this root element is persisted, and loaded at every start of the application, while the \emph{TrainModel} is dynamic.
+	\item \textbf{SectionModel}: The root of the board model. It is separated from trains because this root element is persisted, and loaded at every start of the application, while the \emph{TrainModel} is dynamic (\cref{fig:case_study:sectionmodel})(\cref{fig:case_study:trainmodel})(\cref{fig:case_study:groupmodel}).
 	\begin{enumerate}
-		\item \textbf{Configuration}: Contains the enabled \emph{groups} of the switch.
-		\item \textbf{SwitchSetting}: Contains a straight, and divergent \emph{configuration}.
-		\item \label{itm:case_study:region} \textbf{Region}: The atomic abstract element of our model, the \emph{region} is the smallest unit of measurement.
-		\item \textbf{SectionRegion}: Specialized region, which is a part of a \emph{powerable group}. Only powerable section can stop a train. 
-		\item \textbf{RailRegion}: Specialized region. Because we did not intrested in the position inside the switch, we declare the entire area of the switch as one region.
-		\item \label{itm:case_study:group} \textbf{Group}: The group is a collection of regions.
-		\item \textbf{PowerableGroup}: A collection of \emph{regions} which can shutted of. The equivalent to the rail concept of the modelled study.
-		\item \textbf{SwitchGroup}: A group of exacty one \emph{SwichRegion}. Have a reference to a \emph{Configuration}, describing the current switch settings.
+		\item \textbf{Configuration}: Contains the enabled \emph{groups} of the switch. The \emph{DivergentConfiguration} and \emph{StraightConfiguration} are the exactly same as the \emph{Configuration}, they only presented in the metamodel because the ease of use with the IncQuery patterns (\cref{sec:case_study:pattern_building}) (\cref{fig:case_study:settingmodel}).
+		\item \textbf{SwitchSetting}: Contains a straight, and divergent \emph{configuration} (\cref{fig:case_study:settingmodel}).
+		\item \label{itm:case_study:region} \textbf{Region}: The atomic abstract element of our model, the \emph{region} is the smallest unit of measurement (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{SectionRegion}: Specialized region, which is a part of a \emph{powerable group}. Only powerable section can stop a train (\cref{fig:case_study:sectionmodel}). 
+		\item \textbf{RailRegion}: Specialized region. Because we did not intrested in the position inside the switch, we declare the entire area of the switch as one region (\cref{fig:case_study:sectionmodel}).
+		\item \label{itm:case_study:group} \textbf{Group}: The group is a collection of regions (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{PowerableGroup}: A collection of \emph{regions} which can shutted of. The equivalent to one rail of the modelled study (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{SwitchGroup}: A group of exacty one \emph{SwichRegion}. Have a reference to a \emph{Configuration}, describing the current switch settings (\cref{fig:case_study:sectionmodel}).
 	\end{enumerate}
-	\item \textbf{TrainModel}: The root of all train elements.
+	\item \textbf{TrainModel}: The root of all train elements (\cref{fig:case_study:trainmodel}).
 	\begin{enumerate}
-		\item \textbf{Train}: The train representation with an unique ID, the current and previous region (\cref{itm:case_study:region}), and the next group (\cref{itm:case_study:group}) determined by the current, and previous region.
+		\item \textbf{Train}: The train representation with an unique ID, the current and previous region (\cref{itm:case_study:region}), and the next group (\cref{itm:case_study:group}) determined by the current, and previous region (\cref{fig:case_study:trainmodel}).
 	\end{enumerate}
 \end{enumerate}
 
-\begin{figure}[p]
+\begin{figure}[h]
 	\centering
-	\includegraphics[width=\linewidth]{include/figures/chapter_6/sectionmodel}
-	\caption{The metamodel of the \emph{Model Railway Project} model} 
-	\label{fig:case_study:model}
+	\includegraphics[width=\linewidth]{include/figures/chapter_6/metamodels/sectionmodel}
+	\caption{The section view of the metamodel of the \emph{Model Railway Project} model} 
+	\label{fig:case_study:sectionmodel}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{include/figures/chapter_6/metamodels/groupmodel}
+	\caption{The group view of the metamodel of the \emph{Model Railway Project} model} 
+	\label{fig:case_study:groupmodel}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{include/figures/chapter_6/metamodels/trainmodel}
+	\caption{The train view of the  of the \emph{Model Railway Project} model} 
+	\label{fig:case_study:trainmodel}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{include/figures/chapter_6/metamodels/settingmodel}
+	\caption{The settings view of the  of the \emph{Model Railway Project} model} 
+	\label{fig:case_study:settingmodel}
 \end{figure}
 
 \subsection{Introducing to Eclipse Modeling Framework}
@@ -258,7 +276,7 @@ We will follow a bottom-up structure because it helps the graph search (\cref{se
 
 We used the EMF tool to create the metamodel of the railway. The main reason for this modeling tool is the dependency to IncQuery, but other reasons motivated the use of it:
 \begin{itemize}
-	\item Besides the POJO\footnote{Plain Old Java Object}, EMF can generate an Eclipse based editor for the model, where we can add/remove/edit all the elements, and their properties easily. TODO The editor ensure the model.
+	\item Besides the POJO\footnote{Plain Old Java Object}, EMF can generate an Eclipse based editor for the model, where we can add/remove/edit all the elements, and their properties easily. The editor always checks the model well formed property, and marking the problematic elements.
 	\item The framework ensure all the references are valid, by updating them automatically.
 	\item We can make opposite edges, which are forward/backward references across two object. The framework will maintain these references e.g. we assign object A to object B, if they have a bidirectional reference between them, the EMF will automatically update the other side of the reference, in our case the reference from A to B.
 \end{itemize}
