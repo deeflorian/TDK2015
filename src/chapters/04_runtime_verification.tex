@@ -1,8 +1,8 @@
-\chapter{Runtime verification of embedded systems}
+{•}\chapter{Runtime verification of embedded systems}
 \label{chap:runtime_verification}
 
 \section{Intro}
-A statechart language was developed to support the high level design, verification, and monitoring of complex systems. The aim was to use a simple and straightforward syntax to keep the language’s learning curve gentle. Statecharts were chosen as they are used widely for modelling in various branches of engineering.
+A statechart language was developed to support the high level design, verification, and monitoring of complex systems. The aim was to use a simple and straightforward syntax to keep the language’s learning curve gentle. Statecharts were chosen as they are a widely used modelling tool in various branches of engineering.
 \section{Goal}
 The goal was to create a formal statechart language that resembles languages already used in engineering practices. This would shorten the learning process and enable formal verification of the resulting models, which would result in highly dependable safety critical systems with lower design and maintenance costs.
   \subsection{Simple, generic, usable}
@@ -12,14 +12,42 @@ Statecharts build on the concept of state machines. They are highly visual and a
 The development of safety critical systems require extensive testing. While well design tests can detect most of a system's faults they can't promise that all them are found. Formal verification is a more reliable approach as it guarantees that all of the (formally) specified requirements are met.
   \subsection{Monitor generation}
 Even with formally verified systems, hardware errors can occur. Using runtime verification one can signal and handle malfunctions so that the system stops or remains as functional as possible. Monitors are also capable of providing traces that can unravel the propagation of errors. Therefore, the statechart language provides tools for marking erroneous states and transitions, and is capable of generating monitors that track the system's state through a signal interface. These monitors contain the state model of the described system, which makes it possible to use them as skeletons capable of reporting errors for smaller programs.
-\section{A new approach is needed}
+\section{New features}
 Many software is available for code generation and verification based on statecharts. Unfortunately the available solutions for verification and modelling provide limited syntax, and the latter usually provide poor quality code. Both results in longer creation and harder maintenance of the models and software. This leads to higher costs and a more time consuming development cycle than necessary. For these reasons, our statechart language supports the verification of statecharts with parametric signals, timers, while enabling the creation of parametric statechart. For monitor generation, our approach was to generate easily readable, extendible, object oriented code that can run in an environment with limited resources, primarily embedded systems.
-  \subsection{Parametric statechart declaration}
+  \subsection{Parametric statechart declarations}
 The language allows a specification to consist of multiple statecharts. This feature led to of the main strengths of the language: the definition of statechart templates, which can be parametrically instantiated multiple times. This results in short descriptions for otherwise complex, homogeneous systems. Statechart can be parametrized by variables of POD types. Separate statecharts can communicate with each other using signals or global variables.
   \subsection{Parametric signals}
 Signals can also be parameterized with any integer type variable. These parameters then can be used to discriminate between signals with the same name, which also results in more readable code, allowing transitions to use the same signal as their trigger.
-\section{The statechart language}
-Each system description consists of a single file, which holds the specification of all components.
+\section{Overview}
+Each system description consists of a single file, which holds the specification of all components. For a quick overview of the language, see the example specification below.
+\begin{verbatim}
+specification exSpec {
+  global gVar : integer
+  signal exSig
+  statechart exStc {
+    local lVar : integer
+    region exReg {
+      initial state exInit
+      state exComplex {
+        region exInner {
+          initial state exInit2
+          state exInner
+          transition from exInit2 to exInner on exSig / assign lVar := lVar + 1
+        }
+        region exInner2 {
+          initial state exIdle
+        }
+      }
+      state [Error] exSimple
+      transition from exInit to exComplex / assign gVar := 3, assign lVar := 0
+      transition from exComplex to exSimple [gVar = 3] / raise exSig(2)
+    }
+  }
+}
+\end{verbatim}
+  \subsection{Structure}
+The language has a hierarchical structure. The whole description of the system is enclosed in a specification, which can have multiple statechart, signal, and global variable declarations. Each statechart consists of local variable declarations and an inner region. Regions encapsulate states and transitions. Each region must at least have an initial state. A state itself can have an arbitrary number of inner regions which will run in parallel, and entry and exit actions. Transitions are defined next to states. They can have triggers, guard conditions, and actions associated with them. Actions can be variable assignments and signal raises.
+\section{Language syntax}
   \subsection{Variables}
 Variables can either be global (accessible to all statecharts) or local (bound to a single statechart in which they were declared). Many types are supported chapter{ characters, integers, doubles, etc... For a complete list, see [TODO-ref]. The variable declaration is in the form of: \\\verb!global|local var NAME : TYPE!\\ where global or local denotes the scope of the variable, and \verb!TYPE! is any one of the supported types.
   \subsection{Expressions and assignments}
