@@ -11,7 +11,6 @@
 			you can define multiple graph patterns over the model, and define atomic events for the
 			appearance and disappearance of these patterns.
 			
-			
 			TODO define complex event processing
 			
 			A brief overview of the VEPL language:
@@ -35,16 +34,39 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 				Timed Regular Expressions over an alphabet $\Sigma$ (also referred to as $\Sigma$-expressions)
 				are defined using the following families of rules~\citep{tre}~.
 				\begin{enumerate}
-					\item{\underline{a} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.}
-					\item{If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions and $I$ is an integer-bounded interval then
-						$\langle\varphi_I\rangle, \varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.}
-					\item{If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi^\circledast$ are
-						$\Sigma$-expressions.}
-					\item{If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
+					\item \underline{a} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.
+					\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions and $I$ is an integer-bounded interval then
+						$\langle\varphi_I\rangle, \varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.
+					\item If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi^\circledast$ are
+						$\Sigma$-expressions.
+					\item If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
 						for some alphabet $\Sigma_0$, and $\Theta$ : $\Sigma_0 \rightarrow \Sigma$ is
-						a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions.}
+						a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions.
 				\end{enumerate}
 			\end{dfn}
+			
+		\subsection{Finite State Machine}
+			\begin{dfn}
+				\label{dfn:cep:fsm}
+				A FiniteStateMachine $\langle Q,\Sigma,\delta,q_0, F \rangle$ tuple where:
+					\begin{itemize}
+						\item $Q$ is a finite, non empty set. These are the states of the automaton.
+						\item $\Sigma$ is a finite, non empty set. This is the abc of the automaton.
+						\item $\delta$ : $Q \times \Sigma \rightarrow Q$, the state transition function of the automaton.
+						\item $q_0 \in Q$ a start state
+						\item $F \subseteq Q$ the set of the acceptor states 
+					\end{itemize}
+				
+			\end{dfn}
+			
+			\begin{dfn}
+				A NonDeterministic FiniteStateMachine $\langle Q,\Sigma,\delta,q_0, F \rangle$ where 
+				the meaning of $Q, \Sigma, q_0,$ and $F$ is the same as Definition \ref{dfn:cep:fsm},
+				except for for $\delta$ which is
+					\[ \delta(q,a) \subseteq Q \]
+				where $q \in Q$ and $a \in \Sigma \cup \{\varepsilon\}$
+			\end{dfn}
+			
 			
 		
 		\subsection{Event Automaton}
@@ -101,6 +123,8 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 			
 	\section{Examples of Event Processing}
  
+		\subsection{Sequence chart example}
+ 
 		\subsection{File System}
 			\subsubsection{Problem}
 				File system - A file shouldn't be read when it has been opened for writing, and shouldn't be written, when opened for reading. 
@@ -112,15 +136,16 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 				Write(file). 
 				Mode is either "R" or "W" which stands for Read and Write respectively.
 			\subsubsection{Solution}
-				We are looking for these patterns : 
-				
-				open(f,"W") $\rightarrow$ NOT close(f)$\{\ast\}$ $\rightarrow$ open(f,"R");
-				
-				open(f,"R") $\rightarrow$ NOT close(f)$\{\ast\}$ $\rightarrow$ open(f,"W");
-				
-				open(f,"W") $\rightarrow$ NOT close(f)$\{\ast\}$ $\rightarrow$ read(f);
-				
-				open(f,"R") $\rightarrow$ NOT close(f)$\{\ast\}$ $\rightarrow$ write(f);
+				We are looking for these patterns :
+
+				\begin{itemize}
+					\item open(f,"W") $\rightarrow$ NOT close(f)$\{\ast\}$ $\rightarrow$ open(f,"R");
+					\item open(f,"R") $\rightarrow$ NOT close(f)$\{\ast\}$ $\rightarrow$ open(f,"W");
+					\item open(f,"W") $\rightarrow$ NOT close(f)$\{\ast\}$ $\rightarrow$ read(f);
+					\item open(f,"R") $\rightarrow$ NOT close(f)$\{\ast\}$ $\rightarrow$ write(f);
+				\end{itemize}
+
+				These event patterns can be matched with the automaton seen on \cref{fig:cep:fileautomaton}
 				
 				\begin{figure}[h]
 				\centering
@@ -137,12 +162,13 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 				To solve this problem, one of the many patterns is  the two phase locking - which can be defined by two rules.
 				These rules are : 
 				\begin{enumerate}
-					\item{Every task must allocate the resources in a given order.}
-					\item{If a task releases a resource, it can't allocate anymore}
+					\item \label{itm:cep:mp1} Every task must allocate the resources in a given order.
+					\item \label{itm:cep:mp2} If a task releases a resource, it can't allocate anymore
 				\end{enumerate}
 			\subsubsection{Solution}
 				Since our implementation doesn't support guards \emph{yet} we can only use constant amount of resources.
 				For this example, this amount will be set to two, to minimise the model of the example.
+				The \cref{itm:cep:mp1} pattern can be matched with the \cref {fig:cep:marsautomaton1}, and the \cref{itm:cep:mp2} 
 
 				\begin{figure}[h]
 				\centering
@@ -170,9 +196,16 @@ within timewindow &	p[t] &	Once the first element of the pattern is observed (i.
 			\caption{Automaton of the file example}
 			\label{fig:cep:model}
 			\end{figure}
-		%image
-		Nyilvan ide majd kisebb, mutatosabb, es kevesebb dolgot tartalmazo abra kell, meg nemi magyarazat
-		Egy csak timedZones resz, meg egy csak parameteres
+		
+			\subsubsection{Basic Automaton}
+				The Event Automaton is represented with the State, Transition, and EventGuard classes.
+				Every State has a boolean flag 
+			\subsubsection{Timing}
+			
+			\subsubsection{Parameter}
+			
+			\subsubsection{Binding}
+		
 		\subsection{Executor}
 			The algorithm first searches for all the activated transitions.
 			If it finds an activated transition, it iterates over the tokens which are on the state. The first token with matching (non-confronting)
