@@ -85,7 +85,7 @@ As explained in \cref{fig:case_study:opencv_math}, circular patterns are well su
 
 According to the various condition in lighting, and used materials, the marker detection has to be robust.
 
-This problem, and the fact that these markers have perspective distortion when they are near to the visible region of the camera motived us to develop a processing technique coming from controlling theory.
+This problem, and the fact that these markers have perspective distortion when they are near to the visible region of the camera motived us to develop a processing technique coming from signal processing.
 
 This method is the commonly used technique of transforming and processing a signal -- in our case a picture -- in frequency domain.
 
@@ -94,7 +94,7 @@ This method is the commonly used technique of transforming and processing a sign
 
 Our method is based on the convolution of two bitmap images, one from the camera, and one generated pattern.
 
-As \cref{equ:case_study:convolution} shows, we can multiply two spectrums element-wise, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectrums match.
+The theorem says, we can multiply two spectrums, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectrums match.
 
 \subsubsection{Pattern bitmap properties}
 
