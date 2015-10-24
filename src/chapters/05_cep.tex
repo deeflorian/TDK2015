@@ -41,10 +41,7 @@
 						a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions.
 				\end{enumerate}
 			\end{dfn}
-			
-		The high level languages we use, such as the VEPL or UML Sequence charts can be transformed to an Intermediate language based on Parametric Timed Regular Expressions.
-		These Parametric Timed Regular Expressions will be matched with the later defined Parametrized Timed Region Event Automatons, which can be executed.
-		
+				
 		\subsection{Event Automaton Formalisms}
 			\begin{dfn}
 				\label{dfn:cep:dfea}
@@ -60,8 +57,6 @@
 					\end{itemize}
 				
 			\end{dfn}
-			
-			In simulation we can define tokens. Somehow. Not now. %%TODO
 			
 			
 			On input $e$, where $e \in \Sigma$, if the token is on State $s$ the next state will be $s'$ where 
@@ -103,6 +98,8 @@
 			$Q_t \subseteq Q$ is the set of states with outgoing timed transitions, i.e. $\forall s \in Q_t$ : there exist $ \delta_t\langle s, t, s' \rangle$ where $t \in \RR$ and $s' \in Q$.
 			We have to define rules for entering states with timed outgoing transitions and we also define the general rules of changing states. 
 			\begin{enumerate}
+				\item Initialization Rule : On initialization of the automaton, we have to set all clocks to $\infty$ i.e. $\forall t_i in \delta_t \langle q_i, t_i \rangle where \exists q_i$ and $t_i := \infty $
+			
 				\item Entering Timed State Rule: On entry to state $s$ where $s \in Q_t$ the timeout variable $t_s$ of the state is set according to the value of the global time and the timeout value of the output transition $t_{timeout}$:
 					$t_s:= t+t_{timeout}$ %\TODO
 					where $T\langle s,t_s \rangle$ and $\delta_t\langle s,t_{timeouts},s' \rangle$ where $t_{timeout}$ is minimal from the set of possible $t_{timeouts}$ 
@@ -167,8 +164,8 @@
 				configurations s.t. configurations $\langle q, \varphi \rangle$ and $\langle q', \varphi' \rangle$ are related by the ground event a, written
 				$\langle q, \varphi \rangle \xrightarrow{\text{a}} \langle q' \varphi' \rangle$ if, and only if
 					\begin{align}
-						\exists b \in \mathcal{A}, \exists g \in &Guard, \exists \gamma \in Assign : (q, b, g, \gamma, q') \in \delta \wedge \\
-						&matches(a,b) \wedge g(\varphi \dag match(a,b)) \wedge \varphi' = \gamma(\varphi \dagger match(a,b))
+						\exists b \in \mathcal{A}, & \exists \gamma \in Assign : (q, b, \gamma, q') \in \delta \wedge \\
+						&matches(a,b) \wedge \varphi' = \gamma(\varphi \dagger match(a,b))
 					\end{align}
 				Let the transition relation $\rightarrow_{E}$ be the smallest relation containing $\rightarrow$ such that for any event
 				$a$ and configuration $c$ if $\nexists c' : c \xrightarrow{\text{a}} c'$ then $ c \xrightarrow{\text{a}}_E c$.
@@ -176,6 +173,7 @@
 				For any two configurations $c$ and $c'$, $ c \xrightarrow{\text{$\epsilon$}}_E c$ holds, and $\xrightarrow{\text{a.$\tau$}}_E c'$ holds
 				if there exist a configuration $c'$ s.t. $c \xrightarrow{\text{a}}_E c'' \xrightarrow{\text{$\tau$}}_E c'$
 			\end{dfn}
+			
 			
 			
 			\begin{dfn}
@@ -216,77 +214,33 @@
 					\end{enumerate}			
 			\end{enumerate}
 			
-			We can extend the time behaviour from states to configurations(set of states). % TODO
-			In this case :
-				A timeout variable is set to configurations, not just states
-				And if a token enters a configuration it sets the timer.
-				We can either move with 
-					discrete events the same as before
-					or with timeout events (which are activated if there is a token in any of the states of the configuration)
+			
+			% We can extend the time behaviour from states to configurations(set of states). % TODO
+			% In this case :
+				% A timeout variable is set to configurations, not just states
+				% And if a token enters a configuration it sets the timer.
+				% We can either move with 
+					% discrete events the same as before
+					% or with timeout events (which are activated if there is a token in any of the states of the configuration)
 				
 			
 			
 			
-			This generates a language \dots %%TODO
+			%%TODO This generates a language \dots %%TODO
 				
-			In runtime verification this will accept \dots %%TODO
+			%%TODO In runtime verification this will accept \dots %%TODO
 				
 			
 		
-		% \subsection{Event Automaton}
-			% % informal definition
-			% An Event Automaton is a non-deterministic finite-state automaton whose alphabet consists
-			% of parametric events and whose transitions may be labelled with guards and assignments
-			
-			% % formal definition
-			% \begin{dfn}
-				% An EA
-				% $\langle Q,\mathcal{A},\delta, q_0, F \rangle$ is a tuple where Q is a finite set of states, 
-				% $\mathcal{A} \subseteq Event$ is a finite alphabet,
-				% $\delta \in (Q \times \mathcal{A} \times Assign \times Q)$ is a finite set of transitions, 
-				% $q_0 \in Q$ is an initial state, and 
-				% $F \subseteq Q$ is a set of final states\citep{qea}.
-			% \end{dfn}
-			
-		% \subsection{Timed Event Automaton}
-			% % stuff about the calendar
-			% % informal definition of the calendar?
-			% In discrete event simulation, a calendar (also called event list) is a data structure that
-			% stores future events and the times at which these events are scheduled to occur
-			
-			% Formal definition of the calendar
-				% \begin{dfn}
-				% A calendar is a finite set (or multiset) of the form $C = \{ \langle e_1, t_1\rangle \, \dots ,\langle e_n, t_n\rangle \}$
-				% where each $e_i$ is an event and $t_i$ is the time when event $e_i$ is scheduled to occur. All $t_i$s are real numbers.
-				% We denote by min(C) the smallest number among $\{t_1,\dots ,t_n \}$ (with min(C) = $+\infty$ if C is empty)
-				% Given a real u, we denote by $Ev_u(C)$ the subset of C that contains all events scheduled at time u:
-				% $Ev_u(C) = \{ \langle e_i, t_i \rangle  | t_i = u \wedge \langle e_i , t_i \rangle \in C \} $
-				% \end{dfn}
-			% % stuff about the calender automaton
-				
-			% \begin{dfn}
-				% A TimedZone $\langle S,\mathcal{E},I,T \rangle $ is a tuple where $S \in$ States,
-				% $T \in$ States, 
-				% $\mathcal{E}~\subseteq$~States,
-				% $I$ is a time value 
-			% \end{dfn}
-			
-			% The semantic of the TimedZone is the following: 
-				% If a token enters state $S$ at $t_i$, and doesn't reach any of the $\mathcal{E}$ states before $t_j$,
-				% where $t_j = t_i + I$, then the token is moved to $T$
-				
-			% \begin{dfn}
-				% A TEA
-				% $\langle E,\mathcal{T} \rangle$ is a tuple where $E$ is an Event Automaton, and $\mathcal{T}$ is a set of Timed Zones, where all the states are one of the 
-				% Automatons states.
-			% \end{dfn}
 
-		\subsection{Compilation of the Event patterns to Parametrized Event Automata}
-			
+		\subsection{Compilation of the Event patterns to Parametric Timed Region Automaton}
+				The high level languages we use, such as the VEPL or UML Sequence charts can be transformed to an Intermediate language based on Parametric Timed Regular Expressions.
+				These Parametric Timed Regular Expressions will be matched with the later defined Parametric Timed Region Event Automatons, which can be executed.
+
 			\subsubsection{VEPL}
-			
+				TODO : Either define recursive rules for VEPL-Automaton transformations or give multiple complex examples 
 			\subsubsection{Sequence chart}
-			
+				TODO : Either define recursive rules of transformations  or give mutiple complex examples
 			
 	\section{Examples of Event Processing}
  
