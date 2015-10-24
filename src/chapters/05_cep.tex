@@ -20,8 +20,8 @@
 		and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter. Rule: p1 AND p2 $\equiv$ ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
 		negation &	NOT p &	On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
 		multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer. Rule: p\{n\} $\equiv$ p1 $\rightarrow$ p1 $\rightarrow$ \dots p1, n times. \\
-		"at least once" multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
-		"infinite" multiplicity &	p\{*\} &	The pattern can appear 0 to infinite times. \\
+		``at least once'' multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
+		``infinite'' multiplicity &	p\{*\} &	The pattern can appear 0 to infinite times. \\
 		within timewindow &	p[t] &	Once the first element of the pattern is observed (i.e. the patterns ``starts to build up''), the rest of the pattern has to be observed within t milliseconds.
 		\end{tabular}	
 			

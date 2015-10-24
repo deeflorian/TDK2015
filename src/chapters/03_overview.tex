@@ -12,11 +12,11 @@ This case study concentrates on the connection between the design time and runti
 	\label{fig:overview:abstract_overview}
 \end{figure}
 
-\cref{fig:overview:abstract_overview} depicts the basic concept. We have three main transformation:
+\cref{fig:overview:abstract_overview} depicts the basic concept. We have three main transformations:
 \begin{itemize}
 	\item \textbf{Engineering model $\mapsto$ Formal model}: 
-	\item \textbf{Engineering model $\mapsto$ Implementation}: From the verified/simulated model we can generate the execution logic. The generated execution then push state notifications towards the monitor.
-	\item \textbf{Engineering model $\mapsto$ Monitor}: From the verified/simulated model we can generate the monitor (\vref{chap:runtime_verification}). The monitor is a state machine, and operated by the generated code. If the operation reaches an invalid state, the monitor detects it. After detection the monitor can forward the event of error detection into a higher level processor.
+	\item \textbf{Engineering model $\mapsto$ Implementation}: From the verified/simulated model we can generate the execution logic/code. The generated execution then push state notifications towards the monitor.
+	\item \textbf{Engineering model $\mapsto$ Monitor}: From the verified/simulated model we can generate the monitor (\vref{chap:runtime_verification}). The monitor is a state machine, and operated by the inspection of the implementation. If the operation reaches an invalid state, the monitor detects it. After detection the monitor can forward the event of error detection into a higher level processor.
 \end{itemize}
 Transformation tools are existing for these transformations, but there are no tools which integrate all these in one tool with multiple formalisms, and with this level of automation.
 \\[1ex]
@@ -33,7 +33,7 @@ We want to design a system, where we have a logic, described by a formalism (e.g
 This example covers the usual need of a distributed, embedded safety logic. We need to formally verify the model, generate code, and monitor it. Our goal is to integrate all these solutions into a generic tool. With a centralized toolchain, a developer can make a system with less effort but with more robustness thanks to the verifiable, and automated steps.
 \\[1ex]
 
-\section{Hierarchical levels}
+\section{Hierarchical runtime verification approach}
 
 We can distinguish three levels, representing the hierarchy of our approach:
 \begin{itemize}
