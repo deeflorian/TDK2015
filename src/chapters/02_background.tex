@@ -36,12 +36,15 @@ A finite automaton is a $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where:
           \item $F \subseteq Q$ the set of the acceptor states.
         \end{itemize}
       \end{dfn}
-Although finite automatons can be easily visualized, this formalism describes a simple transition system and lacks the support for higher level concepts.
+Although finite automatons can be easily visualized, this formalism describes a simple, flat transition system and lacks the support for higher level concepts.
     \subsubsection{Statecharts}
-Do not forget to add the Yakindu
-    \subsubsection{Petri nets}
+Statecharts, also known as state machines are an extension of finite automatons. There are multiple available syntaxes for statecharts (e.g. the one defined by UML). The higher level concepts that were introduced include variables, actions, and hierarchically nested states. Event-driven execution is also possible by using signals as the triggers of transitions. Available variable types heavily depend on the concrete semantics of the chosen statechart language. Actions can usually be variable assignments, signal raises, or the setting of timers. Hierarchy lets users organize system descriptions using a top-down approach. Support for hierarchy is introduced via nested states and parallel regions. States can also have entry and exit actions, which allows the description of common functionality in parent states.\\
+Statecharts are most easily described by a visual formalism.
+Do not forget to add the Yakindu.
+    %\subsubsection{Petri nets}
     \subsubsection{Sequence charts}
-    \subsubsection{Component diagrams}
+	%\subsubsection{Component diagrams}    
+    \subsubsection{Complex event processing}
   \subsection{Verification}
     \subsubsection{Formal verification}
     \subsubsection{Runtime verification}
