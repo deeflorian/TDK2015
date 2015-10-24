@@ -164,8 +164,8 @@
 				configurations s.t. configurations $\langle q, \varphi \rangle$ and $\langle q', \varphi' \rangle$ are related by the ground event a, written
 				$\langle q, \varphi \rangle \xrightarrow{\text{a}} \langle q' \varphi' \rangle$ if, and only if
 					\begin{align}
-						\exists b \in \mathcal{A}, \exists g \in &Guard, \exists \gamma \in Assign : (q, b, g, \gamma, q') \in \delta \wedge \\
-						&matches(a,b) \wedge g(\varphi \dag match(a,b)) \wedge \varphi' = \gamma(\varphi \dagger match(a,b))
+						\exists b \in \mathcal{A}, & \exists \gamma \in Assign : (q, b, \gamma, q') \in \delta \wedge \\
+						&matches(a,b) \wedge \varphi' = \gamma(\varphi \dagger match(a,b))
 					\end{align}
 				Let the transition relation $\rightarrow_{E}$ be the smallest relation containing $\rightarrow$ such that for any event
 				$a$ and configuration $c$ if $\nexists c' : c \xrightarrow{\text{a}} c'$ then $ c \xrightarrow{\text{a}}_E c$.
@@ -173,6 +173,7 @@
 				For any two configurations $c$ and $c'$, $ c \xrightarrow{\text{$\epsilon$}}_E c$ holds, and $\xrightarrow{\text{a.$\tau$}}_E c'$ holds
 				if there exist a configuration $c'$ s.t. $c \xrightarrow{\text{a}}_E c'' \xrightarrow{\text{$\tau$}}_E c'$
 			\end{dfn}
+			
 			
 			
 			\begin{dfn}
@@ -213,20 +214,21 @@
 					\end{enumerate}			
 			\end{enumerate}
 			
-			We can extend the time behaviour from states to configurations(set of states). % TODO
-			In this case :
-				A timeout variable is set to configurations, not just states
-				And if a token enters a configuration it sets the timer.
-				We can either move with 
-					discrete events the same as before
-					or with timeout events (which are activated if there is a token in any of the states of the configuration)
+			
+			% We can extend the time behaviour from states to configurations(set of states). % TODO
+			% In this case :
+				% A timeout variable is set to configurations, not just states
+				% And if a token enters a configuration it sets the timer.
+				% We can either move with 
+					% discrete events the same as before
+					% or with timeout events (which are activated if there is a token in any of the states of the configuration)
 				
 			
 			
 			
-			This generates a language \dots %%TODO
+			%%TODO This generates a language \dots %%TODO
 				
-			In runtime verification this will accept \dots %%TODO
+			%%TODO In runtime verification this will accept \dots %%TODO
 				
 			
 		
