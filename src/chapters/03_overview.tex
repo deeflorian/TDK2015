@@ -1,7 +1,7 @@
 \chapter{Overview of the approach}
 \label{chap:overview}
 
-This case study concentrates on the connection between the design time and runtime domain, with model based runtime verification with monitors. Our goal is to present a concept of a tool which facilitate the runtime verification design of systems.
+The case study concentrates on the connection between the design time and runtime domain, with model based runtime verification using monitors. Our goal is to present the concept of a tool which facilitates the runtime verification design of systems.
 
 \section{Concept of runtime verification with engineering model}
 
@@ -14,11 +14,11 @@ This case study concentrates on the connection between the design time and runti
 
 \cref{fig:overview:abstract_overview} depicts the basic concept. We have three main transformation:
 \begin{itemize}
-	\item \textbf{Engineering model $\mapsto$ Formal model}: 
-	\item \textbf{Engineering model $\mapsto$ Implementation}: From the verified/simulated model we can generate the execution logic. The generated execution then push state notifications towards the monitor.
-	\item \textbf{Engineering model $\mapsto$ Monitor}: From the verified/simulated model we can generate the monitor (\vref{chap:runtime_verification}). The monitor is a state machine, and operated by the generated code. If the operation reaches an invalid state, the monitor detects it. After detection the monitor can forward the event of error detection into a higher level processor.
+	\item \textbf{Engineering model $\mapsto$ Formal model}: The specified engineering models can be mapped to a formally verifiable transition system.
+	\item \textbf{Engineering model $\mapsto$ Implementation}: We can generate components from the engineering models. The generated components then can push state notifications towards the monitor.
+	\item \textbf{Engineering model $\mapsto$ Monitor}: The generation of monitoring components is also available (\vref{chap:runtime_verification}) using the engineering models. The monitor is a state machine that is operated by the generated code. If the execution reaches an invalid state, the monitor detects it. After detection the monitor can forward the error detection event to a higher level processor.
 \end{itemize}
-Transformation tools are existing for these transformations, but there are no tools which integrate all these in one tool with multiple formalisms, and with this level of automation.
+Some transformation tools exist for these transformations, but there are no tools which integrate all of the above in one framework, allowing multiple formalisms to be used, especially with this level of automation.
 \\[1ex]
 
 \noindent Let us consider the following example:
