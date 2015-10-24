@@ -39,8 +39,7 @@ A finite automaton is a $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where:
 Although finite automatons can be easily visualized, this formalism describes a simple, flat transition system and lacks the support for higher level concepts.
     \subsubsection{Statecharts}
 Statecharts, also known as state machines are an extension of finite automatons. There are multiple available syntaxes for statecharts (e.g. the one defined by UML). The higher level concepts that were introduced include variables, actions, and hierarchically nested states. Event-driven execution is also possible by using signals as the triggers of transitions. Available variable types heavily depend on the concrete semantics of the chosen statechart language. Actions can usually be variable assignments, signal raises, or the setting of timers. Hierarchy lets users organize system descriptions using a top-down approach. Support for hierarchy is introduced via nested states and parallel regions. States can also have entry and exit actions, which allows the description of common functionality in parent states.\\
-Statecharts are most easily described by a visual formalism.
-Do not forget to add the Yakindu.
+Statecharts are usually created by tools that support the graphical design of the model (e.g.: Yakindu, an Eclipse based editor).
     %\subsubsection{Petri nets}
     \subsubsection{Sequence charts}
 	%\subsubsection{Component diagrams}    
