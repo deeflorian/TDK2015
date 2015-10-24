@@ -1,15 +1,31 @@
 \chapter{Background}
 \label{chap:background}
 
-The design of complex cyber-physical systems is an interdisciplinary process. From the engineering point of view, defining the requirements, designing sufficiently reliable components, dealing with scalability issues, \textbf{constructing} (jobb igy?) testing processes that result in high test coverage, verifying safety critical components, and maintainability issues are all present at the same time. Systems engineering focuses on how to design and manage such systems \cite{randomwikipedialink1} \cite{randomwikipedialink2}. 
+The design of complex cyber-physical systems is an interdisciplinary process. From the engineering point of view, defining the requirements, designing sufficiently reliable components, dealing with scalability issues, \textbf{employing} testing processes that result in high test coverage, verifying safety critical components, and maintainability issues are all present at the same time. Systems engineering focuses on how to design and manage such systems \cite{randomwikipedialink1} \cite{randomwikipedialink2}. 
 %Models for sw development
 %Need for model driven development
 %Need for formal verifiability
 %Need for runtime verifiability
 \section{Model driven software development}
-Model driven software development (MDSD) emphasises problem solving by the development and maintenance of models describing the system being designed. MDSD heavily relies on automated code and documentation generation based on the models of components or the overall model of the system. Modelling has the advantage of introducing abstractions, thus reducing the complexity of the development process. The dynamic code generation guarantees that the code will inherit the properties that can be directly derived from the model, while reducing the costs by eliminating unnecessary round-trip engineering. Model based approaches also have the advantage of easier testability, or if the model is formal enough they can make verification possible.
-\section{Modelling methods}
-Various methods and tools are available for generating test cases and monitoring components, and formally verifying certain properties of models. Even though certain model transformations are possible, the available tools... To be continued. Have to fix my chapter first... ~agonising batman picture~
-  \subsection{MDD method 1}
-  \subsection{MDD method 2}
-  \subsection{MDD method 3}
+Model driven software development (MDSD) emphasises problem solving by the development and maintenance of models describing the system being designed. MDSD heavily relies on automated code and documentation generation based on the models of components or the overall model of the system. Modelling has the advantage of introducing abstractions, thus reducing the complexity of the development process. The dynamic code generation guarantees that the code will inherit the properties that can be directly derived from the model, while reducing the costs by eliminating unnecessary round-trip engineering. The generation of documentation also results in an always up-to-date description of the components, stored together with the requirements and the model. Furthermore, model based approaches have the advantage of easier testability, or if the model is formal enough they can make verification possible.\\
+Formal verification is especially important for the development of safety critical systems (e.g.: space and flight technologies), making MDSD \textbf{notably} widespread in these areas.
+\section{Development toolkit}
+Various methods and tools are available for the generation of test cases and monitoring components from models, as well as for formally verifying certain properties. These tools usually support a few modelling formalism of their target domain.\\
+MDSD is usually accompanied by the Y model -- a software life cycle model for component based systems \cite{ymodel}.
+  \subsection{The Y model}
+The Y model is an extension of the V model (which is in turn an extension of the waterfall model) \cite{randomwikipedialink3}, by using code and test case generation. Much like the V model, the development process is partitioned vertically. Each level contains a model that is transformed to a verification model, on which formal methods can be applied. The results of the verification process can be traced back to the original models making iterative improvement possible. The top level is for high level system models, while the second level contains architectural models, and the third one is for component based models. This provides input for the last step, source code and configuration generation for the individual components. Test cases are paired with the source code and can be generated from the component verification models.
+  \subsection{Modelling methods}
+MDSD methods require modelling languages to describe the behaviour of systems and components. Engineering practices developed a wide range of such languages over the years to support fast paced product development. This allows the use of domain specific languages, which leads to a shorter modelling process but challenges formal verification software, as their input is usually stricter and in a more general format. The result is the need for complex model transformations before the verification can begin, which can lead to higher development costs, or -- if the transformation contains errors -- even faulty behaviour.\\
+As a result, standardized modelling languages were developed like the UML (Unified Modelling Language \cite{uml}) and SysML (Systems Modelling Language \cite{sysml}) languages.
+    \subsubsection{UML}
+UML defines an abstract syntax (Meta Object Facility, MOF), while the concrete syntaxes of different types of models are represented by separate UML diagrams.\\
+However, the formal semantics of the language -- responsible for the behaviour of the components -- were not defined clearly. This led to inconsistent usage and multiple interpretations of expected behaviour. To solve this issue, fUML was developed (Semantics of a Foundational Subset for Executable UML Models \cite{fuml}), which provides formal semantics for a large subset of the UML language.
+    \subsubsection{Finite automatons}
+    \subsubsection{Petri nets}
+    \subsubsection{Statecharts}
+    \subsubsection{Sequence charts}
+    \subsubsection{Communication diagrams}
+    \subsubsection{Component diagrams}
+  \subsection{Verification}
+    \subsubsection{Formal verification}
+    \subsubsection{Runtime verification}
