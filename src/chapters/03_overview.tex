@@ -12,7 +12,7 @@ The case study concentrates on the connection between the design time and runtim
 	\label{fig:overview:abstract_overview}
 \end{figure}
 
-\cref{fig:overview:abstract_overview} depicts the basic concept. We have three main transformation:
+\cref{fig:overview:abstract_overview} depicts the basic concept. We have three main transformations:
 \begin{itemize}
 	\item \textbf{Engineering model $\mapsto$ Formal model}: The specified engineering models can be mapped to a formally verifiable transition system.
 	\item \textbf{Engineering model $\mapsto$ Implementation}: We can generate components from the engineering models. The generated components then can push state notifications towards the monitor.
@@ -33,7 +33,7 @@ We want to design a system, where we have a logic, described by a formalism (e.g
 This example covers the usual need of a distributed, embedded safety logic. We need to formally verify the model, generate code, and monitor it. Our goal is to integrate all these solutions into a generic tool. With a centralized toolchain, a developer can make a system with less effort but with more robustness thanks to the verifiable, and automated steps.
 \\[1ex]
 
-\section{Hierarchical levels}
+\section{Hierarchical runtime verification approach}
 
 We can distinguish three levels, representing the hierarchy of our approach:
 \begin{itemize}

@@ -109,7 +109,7 @@ The pattern itself needs to be generated with values according to the shape we w
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[valign=c,width=.65\linewidth]{include/figures/chapter_6/math_2}
+	\includegraphics[valign=c,width=.5\linewidth]{include/figures/chapter_6/math_2}
 	\rlap{\hspace{5pt}\begin{tabular}[c]{@{}cr@{}}
 		\toprule
 		\tikz \node [minimum width=1ex,minimum height=1ex,fill=black] {}; & $-1$ \\
@@ -154,12 +154,12 @@ We used GPU acceleration trough pipeline stage 1--4. The acceleration is impleme
 	\label{table:case_study:pipeline}
 \end{table}
 
-\section{Summary}
+\subsection{Summary}
 With this implementation, we can follow the system real-time, providing the high-level logic another independent source of information. This can lead to a more robust system with added redundancy.
 
 \newpage
 \section{Model railroad}
-In this section we briefly overview the railroad and the controlling hardware.
+In this section we briefly overview the structure of the railroad and the controlling hardware.
 
 \subsection{Overview}
 
@@ -173,7 +173,7 @@ In this section we briefly overview the railroad and the controlling hardware.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\linewidth]{include/figures/chapter_6/total_view_1}
+	\includegraphics[width=\linewidth]{include/figures/chapter_6/total_view_1}
 	\caption{The railroad network with section IDs}
 	\label{fig:case_study:total_map}
 \end{figure}
@@ -183,7 +183,7 @@ The core of the railroad hardware are the Arduino microcontrollers which collect
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\linewidth]{include/figures/chapter_6/railroad_ms}
+	\includegraphics[width=\linewidth]{include/figures/chapter_6/railroad_ms}
 	\caption{Master-slave associations}
 	\label{fig:case_study:master_slave}
 \end{figure}
@@ -220,7 +220,7 @@ Let us take a look on the main components of the physical system, and what chall
 	\label{fig:case_study:metamodel_switch_endi}
 \end{figure}
 
-\subsection{Logical breakdown of physical elements}
+\subsection{Metamodeling the physical elements}
 \label{sec:case_study:logical_breakdown}
 After we designated the physical elements, and their properties, we started to build a logical concept what are our model elements, and what are the connections between them.
 
@@ -359,6 +359,10 @@ pattern trainFromDisabled(t: Train) {
 \end{lstlisting}
 
 \cref{lst:case_study:train_at_next_powerable} is a pattern for finding the next powerable group in the direction of. We must do that because the property of the switch group: a train cannot stop on that. With \cref{lst:case_study:train_will_collide} we can filter the hazards in the next group, but if we are on a switch, the train cannot be stopped; the trains might crash. This pattern is specialized in case of a train going towards a switch. We are virtually going through it, and examine the other side. If any train is present, the pattern will match, switching the power off the section.
+
+\section{Component-monitor integration}
+
+TODO
 
 \section{Summary}
 
