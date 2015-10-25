@@ -128,6 +128,8 @@ With the OpenCV library, we implemented a processing pipeline which can process 
 We used GPU acceleration trough pipeline stage 1--4. The acceleration is implemented by OpenCV, and can be used with CUDA capable NVidia video accelerators.
 
 \begin{table}[p]
+	\caption{Computer vision processing pipeline}
+	\label{table:case_study:pipeline}
 	\centering
 	\setlength{\fboxsep}{0pt}
 	\setlength{\fboxrule}{1pt}
@@ -150,8 +152,6 @@ We used GPU acceleration trough pipeline stage 1--4. The acceleration is impleme
 		8 & ID the marker by the center \\
 		\bottomrule
 	\end{tabularx}
-	\caption{Computer vision processing pipeline}
-	\label{table:case_study:pipeline}
 \end{table}
 
 \subsection{Summary}
@@ -300,7 +300,9 @@ It's important while building the EMF model that every element must be a part of
 	\end{itemize}
 \end{quotation}
 
-The motivation of using IncQuery can be found in the nature of our problem. The railway can be depicted as a graph, and we can describe hazardous patterns e.g. two trains next section is the opposite trains next section. These scenarios can be declaratively described by IncQuery patterns, reducing the possibility of a coding failure. The other advantage of using the IncQuery framework is scalability. The IncQuery framework -- as its name suggest: incremental query -- is a fast, caching engine based on the RETE algorithm. This framework can follow changes in a very large environment. 
+The motivation of using IncQuery can be found in the nature of our problem. The railway can be depicted as a graph, and we can describe hazardous patterns e.g. two trains next section is the opposite trains next section. These scenarios can be declaratively described by IncQuery patterns, reducing the possibility of a coding failure. 
+
+The other advantage of using the IncQuery framework is scalability. The IncQuery framework -- as its name suggest: incremental query -- is a fast, caching engine based on the RETE algorithm. This framework can follow changes in a very large environment. 
 
 \subsection{Building the IncQuery patterns}
 \label{sec:case_study:pattern_building}
@@ -362,7 +364,32 @@ pattern trainFromDisabled(t: Train) {
 
 \section{Component-monitor integration}
 
-TODO
+The related study\citep{tdk2014} implemented a model based security logic. With the use of the state chart language presented in \vref{chap:runtime_verification}, we can monitor the state of the model and execution, and verify it on a higher level. In our example, we break the execution of the safety logic in two part:
+\begin{itemize}
+	\item \textbf{Monitoring the execution engine}: If an error occurs while executing the generated code, the monitor will notice it. The resolution of the monitoring is set to 1 second.
+	\item \textbf{Monitoring the transitions of the model}: If the safety logic cannot access it's sensors, or communicate, the model execution will stop because the lack of input. We are capable of the detection of this behavior.
+\end{itemize}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.3\linewidth]{include/figures/chapter_6/statecharts/clock}
+	\caption{Clock generation state chart}
+	\label{fig:case_study:fov}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.9\linewidth]{include/figures/chapter_6/statecharts/onalive}
+	\end{minipage}
+	\begin{minipage}{0.49\linewidth}
+		\includegraphics[width=0.9\linewidth]{include/figures/chapter_6/statecharts/ontransition}
+	\end{minipage}
+	\caption{Error detection state machines}
+	\label{fig:case_study:}
+\end{figure}
+
 
 \section{Summary}
 
