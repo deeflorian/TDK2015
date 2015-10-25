@@ -4,14 +4,14 @@
 \chapter{Background}
 \label{chap:background}
 
-The design of complex cyber-physical systems is an interdisciplinary process. From the engineering point of view, defining the requirements, designing sufficiently reliable components, dealing with scalability issues, \textbf{employing} testing processes that result in high test coverage, verifying safety critical components, and maintainability issues are all present at the same time. Systems engineering focuses on how to design and manage such systems \cite{randomwikipedialink1} \cite{randomwikipedialink2}. 
+The design of complex cyber-physical systems is an interdisciplinary process. From the engineering point of view, defining the requirements, designing sufficiently reliable components, dealing with scalability issues, employing testing processes that result in high test coverage, verifying safety critical components, and maintainability issues are all present at the same time. Systems engineering focuses on how to design and manage such systems \cite{randomwikipedialink1} \cite{randomwikipedialink2}. 
 %Models for sw development
 %Need for model driven development
 %Need for formal verifiability
 %Need for runtime verifiability
 \section{Model driven software development}
 Model driven software development (MDSD) emphasises problem solving by the development and maintenance of models describing the system being designed. MDSD heavily relies on automated code and documentation generation based on the models of components or the overall model of the system. Modelling has the advantage of introducing abstractions, thus reducing the complexity of the development process. The dynamic code generation guarantees that the code will inherit the properties that can be directly derived from the model, while reducing the costs by eliminating unnecessary round-trip engineering. The generation of documentation also results in an always up-to-date description of the components, stored together with the requirements and the model. Furthermore, model based approaches have the advantage of easier testability, or if the model is formal enough they can make verification possible.\\
-Formal verification is especially important for the development of safety critical systems (e.g.: space and flight technologies), making MDSD \textbf{notably} widespread in these areas.
+Formal verification is especially important for the development of safety critical systems (e.g.: space and flight technologies), making MDSD notably widespread in these areas.
 \section{Development process}
 Various methods and tools are available for the generation of test cases and monitoring components from models, as well as for formally verifying certain properties. These tools usually support a few modelling formalism of their target domain.\\
 MDSD is usually accompanied by the Y model -- a software life cycle model for component based systems \cite{ymodel}.
@@ -23,8 +23,8 @@ As a result, standardized modelling languages were developed like the UML (Unifi
     \subsubsection{UML}
 UML defines an abstract syntax (Meta Object Facility, MOF), while the concrete syntaxes of different types of models are represented by separate UML diagrams.\\
 However, the formal semantics of the language -- responsible for the behaviour of the components -- were not defined clearly. This led to inconsistent usage and multiple interpretations of expected behaviour. To solve this issue, fUML was developed (Semantics of a Foundational Subset for Executable UML Models \cite{fuml}), which provides formal semantics for a large subset of the UML language.
-    \subsubsection{Finite automatons}
-Modelling a system with finite state space is often done by using finite automatons -- also known as finite state machines. A finite automaton accepts a (finite) list of symbols and produces a computation of the automaton for each input list.
+    \subsubsection{Finite automata}
+Modelling a system with finite state space is often done by using finite automata -- also known as finite state machines. A finite automaton accepts a (finite) list of symbols and produces a computation of the automaton for each input list.
       \begin{dfn}
         \label{dfn:fa}
 A finite automaton is a $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where:
@@ -36,14 +36,16 @@ A finite automaton is a $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where:
           \item $F \subseteq Q$ the set of the acceptor states.
         \end{itemize}
       \end{dfn}
-Although finite automatons can be easily visualized, this formalism describes a simple, flat transition system and lacks the support for higher level concepts.
+Although finite automata can be easily visualized, this formalism describes a simple, flat transition system and lacks the support for higher level concepts.
     \subsubsection{Statecharts}
-Statecharts, also known as state machines are an extension of finite automatons. There are multiple available syntaxes for statecharts (e.g. the one defined by UML). The higher level concepts that were introduced include variables, actions, and hierarchically nested states. Event-driven execution is also possible by using signals as the triggers of transitions. Available variable types heavily depend on the concrete semantics of the chosen statechart language. Actions can usually be variable assignments, signal raises, or the setting of timers. Hierarchy lets users organize system descriptions using a top-down approach. Support for hierarchy is introduced via nested states and parallel regions. States can also have entry and exit actions, which allows the description of common functionality in parent states.\\
+Statecharts, also known as state machines are an extension of finite automata. There are multiple available syntaxes for statecharts (e.g. the one defined by UML \cite{stcuml}). The higher level concepts that were introduced include variables, actions, and hierarchically nested states. Event-driven execution is also possible by using signals as the triggers of transitions. Available variable types heavily depend on the concrete semantics of the chosen statechart language. Actions can usually be variable assignments, signal raises, or the setting of timers. Hierarchy lets users organize system descriptions using a top-down approach. Support for hierarchy is introduced via nested states and parallel regions. States can also have entry and exit actions, which allows the description of common functionality in parent states \cite{stcmove}.\\
 Statecharts are usually created by tools that support the graphical design of the model (e.g.: Yakindu, an Eclipse based editor).
     %\subsubsection{Petri nets}
     \subsubsection{Sequence charts}
+The formalism of message sequence charts (MSC) describes the communication between components -- the order in which messages can occur \cite{msc} \cite{msc2}. The message interchange is usually represented by a graphical model. These charts can be used for high level specification, design, trace based testing, or documentation. A collection of possible sequence charts can also describe a complete communication protocol between components. UML sequence diagrams were inspired by MSCs, but their semantics differ regarding some of the basic elements of the language such as lifelines and arrows \cite{mscuml}.
 	%\subsubsection{Component diagrams}    
     \subsubsection{Complex event processing}
+
   \subsection{Verification}
     \subsubsection{Formal verification}
     \subsubsection{Runtime verification}
