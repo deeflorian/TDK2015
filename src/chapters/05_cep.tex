@@ -1,51 +1,92 @@
 \chapter{Complex event processing}
 	\label{chap:cep}
-		In this hierarchical runtime verification project, the top level of modelling is done in an event pattern language.
-		This event pattern language is translated to timed event automatons. These event automatons will be executed in the
-		process. The goal is a high level modelling language formalization. 
-	\section{Formal Intro of the Timed Parametrized Event Automaton}
-		\subsection{VEPL}
-			Our choice for the event pattern definition is the VIATRA Event Pattern Language (VEPL).
-			Currently this is the only CEP which can be easily integrated to a live model, where 
-			you can define multiple graph patterns over the model, and define atomic events for the
-			appearance and disappearance of these patterns.
-			
-			A brief overview of the VEPL language:
+	\section{Complex Event Processing with the current technologies}
+		In a hierarchical runtime verification, the top level of modelling can be done by Complex Event Processing.
+		In our project we are going to do so, and define Event Patterns for the top level.
+		Our choice for CEP is the VIATRA CEP, because it's the only open source CEP with 
+		a live model integration, where you can define graph patterns to the model, and automatically generate atomic events
+		on the appearance and disappearance of these patterns.
+		
+		VIATRA CEP uses a language called VIATRA Event Pattern Language, or VEPL for short.
+		This language is perfect for our approach, it has a very simple syntax, and the event patterns can be defined in
+		a very high level way, but the automaton which it translates the patterns to are not well-formalized, and the
+		execution of the patterns are dependent on so called ``event contexts'' which makes the verification extremely hard.
+		
+		Our goal is to make an intermediate language, to which we can translate our patterns to. This language has to be 
+		formalized.
+		
+		TODO abra : Harom doboz, High level -> Intermediate language -> Executable code(?) 
 
+		The operators of the language is show on \cref{tab:cep:veplop}. The syntax sugars are shown on \cref{tab:cep:veplsugar},
+		but we are going to ignore these, since they can be translated to the basic operators as show on \cref{tab:cep:veplsugartobasic}.
+		
+		We are going to introduce every step through an example, which is about the runtime verification of a two phase lock algorithm.
+		
+		
+		
+			
+		\begin{table}
+		\caption{Basic operators}		
+		\label{tab:cep:veplop}
 		\begin{tabular}{lcm{6cm}}
 		\centering
 		Operator name &	Denotation & Meaning \\
 		followed by & p1 $\rightarrow$ p2 & Both patterns have to appear in the specified order. \\
 		or &	p1 OR p2 &	One of the patterns has to appear. \\
-		and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter. Rule: p1 AND p2 $\equiv$ ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
-		negation &	NOT p &	On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
-		multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer. Rule: p\{n\} $\equiv$ p1 $\rightarrow$ p1 $\rightarrow$ \dots p1, n times. \\
-		``at least once'' multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
 		``infinite'' multiplicity &	p\{*\} &	The pattern can appear 0 to infinite times. \\
 		within timewindow &	p[t] &	Once the first element of the pattern is observed (i.e. the patterns ``starts to build up''), the rest of the pattern has to be observed within t milliseconds.
-		\end{tabular}	
-			
-			%% Regular -> Timed Regular -> Event Automata (parametrized) -> MERGE -> Timed Event Automaton
-		\subsection{Timed Regular Expression}
-			\begin{dfn}
-				Timed Regular Expressions over an alphabet $\Sigma$ (also referred to as $\Sigma$-expressions)
-				are defined using the following families of rules~\citep{tre}~.
-				\begin{enumerate}
-					\item \underline{a} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.
-					\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions and $I$ is an integer-bounded interval then
-						$\langle\varphi_I\rangle, \varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.
-					\item If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi^\circledast$ are
-						$\Sigma$-expressions.
-					\item If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
-						for some alphabet $\Sigma_0$, and $\Theta$ : $\Sigma_0 \rightarrow \Sigma$ is
-						a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions.
-				\end{enumerate}
-			\end{dfn}
-				
-		\subsection{Event Automaton Formalisms}
+		\end{tabular}
+		\end{table}
+
+		\begin{table}
+		\caption{Syntax sugars}		
+		\label{tab:cep:veplsugar}
+		\begin{tabular}{lcm{6cm}}
+		\centering
+		Operator name &	Denotation & Meaning \\
+		and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter.\\
+		negation &	NOT p &	On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
+		multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer.\\
+		"at least once" multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
+		\end{tabular}
+		\end{table}
+		
+		\begin{table}
+		\caption{Syntax sugars mapped to basic operators}		
+		\label{tab:cep:veplsugartobasic}
+		\begin{tabular}{lcm{6cm}}
+		\centering
+		Operator name &	Denotation & Equivalent \\
+		and &	p1 AND p2 & ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
+		negation &	NOT $p$ & $\Sigma \setminus p$, where $\Sigma$ is the set of all the possible Events. \\
+		multiplicity &	p\{n\} &	p1 $\rightarrow$ p1 $\rightarrow$ \dots p1, n times. \\
+		"at least once" multiplicity &	p\{+\} & p $\rightarrow p\{\ast\}$ \\
+		\end{tabular}
+		\end{table}
+
+		
+	\section{Regular Expression}
+		\begin{dfn}
+			\label{dfn:cep:tre}
+			Regular Expressions over an alphabet $\Sigma$ (also referred to as $\Sigma$-expressions)
+			are defined using the following families of rules.
+			\begin{enumerate}
+				\item \underline{a} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.
+				\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions then
+					$\varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.
+				\item If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi^\circledast$ are
+					$\Sigma$-expressions.
+				\item If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
+					for some alphabet $\Sigma_0$, and $\Theta$ : $\Sigma_0 \rightarrow \Sigma$ is
+					a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions.
+			\end{enumerate}
+		\end{dfn}
+		\subsection{Deterministic Finite Automaton}
+			To match simple sequences as $A \rightarrow B$ or $A \{\ast\}$ we can use a Deterministic Finite Event Automaton
+
 			\begin{dfn}
 				\label{dfn:cep:dfea}
-				A EventAutomaton (Deterministic Finite Event Automaton in other words) $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where: %TODO Deterministic
+				A EventAutomaton (Deterministic Finite Event Automaton in other words) $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where: 
 					\begin{itemize}
 						\item $Q$ is a finite, non empty set. These are the states of the automaton,
 						\item $\Sigma$ is a finite, non empty set. This is the Event set of the automaton,
@@ -54,38 +95,41 @@
 							i.e. $\forall q_0 \in Q$ and $\forall e_0 \in \Sigma$ : $|\langle q_0, e_0, q_1 \rangle| = 1$, where $q_1 \in Q$ 
 						\item $q_0 \in Q$ a start state,
 						\item $F \subseteq Q$ the set of the acceptor states.
-					\end{itemize}
-				
+					\end{itemize}	
 			\end{dfn}
-			
-			
-			On input $e$, where $e \in \Sigma$, if the token is on State $s$ the next state will be $s'$ where 
+
+			The semantic is the following : 
+			On input $e$, where $e \in \Sigma$, if the token is on State $s$ the next state will be $s'$ where % TODO Remove token from semantics
 			$\delta_d \langle s,e,s' \rangle$ 
 			
-			% \begin{dfn}
-				% NonDeterministicTimedFiniteAutomaton
-				% $\delta = \delta_t \cup \delta_d$ where $\delta_d$ is the same as $\delta$ in Definition \cite{dfn:cep:fsm}
-				% $t$ is a clock variable $t \in R$   %todo R  
-				% $\Sigma_n = \Sigma \cup T$
-				% where $\Sigma$ is the oldSigma and T is 
-			% \end{dfn}
-			
-			% \begin{dfn}
-				% \label{dfn:cep:nsm}
-				% A NonDeterministicFiniteAutomaton $\langle Q,\Sigma,\delta,q_0, F \rangle$ where 
-				% the meaning of $Q, \Sigma, q_0,$ and $F$ is the same as Definition \ref{dfn:cep:fsm},
-				% except for for $\delta$ which is
-					% \[ \delta(q,a) \subseteq Q \]
-				% where $q \in Q$ and $a \in \Sigma \cup \{\varepsilon\}$
-			% \end{dfn}
-			
+	\section{Timed Regular Expression}
+		With the previously defined semantics we can not express temporal statements.
+		To In current mathematical approach, this is usually represented with a Timed Regular Expression.\footnote{itt failure van}
+
+		\begin{dfn}
+			\label{dfn:cep:tre}
+			Timed Regular Expressions over an alphabet $\Sigma$ (also referred to as $\Sigma$-expressions)
+			are defined using the following families of rules~\citep{tre}~.
+			\begin{enumerate}
+				\item \underline{a} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.
+				\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions and $I$ is an integer-bounded interval then
+					$\langle\varphi_I\rangle, \varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.
+				\item If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi^\circledast$ are
+					$\Sigma$-expressions.
+				\item If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
+					for some alphabet $\Sigma_0$, and $\Theta$ : $\Sigma_0 \rightarrow \Sigma$ is
+					a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions.
+			\end{enumerate}
+		\end{dfn}
+		
+		\subsection{Timed Automaton}
 			\begin{dfn}
 				\label{dfn:cep:TEA}
 				A Timed Event Automaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
 				\begin{itemize}
 					\item $Q, \Sigma, q_0,$ and $F$ are the same as in Definition \ref{dfn:cep:dfea},
 					\item $t$ is a global clock variable $t \in \mathbb{R}$,
-					\item $T$ is a set of tuples $\langle Q, \RR \rangle$
+					\item $T$ is a set of local timeout clocks, i.e. a set of tuples $\langle Q, \RR \rangle$
 					\item and $\delta$ is the union of discrete and timed transitions i.e. $\delta_t \cup \delta_d$ where
 					\begin{itemize}
 						\item $\delta_d$ is defined as in Definition \ref{dfn:cep:dfea},
@@ -95,10 +139,12 @@
 			\end{dfn}
 			
 			The semantic of the Timed Deterministic Finite Automaton is defined as follows:
-			$Q_t \subseteq Q$ is the set of states with outgoing timed transitions, i.e. $\forall s \in Q_t$ : there exist $ \delta_t\langle s, t, s' \rangle$ where $t \in \RR$ and $s' \in Q$.
+			$Q_t \subseteq Q$ is the set of states with outgoing timed transitions, 
+			i.e. $\forall s \in Q_t$ : there exist $ \delta_t\langle s, t, s' \rangle$ where $t \in \RR$ and $s' \in Q$.
 			We have to define rules for entering states with timed outgoing transitions and we also define the general rules of changing states. 
 			\begin{enumerate}
-				\item Initialization Rule : On initialization of the automaton, we have to set all clocks to $\infty$ i.e. $\forall t_i in \delta_t \langle q_i, t_i \rangle where \exists q_i$ and $t_i := \infty $
+				\item Initialization Rule : On initialization of the automaton, we have to set all clocks to $\infty$ 
+				i.e. $\forall t_i in \delta_t \langle q_i, t_i \rangle where \exists q_i$ and $t_i := \infty $
 			
 				\item Entering Timed State Rule: On entry to state $s$ where $s \in Q_t$ the timeout variable $t_s$ of the state is set according to the value of the global time and the timeout value of the output transition $t_{timeout}$:
 					$t_s:= t+t_{timeout}$ %\TODO
@@ -113,11 +159,39 @@
 						 the global time is set $t := t_s$, the local clock is set to infinity: $t_s := \infty$ and move to the next state according to $\delta_t$.
 					\end{enumerate}			
 			\end{enumerate}
+		
+		\subsection{Timed Region Automaton}
+	
+	\section{Parametric Timed Regular Expression}
+	
+		\subsection{Parametric Timed Region Automaton}
+					
 			
-		\subsection{Extending the Event Automaton Formalism to handle paramters}
+		
+		PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. 
+		% PRE REFACTOR
+
+				
+		\subsection{Event Automaton Formalisms}
+		
+			
+			
+
+			
+			To move further towards an automata formalism which is at least equivalently expressive as the VEPL
+			we can move forward to the description of timings. All we need is a global clock, and a set of timeout 
+			clocks for a subset of states. This'll be the Timed Event Automaton.
+		
+
+		
+
+			
+		\subsection{Extending the Event Automaton Formalism to handle parameters}
+			
+		
 			
 			We use $s$ to denote a tuple $\langle s_0,\dots,s_k \rangle$. We use $X \rightarrow Y$ and $\rightharpoondown$ to denote sets of total and partial function between
-			$X$ and $Y$, respectively. We write maps (partian functions) as $[x_0 \mapsto v_0,\dots,x_i \mapsto v_i]$ and the empty maps as $[]$. Given two maps $A$ and $B$,
+			$X$ and $Y$, respectively. We write maps (partial functions) as $[x_0 \mapsto v_0,\dots,x_i \mapsto v_i]$ and the empty maps as $[]$. Given two maps $A$ and $B$,
 			the map override operator is defined as:
 				\[
 				 (A \dagger B)(x) = 
@@ -196,15 +270,22 @@
 			
 			$r^+$ is the new regions we enter, i.e. $ r_i \setminus r_j $ where $ \exists r_i \exists k_i \exists q_i \delta_t\langle r_i,k_i,q_i \rangle$ and $ r_i \setminus r_j $ where $ \exists r_j \exists k_j \exists q_j \delta_t\langle r_j,k_j,q_j \rangle$ and $ s \in r_i$ and $s' \in r_j$.
 			
-			$r^-$ is the old regions we leave, i.e. $ r_i \setminus r_j $.
+			$r^-$ is the old regions we leave, i.e. $ r_j \setminus r_i $.
 			%%TODO rewrite the semantics
 			We have to define rules for entering states with timed outgoing transitions and we also define the general rules of changing states. 
 			\begin{enumerate}
-				\item Entering Timed State Rule: On entry to state $s$ where $s \in Q_t$ the timeout variable $t_s$ of the state is set according to the value of the global time and the timeout value of the output transition $t_{timeout}$:
+				\item Initialization Rule : On initialization of the automaton, we have to set all clocks to $\infty$ 
+					i.e. $\forall t_i in \delta_t \langle q_i, t_i \rangle where \exists q_i$ and $t_i := \infty $
+			
+				\item Entering Timed Region Rule: On entry to state $s'$ we calculate $r^+$, and start every timer.
+					i.e. $\forall t_i$ in $\delta_t\langle r, s', t_i \rangle$  
+				
+				
+					where $s \in Q_t$ the timeout variable $t_s$ of the state is set according to the value of the global time and the timeout value of the output transition $t_{timeout}$:
 					$t_s:= t+t_{timeout}$ %\TODO
 					where $T\langle s,t_s \rangle$ and $\delta_t\langle s,t_{timeouts},s' \rangle$ where $t_{timeout}$ is minimal from the set of possible $t_{timeouts}$ 
 				
-				\item Firing Transitions Rule: Nondeterministically choose an enabled transition from the set of enabled discrete or timed transitions. We have two cases, the chosen transition is:
+				\item Firing Transitions Rule: Deterministically choose an enabled transition from the set of enabled discrete or timed transitions. We have two cases, the chosen transition is:
 					\begin{enumerate}
 						\item Discrete Transition: In case of $s \notin Q_t$ than the execution of the transition is as in described formerly. If we exit state $s \in Q_t$ by a transition in $\delta_d$, 
 						then the following rule extends the firing rule of discrete transitions:
@@ -215,24 +296,6 @@
 			\end{enumerate}
 			
 			
-			% We can extend the time behaviour from states to configurations(set of states). % TODO
-			% In this case :
-				% A timeout variable is set to configurations, not just states
-				% And if a token enters a configuration it sets the timer.
-				% We can either move with 
-					% discrete events the same as before
-					% or with timeout events (which are activated if there is a token in any of the states of the configuration)
-				
-			
-			
-			
-			%%TODO This generates a language \dots %%TODO
-				
-			%%TODO In runtime verification this will accept \dots %%TODO
-				
-			
-		
-
 		\subsection{Compilation of the Event patterns to Parametric Timed Region Automaton}
 				The high level languages we use, such as the VEPL or UML Sequence charts can be transformed to an Intermediate language based on Parametric Timed Regular Expressions.
 				These Parametric Timed Regular Expressions will be matched with the later defined Parametric Timed Region Event Automatons, which can be executed.
@@ -240,7 +303,7 @@
 			\subsubsection{VEPL}
 				TODO : Either define recursive rules for VEPL-Automaton transformations or give multiple complex examples 
 			\subsubsection{Sequence chart}
-				TODO : Either define recursive rules of transformations  or give mutiple complex examples
+				TODO : Either define recursive rules of transformations  or give multiple complex examples
 			
 	\section{Examples of Event Processing}
  
