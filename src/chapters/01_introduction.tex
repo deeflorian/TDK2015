@@ -109,46 +109,22 @@ The formalism of message sequence charts (MSC) describes the communication betwe
 
 \section*{Contributions}
 
-Our goal was to provide runtime verification methods for all levels of a complex cyber-physical system. These methods should rely on modelling methods already being used be engineers to minimize the steepness of the learning curve and allow quick and efficient development. The result is a hierarchical runtime verification framework which can enable verification on three levels:
+Our goal was to provide runtime verification methods for all levels of a complex cyber-physical system. These methods should rely on modelling methods already being used be engineers to minimize the steepness of the learning curve and allow quick and efficient development. The result is a hierarchical runtime verification framework which can enable verification on two levels. The framework is capable of:
 \begin{itemize}
-  \item Component level verification can be done by a statechart language that allows the use of templates.
-  \item System level runtime verification can be done by the use of a complex event processing system.
+  \item component level verification, supported by the generation of monitors from statecharts
+  \item system level verification, that can be done by a complex event processing system
+  \item monitors can generate messages indicating erroneous operation of the monitored components
+  \item the complex event processing system can use the monitors' messages
 \end{itemize}
-The motivation of this study is the related report from 2014 \citep{tdk2014}, where the goal was a distributed, model based security logic. The work of [1] focused on the model driven development of a safety logic and its application in the Model Railway Project. Our work builds on the hardware and software of [1] and extends it with the runtime verification of:
-\begin{itemize}
-	\item The working of the safety logic in the embedded controllers.
-	\item The correctness of the overall system.
-\end{itemize}
-
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/overview_1}
+	\includegraphics[width=0.5\linewidth]{include/figures/chapter_1/rv_concept}
 	\caption{Overview of the hierarchical runtime verification system}
 	\label{fig:case_study:fov}
 \end{figure}
+Additionally, the statechart language developed extends the usual statechart formalism by adding support for statechart templates. This enables users to easily describe systems with homogeneous components. The models can also be mapped to a formally verifiable transition system.
+\\\textbf{TODO}\\
+Automata generalas?
+CEP egyebek?
 
-In this section at first we overview those concepts of the Model Railway Project which are important from our point of view. Then the extended runtime verification architecture is introduced both the hardware and software components.
-
-It's important to notice that our solution is not tailored to this special problem but it is a general approach for any critical system.
-
-\section{Concept}
-
-Our main goal with this study is to develop a method which can integrate multiple safety logic into a global runtime verification, increasing the reliability of the complete system.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/concept_1}
-	\caption{Associations between operation, and runtime verification components}
-	\label{fig:case_study:concept_component}
-\end{figure}
-
-\cref{fig:case_study:concept_component} shows the main relation between the operation, and runtime verification domain. With component level verification -- in out case with embedded monitors -- we can verify each component runtime state. The system level verification observes the overall state of the system. If any of the components reports failure, we can make a decision based on the remaining components abilities to support the system verification. If we can provide safety despite component failures, the system can continue operation.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/concept_2}
-	\caption{Sensor, and monitor relation}
-	\label{fig:case_study:concept_communication}
-\end{figure}
-
-In our case (\cref{fig:case_study:concept_communication}), there are embedded components, and one system level component.
+This hierarchical approach to runtime verification results in safer systems with more dependable monitoring components.
