@@ -17,7 +17,8 @@
 		
 		TODO abra : Harom doboz, High level -> Intermediate language -> Executable code(?) 
 
-		The operators of the language is show on \cref{tab:cep:veplop}. The syntax sugars are shown on \cref{tab:cep:veplsugar},
+		The operators of the language is show on \cref{tab:cep:veplop}. 
+		The syntax sugars are shown on \cref{tab:cep:veplsugar},
 		but we are going to ignore these, since they can be translated to the basic operators as show on \cref{tab:cep:veplsugartobasic}.
 		
 		We are going to introduce every step through an example, which is about the runtime verification of a two phase lock algorithm.
@@ -47,7 +48,7 @@
 		and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter.\\
 		negation &	NOT p &	On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
 		multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer.\\
-		"at least once" multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
+		``at least once" multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
 		\end{tabular}
 		\end{table}
 		
@@ -60,7 +61,7 @@
 		and &	p1 AND p2 & ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
 		negation &	NOT $p$ & $\Sigma \setminus p$, where $\Sigma$ is the set of all the possible Events. \\
 		multiplicity &	p\{n\} &	p1 $\rightarrow$ p1 $\rightarrow$ \dots p1, n times. \\
-		"at least once" multiplicity &	p\{+\} & p $\rightarrow p\{\ast\}$ \\
+		``at least once" multiplicity &	p\{+\} & p $\rightarrow p\{\ast\}$ \\
 		\end{tabular}
 		\end{table}
 
@@ -122,7 +123,7 @@
 			\end{enumerate}
 		\end{dfn}
 		
-		\subsection{Timed Automaton}
+		\subsection{Timed Event Automaton}
 			\begin{dfn}
 				\label{dfn:cep:TEA}
 				A Timed Event Automaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
@@ -139,29 +140,91 @@
 			\end{dfn}
 			
 			The semantic of the Timed Deterministic Finite Automaton is defined as follows:
+			
 			$Q_t \subseteq Q$ is the set of states with outgoing timed transitions, 
 			i.e. $\forall s \in Q_t$ : there exist $ \delta_t\langle s, t, s' \rangle$ where $t \in \RR$ and $s' \in Q$.
 			We have to define rules for entering states with timed outgoing transitions and we also define the general rules of changing states. 
+			
 			\begin{enumerate}
 				\item Initialization Rule : On initialization of the automaton, we have to set all clocks to $\infty$ 
-				i.e. $\forall t_i in \delta_t \langle q_i, t_i \rangle where \exists q_i$ and $t_i := \infty $
-			
+				i.e. $\forall t_i \exists q_i T \langle q_i, t_i \rangle, t_i \coloneqq \infty $
+				
 				\item Entering Timed State Rule: On entry to state $s$ where $s \in Q_t$ the timeout variable $t_s$ of the state is set according to the value of the global time and the timeout value of the output transition $t_{timeout}$:
-					$t_s:= t+t_{timeout}$ %\TODO
+					$t_s\coloneqq t+t_{timeout}$ %\TODO
 					where $T\langle s,t_s \rangle$ and $\delta_t\langle s,t_{timeouts},s' \rangle$ where $t_{timeout}$ is minimal from the set of possible $t_{timeouts}$ 
 				
 				\item Firing Transitions Rule: Deterministically choose an enabled transition from the set of enabled discrete or timed transitions. We have two cases, the chosen transition is:
 					\begin{enumerate}
 						\item Discrete Transition: In case of $s \notin Q_t$ than the execution of the transition is as in described formerly. If we exit state $s \in Q_t$ by a transition in $\delta_d$, 
 						then the following rule extends the firing rule of discrete transitions:
-							$t_s := \infty$
+							$t_s \coloneqq \infty$
 						\item Timed Transition: The transition with the minimal timeout value is selected, i.e. transition $\delta_t$ from state $s_t$ where $\forall q \in Q_t: t_q \geq t_s$, than the following rules apply:
-						 the global time is set $t := t_s$, the local clock is set to infinity: $t_s := \infty$ and move to the next state according to $\delta_t$.
+						 the global time is set $t \coloneqq t_s$, the local clock is set to infinity: $t_s \coloneqq \infty$ and move to the next state according to $\delta_t$.
 					\end{enumerate}			
 			\end{enumerate}
 		
 		\subsection{Timed Region Automaton}
-	
+			\begin{dfn}
+				\label{dfn:cep:TREA}
+				A Timed Region Event Automaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
+				\begin{itemize}
+					\item $Q, \Sigma, q_0, F,$ and  $t$ are the same as in Definition \ref{dfn:cep:tea},
+					\item $T$ is a set of timeout clocks for sets of states, i.e. a set of tuples $\langle 2^Q, \RR \rangle$
+					\item and $\delta$ is the union of discrete and timed transitions i.e. $\delta_t \cup \delta_d$ where
+					\begin{itemize}
+						\item $\delta_d$ is defined as in Definition \ref{dfn:cep:dfea},
+						\item and $\delta_t$ represents timed transitions and defined as the set of tuples $\langle 2^Q \times \mathbb{R} \times Q \rangle$ 
+					\end{itemize}
+				\end{itemize}
+			\end{dfn}
+			
+			The semantic of the Timed Region Automaton is defined as follows:
+			$Q_t \subseteq Q$ is the set of states with outgoing timed transitions, 
+			i.e. $\forall q \in Q_t$ : there exist $ \delta_t\langle s, t, s' \rangle$ where $t \in \RR$ and $s' \in Q$.
+		
+			$s$ is the state we are currently on, and $s'$ is the state we move to after the transition
+		
+			$r$ is the set of zones we are currently in, 
+			i.e. $r \subseteq 2^Q$ where $\exists r_s : r_s \in r, s \in r_s $ 
+			
+			$r'$ is the set of zones we enter,
+			i.e. $r \subseteq 2^Q$ where $\exists r_s :  r_s \in r, s' \in r_s $ 
+			
+			$r^+ \subseteq 2^Q$ is a set of new timed regions we just entered,
+			i.e. $r^+ = r' \setminus r$ 
+			
+			$r^- \subseteq 2^Q$ is a set of timed zones we just left
+			i.e. $r^- = r \setminus r'$
+		
+			We have to define rules for the initialization of the automaton,
+			entering states with timed outgoing transitions 
+			and we also define the general rules of changing states. 
+			
+			\begin{enumerate}
+				\item Initialization Rule : On initialization of the automaton, we have to set all clocks to $\infty$ 
+				i.e. $\forall t_i, \exists q_i, T \langle q_i, t_i \rangle, t_i \coloneqq \infty $
+			
+				\item Entering new timed region rule :
+				If we enter a new timed region, 
+				i.e. $r^+ \neq \emptyset$, 
+				we set the timers according to the timeouts, 
+				i.e. $\forall t_{timeout} : t_{timeout} \coloneqq t$ where $ r_t \in r^+, \exists q ,\delta_t\langle  r_t,t,q \rangle$
+				
+				\item Firing Transitions Rule: Deterministically choose an enabled transition from the set of enabled discrete or timed transitions. 
+				We have two cases, the chosen transition is:
+					\begin{enumerate}
+						\item Discrete Transition: In case of $z^- = \emptyset$ than the execution of the transition is as in described formerly. 
+						If else if we exit a zone i.e. $z^- = \emptyset$, 
+						then the following rule extends the firing rule of discrete transitions:
+							$\forall t_s, \exists q_s$ in $\langle r_i, t_s, q_s \rangle$ where $r_i \in r^-$, $t_s \coloneqq \infty$
+						\item Timed Transition: The transition with the minimal timeout value is selected, 
+						 i.e. transition $\delta_t$ from state $s_t$ where $\forall q \in Q_t: t_q \geq t_s$, than the following rules apply:
+						 the global time is set $t \coloneqq t_s$, the local clock is set to infinity: $t_s \coloneqq \infty$ and move to the next state according to $\delta_t$.
+					\end{enumerate}			
+			\end{enumerate}
+
+
+		
 	\section{Parametric Timed Regular Expression}
 	
 		\subsection{Parametric Timed Region Automaton}
@@ -169,18 +232,10 @@
 			
 		
 		PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. 
-		% PRE REFACTOR
 
-				
-		\subsection{Event Automaton Formalisms}
-		
-			
-			
 
 			
-			To move further towards an automata formalism which is at least equivalently expressive as the VEPL
-			we can move forward to the description of timings. All we need is a global clock, and a set of timeout 
-			clocks for a subset of states. This'll be the Timed Event Automaton.
+
 		
 
 		
@@ -275,23 +330,23 @@
 			We have to define rules for entering states with timed outgoing transitions and we also define the general rules of changing states. 
 			\begin{enumerate}
 				\item Initialization Rule : On initialization of the automaton, we have to set all clocks to $\infty$ 
-					i.e. $\forall t_i in \delta_t \langle q_i, t_i \rangle where \exists q_i$ and $t_i := \infty $
+					i.e. $\forall t_i in \delta_t \langle q_i, t_i \rangle where \exists q_i$ and $t_i \coloneqq \infty $
 			
 				\item Entering Timed Region Rule: On entry to state $s'$ we calculate $r^+$, and start every timer.
 					i.e. $\forall t_i$ in $\delta_t\langle r, s', t_i \rangle$  
 				
 				
 					where $s \in Q_t$ the timeout variable $t_s$ of the state is set according to the value of the global time and the timeout value of the output transition $t_{timeout}$:
-					$t_s:= t+t_{timeout}$ %\TODO
+					$t_s\coloneqq t+t_{timeout}$ %\TODO
 					where $T\langle s,t_s \rangle$ and $\delta_t\langle s,t_{timeouts},s' \rangle$ where $t_{timeout}$ is minimal from the set of possible $t_{timeouts}$ 
 				
 				\item Firing Transitions Rule: Deterministically choose an enabled transition from the set of enabled discrete or timed transitions. We have two cases, the chosen transition is:
 					\begin{enumerate}
 						\item Discrete Transition: In case of $s \notin Q_t$ than the execution of the transition is as in described formerly. If we exit state $s \in Q_t$ by a transition in $\delta_d$, 
 						then the following rule extends the firing rule of discrete transitions:
-							$t_s := \infty$
+							$t_s \coloneqq \infty$
 						\item Timed Transition: The transition with the minimal timeout value is selected, i.e. transition $\delta_t$ from state $s_t$ where $\forall q \in Q_t: t_q \geq t_s$, than the following rules apply:
-						 the global time is set $t := t_s$, the local clock is set to infinity: $t_s := \infty$ and move to the next state according to $\delta_t$.
+						 the global time is set $t \coloneqq t_s$, the local clock is set to infinity: $t_s \coloneqq \infty$ and move to the next state according to $\delta_t$.
 					\end{enumerate}			
 			\end{enumerate}
 			
