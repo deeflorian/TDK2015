@@ -86,22 +86,22 @@
 			(Left Derivate).\footnote{reference timed.pdf}
 			For every two sequences $u$ and $v$ the left derivate of $u$ by $v$
 			is a partial function defined as:
-			
+			%
 			\[ v \setminus u
 				\begin{cases}
 					w & \text{ if } \exists w,u = vw \\
 					\perp & \text{otherwise}
 				\end{cases}
 			\]
-			
+			%
 			In other words, $v \setminus u$ is defined if $v$ is a prefix of $u$,
 			and in that case $v$ is removed.
 		\end{dfn}
 		
 		\begin{dfn}
 			(Absorbing concatenation).
-			The partial operator $u \circ v$ on \mathcal{T} is defined as:
-			\[ u \circ v = u \cdot (\lambda(u) \setminus v) \]
+			The partial operator $u \circ v$ on $\mathcal{T}$ is defined as:
+			\[ u \circ v = u \cdot (\lambda (u) \setminus v) \]
 		\end{dfn}
 		
 		\begin{dfn}
@@ -110,10 +110,15 @@
 			are defined using the following families of rules.
 			\begin{enumerate}
 				\item \underline{$a$} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.
-				\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions then
-					$\varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.
-				\item If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi_1 \wedge \varphi_2 , \varphi^\circledast$ are
-					$\Sigma$-expressions.
+				\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions then %
+					$ %
+					\varphi_1~\cdot~\varphi_2,
+					\varphi_1 \vee \varphi_2,
+					\varphi_1 \circ \varphi_2,
+					\varphi_1 \wedge \varphi_2,
+					\varphi^\ast,
+					\varphi^\circledast
+					$ are $\Sigma$-expressions.
 			\end{enumerate}
 		\end{dfn}
 		
@@ -121,34 +126,6 @@
 		and a $b$ event will follow it''. In the two phase locking example we are going to describe the behaviour of one resource with a simple VEPL pattern:
 		$(a \rightarrow f)\{\ast\}$ which means that an infinite sequences of allocation and release are allowed after each other. This is equivalent to the 
 		regular expression : $(af)\ast$.
-		
-		
-		
-		\subsection{Deterministic Finite Automaton}
-			To match Regular Expressions, the most common solution is to make an automaton, there are many algorithms for this.  %% TODO Reference?
-			
-			
-			\begin{dfn}
-				\label{dfn:cep:dfea}
-				An Event Automaton (Deterministic Finite Event Automaton in other words) is a $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where: 
-					\begin{itemize}
-						\item $Q$ is a finite, non empty set. These are the states of the automaton,
-						\item $\Sigma$ is a finite, non empty set. This is the Event set of the automaton,
-						\item $\delta_d$ is a set of $\langle Q \times \Sigma \times Q \rangle$ tuples,
-							and the number of outgoing edges from each state for each event is only one 
-							i.e. $\forall q_0 \in Q$ and $\forall e_0 \in \Sigma$ : $|\langle q_0, e_0, q_1 \rangle| = 1$, where $q_1 \in Q$ 
-						\item $q_0 \in Q$ a start state,
-						\item $F \subseteq Q$ the set of the acceptor states.
-					\end{itemize}	
-			\end{dfn}
-
-			The semantic is the following : 
-			On input $e$, where $e \in \Sigma$, if the token is on State $s$ the next state will be $s'$ where % TODO Remove token from semantics
-			$\delta_d \langle s,e,s' \rangle$. For short, from now we will use $s \rightarrow s'$ to shorten this. 
-			
-			The regular expression of the example can be compiled to this automaton\footnote{TODO ide kell egy abra a resource automatajarol}:
-			
-			
 
 		
 	\section{Timed Regular Expression}

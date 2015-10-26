@@ -3,7 +3,7 @@
 
 \section{Overview}
 
-The goal of our case study introduced in this chapter is to show the application and working of our hierarchical runtime verification framework. The motivation of this study is the related report from 2014 \citep{tdk2014}, where the goal was a distributed, model based security logic. The work of [1] focused on the model driven development of a safety logic and its application in the Model Railway Project. Our work builds on the hardware and software of [1] and extends it with the runtime verification of:
+The goal of our case study introduced in this chapter is to show the application and working of our hierarchical runtime verification framework. The motivation of this study is the related report from 2014 \citep{tdk2014}, where the goal was a distributed, model based security logic. The work of \citep{tdk2014} focused on the model driven development of a safety logic and its application in the Model Railway Project. Our work builds on the hardware and software of \citep{tdk2014} and extends it with the runtime verification of:
 \begin{itemize}
 	\item The working of the safety logic in the embedded controllers.
 	\item The correctness of the overall system.
@@ -156,10 +156,10 @@ The core of the railroad hardware are the Arduino microcontrollers which collect
 \end{figure}
 
 \section{Metamodel design}
-In this section we proceed through the design of the physical to logical mapping. We operate our safety on this logical model, so it is very important to map all the details of the physical world we need correctly in this model.
+In this section we proceed through the design of the physical to metamodel mapping. We operate our safety on this logical model, so it is very important to map all the details of the physical world we need correctly in this model.
 
 \subsection{Physical elements}
-The only external source of information is the computer vision. The CV forward a train ID (determined by marker color) and position (x, y coordinates) to the model, and we must discretize these informations to make it searchable by our safety logic for hazardous events.
+The only external system level source of information is the computer vision. The CV forwards a train ID (determined by marker color) and position (x, y coordinates) to the model, and we must discretize these informations to make it searchable by our safety logic for hazardous events.
 
 Let us take a look on the main components of the physical system, and what challenges we face:
 \begin{itemize}
@@ -242,35 +242,38 @@ We will follow a bottom-up structure because it helps the graph search (\cref{se
 	``The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.'' \cite{EMF}
 \end{quotation}
 
-We used the EMF tool to create the metamodel of the railway. The main reason for this modeling tool is the dependency to IncQuery, but other reasons motivated the use of it:
+We used the EMF framework to create the metamodel of the railway. The main reason for the usage of this modeling tool is the dependency to IncQuery, but other reasons motivated the use of it:
 \begin{itemize}
-	\item Besides the POJO\footnote{Plain Old Java Object}, EMF can generate an Eclipse based editor for the model, where we can add/remove/edit all the elements, and their properties easily. The editor always checks the model well formed property, and marking the problematic elements.
+	\item Besides the POJO\footnote{Plain Old Java Object}, EMF can generate an Eclipse based editor for the model, where we can add/remove/edit all the elements, and their properties easily. The editor always checks the model well formed property, and marks the problematic elements.
 	\item The framework ensure all the references are valid, by updating them automatically.
 	\item We can make opposite edges, which are forward/backward references across two object. The framework will maintain these references e.g. we assign object A to object B, if they have a bidirectional reference between them, the EMF will automatically update the other side of the reference, in our case the reference from A to B.
 \end{itemize}
 
 \subsection{Building the EMF model}
 
-After the conceptual design of the model, we started the design of the EMF model.
+After the conceptual design of the model, the following step was the design of the EMF model.
 
 It's important while building the EMF model that every element must be a part of exactly one containment tree. If an element is not in a tree or it is in multiple tree, it causes failure while serializing. In \cref{sec:case_study:logical_breakdown} the \emph{TrainModel} and \emph{SectionModel} represents the root of the model.
 
+\begin{samepage}
 \subsection{Introducing the IncQuery}
-
 \begin{quotation}
-	EMF-IncQuery is a framework for defining declarative graph queries over EMF models, and executing them efficiently without manual coding in an imperative programming language such as Java.
+EMF-IncQuery is a framework for defining declarative graph queries over EMF models, and executing them efficiently without manual coding in an imperative programming language such as Java.
 
-	With EMF-IncQuery, you can:
-	\begin{itemize}
-		\item Define model queries using a high level yet powerful query language (supported by state-of-the-art Xtext-based development tools)
-		\item Execute the queries efficiently and incrementally, with proven scalability for complex queries over large instance models
-		\item Integrate queries into your applications using essential feature APIs including IncQuery Viewers, Databinding, Validation and Query-based derived features with notifications.
-	\end{itemize}
+With EMF-IncQuery, you can:
+\begin{itemize}
+	\item Define model queries using a high level yet powerful query language (supported by state-of-the-art Xtext-based development tools)
+	\item Execute the queries efficiently and incrementally, with proven scalability for complex queries over large instance models
+	\item Integrate queries into your applications using essential feature APIs including IncQuery Viewers, Databinding, Validation and Query-based derived features with notifications.
+\end{itemize}
 \end{quotation}
+\end{samepage}
 
+\begin{samepage}
 The motivation of using IncQuery can be found in the nature of our problem. The railway can be depicted as a graph, and we can describe hazardous patterns e.g. two trains next section is the opposite trains next section. These scenarios can be declaratively described by IncQuery patterns, reducing the possibility of a coding failure. 
 
 The other advantage of using the IncQuery framework is scalability. The IncQuery framework -- as its name suggest: incremental query -- is a fast, caching engine based on the RETE algorithm. This framework can follow changes in a very large environment. 
+\end{samepage}
 
 \subsection{Building the IncQuery patterns}
 \label{sec:case_study:pattern_building}
@@ -313,6 +316,7 @@ pattern trainAtNextPowerable(t1: Train) {
 }
 \end{lstlisting}
 
+\newpage
 \cref{lst:case_study:train_at_next_powerable} is a pattern for finding the next powerable group in the direction of. We must do that because the property of the switch group: a train cannot stop on that. With \cref{lst:case_study:train_will_collide} we can filter the hazards in the next group, but if we are on a switch, the train cannot be stopped; the trains might crash. This pattern is specialized in case of a train going towards a switch. We are virtually going through it, and examine the other side. If any train is present, the pattern will match, switching the power off the section.
 \\[1ex]
 
@@ -327,8 +331,6 @@ pattern trainFromDisabled(t: Train) {
 	Train.nextGroup(t, sg);
 }
 \end{lstlisting}
-
-\cref{lst:case_study:train_at_next_powerable} is a pattern for finding the next powerable group in the direction of. We must do that because the property of the switch group: a train cannot stop on that. With \cref{lst:case_study:train_will_collide} we can filter the hazards in the next group, but if we are on a switch, the train cannot be stopped; the trains might crash. This pattern is specialized in case of a train going towards a switch. We are virtually going through it, and examine the other side. If any train is present, the pattern will match, switching the power off the section.
 
 \section{Component-monitor integration}
 
