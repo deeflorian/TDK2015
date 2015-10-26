@@ -200,11 +200,12 @@ We will follow a bottom-up structure because it helps the graph search (\cref{se
 		\item \textbf{SwitchSetting}: Contains a straight, and divergent \emph{configuration} (\cref{fig:case_study:settingmodel}).
 		\item \label{itm:case_study:region} \textbf{Region}: The atomic abstract element of our model, the \emph{region} is the smallest unit of measurement (\cref{fig:case_study:sectionmodel}).
 		\item \textbf{SectionRegion}: Specialized region, which is a part of a \emph{powerable group}. Only powerable section can stop a train (\cref{fig:case_study:sectionmodel}). 
-		\item \textbf{RailRegion}: Specialized region. Because we did not intrested in the position inside the switch, we declare the entire area of the switch as one region (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{RailRegion}: Specialized region. Because we did not interested in the position inside the switch, we declare the entire area of the switch as one region (\cref{fig:case_study:sectionmodel}).
 		\item \label{itm:case_study:group} \textbf{Group}: The group is a collection of regions (\cref{fig:case_study:sectionmodel}).
-		\item \textbf{PowerableGroup}: A collection of \emph{regions} which can shutted of. The equivalent to one rail of the modelled study (\cref{fig:case_study:sectionmodel}).
-		\item \textbf{SwitchGroup}: A group of exacty one \emph{SwichRegion}. Have a reference to a \emph{Configuration}, describing the current switch settings (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{PowerableGroup}: A collection of \emph{regions} which can shut of. The equivalent to one rail of the modelled study (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{SwitchGroup}: A group of exactly one \emph{SwichRegion}. Have a reference to a \emph{Configuration}, describing the current switch settings (\cref{fig:case_study:sectionmodel}).
 	\end{enumerate}
+	\newpage
 	\item \textbf{TrainModel}: The root of all train elements (\cref{fig:case_study:trainmodel}).
 	\begin{enumerate}
 		\item \textbf{Train}: The train representation with an unique ID, the current and previous region (\cref{itm:case_study:region}), and the next group (\cref{itm:case_study:group}) determined by the current, and previous region (\cref{fig:case_study:trainmodel}).
@@ -252,7 +253,7 @@ We used the EMF tool to create the metamodel of the railway. The main reason for
 
 After the conceptual design of the model, we started the design of the EMF model.
 
-It's important while building the EMF model that every element must be a part of exactly one containament tree. If an element is not in a tree or it is in multiple tree, it causes failure while serializing. In \cref{sec:case_study:logical_breakdown} the \emph{TrainModel} and \emph{SectionModel} represents the root of the model.
+It's important while building the EMF model that every element must be a part of exactly one containment tree. If an element is not in a tree or it is in multiple tree, it causes failure while serializing. In \cref{sec:case_study:logical_breakdown} the \emph{TrainModel} and \emph{SectionModel} represents the root of the model.
 
 \subsection{Introducing the IncQuery}
 
@@ -291,7 +292,7 @@ pattern trainAtNextGroup(t1: Train) {
 
 \cref{lst:case_study:train_will_collide} shows an IncQuery example. This pattern matches \verb+t1+ which next group -- if not null, e.g. the train is stationary -- has a different train on it (\verb+t2+).
 
-This example clearly presents the advantage of this declarative expression. With the right metamodel we designed an incrementially executed scalable pattern only with 5 lines of code.
+This example clearly presents the advantage of this declarative expression. With the right metamodel we designed an incrementally executed scalable pattern only with 5 lines of code.
 \\[1ex]
 
 \begin{lstlisting}[caption={Collision detection},label=lst:case_study:train_at_next_powerable]
@@ -333,8 +334,8 @@ pattern trainFromDisabled(t: Train) {
 
 The related study \citep{tdk2014} implemented a model based security logic. With the use of the state chart language presented in \vref{chap:runtime_verification}, we can monitor the state of the model and execution, and verify it on a higher level. In our example, we break the execution of the safety logic in two part:
 \begin{itemize}
-	\item \textbf{Monitoring the execution engine}: If an error occurs while executing the generated code, the monitor will notice it. The resolution of the monitoring is set to 1 second.
-	\item \textbf{Monitoring the transitions of the model}: If the safety logic cannot access it's sensors, or communicate, the model execution will stop because the lack of input. We are capable of the detection of this behavior.
+	\item \textbf{Monitoring the execution engine}: If an error occurs while executing the generated code, the monitor will detect it. The resolution of the monitoring is set to 1 second.
+	\item \textbf{Monitoring the transitions of the model}: If the safety logic cannot access it's sensors, or communicate, the model execution will stop because of the lack of input. We are capable of the detection of this behavior.
 \end{itemize}
 
 \begin{figure}[h]
@@ -359,7 +360,7 @@ The related study \citep{tdk2014} implemented a model based security logic. With
 	\label{fig:case_study:errors}
 \end{figure}
 
-\cref{fig:case_study:clockgen}, and \cref{fig:case_study:errors} shows the concept of our monitor statechart. The statechart \emph{clockGen} generate a periodic clock sign of 1~\si{\second}. In the statecharts \emph{aliveSC} and \emph{transitionSC} we use this clock signal as a timing event. If the expected signals not triggered between two clock cycles, we enter the error state.
+\cref{fig:case_study:clockgen}, and \cref{fig:case_study:errors} shows the concept of our monitor statechart. The statechart \emph{clockGen} generate a periodic clock sign of 1\si{\second}. In the statecharts \emph{aliveSC} and \emph{transitionSC} we use this clock signal as a timing event. If the expected signals not triggered between two clock cycles, the statechart step into error state.
 
 \begin{lstlisting}[caption={Statechart representation of clock generation},label=lst:case_study:clk_gen]
 specification transitionSpec {
@@ -422,7 +423,7 @@ specification aliveSpec {
 \newpage
 \subsection{Generated VEPL}
 
-The state charts definitions from \cref{sec:case_study:mon_sc} generates a VEPL pattern on the system monitor component, therefore we can write patterns, and and define actions for the patterns conclusions.
+The statecharts definitions from \cref{sec:case_study:mon_sc} generates a VEPL pattern of the system monitor component, therefore we can write patterns, and define actions for the patterns matches.
 
 \begin{lstlisting}[caption={Generated VEPL definition},label=lst:case_study:gen_vepl]
 package hu.bme.mit.tdk2015.critcyber.vepl
@@ -431,7 +432,8 @@ AtomicEvent ExecError(id: String)
 AtomicEvent HangError(id: String)
 \end{lstlisting}
 
-We can add rules to this stub, defining patterns for the error states in \cref{lst:case_study:gen_vepl}. 
+\nohyphenation The generated stub (\cref{lst:case_study:gen_vepl}) contains the error states of the statechart as AtomicEvents. With these events, we can build a complex event processing pattern.
+\\[1ex]
 
 \begin{lstlisting}[caption={Extended VEPL definition},label=lst:case_study:ext_gen_vepl]
 package hu.bme.mit.tdk2015.critcyber.vepl
@@ -450,11 +452,11 @@ rule HangErrorRule on HangError {
 }
 \end{lstlisting}
 
-With \cref{lst:case_study:ext_gen_vepl}, we use a very simple pattern to just match the generated events, and handle them. The \verb+ErrorHandler+ class is needed because from the rule we cannot access the model, therefore we need a static class which can modify the state of the model. For example, if this method sets the \verb+safe+ attribute of the \verb+Section+ with the id we informed, the following pattern can match:
+With \cref{lst:case_study:ext_gen_vepl}, we use a very simple pattern to match the generated events, and handle them by defining rules without any condition. We can parametrize the events, so an event itself can mark the source of the validation error. The \verb+ErrorHandler+ class is needed because from the rule, we cannot access the model, therefore we need a static class which can modify the state of the model. For example, if the static method \verb+handleHangError+ sets the \verb+safe+ attribute of the \verb+Group+ with the id we can fetch from the event representing the error state, the \cref{lst:case_study:trainReachUnsafe} pattern can match.
 
 \newpage
-\begin{lstlisting}[caption={Collision detection},label=lst:case_study:train_at_next_powerable]
-pattern unsafe(t: Train) {
+\begin{lstlisting}[caption={Collision detection},label=lst:case_study:trainReachUnsafe]
+pattern trainReachUnsafe(t: Train) {
 	Train.nextGroup(t, ng);
 	Group.safe(ng, safe);
 	check(safe == false);
