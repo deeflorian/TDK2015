@@ -96,7 +96,7 @@ Complex event processing is a method of tracking and analysing streams of inform
 We propose a hierarchical runtime verification approach by combining
 \begin{enumerate}
 \item traditional component-level monitors synthesized from statecharts with 
-\item architecture-level monitors driven by complex event processing
+\item architecture-level monitors that rely on complex event processing.
 \end{enumerate}
 
 \begin{figure}[h]
@@ -107,21 +107,20 @@ We propose a hierarchical runtime verification approach by combining
 \end{figure}
 
 
-Our goals were to provide:
+The goals were:
 \begin{itemize}
-\item easy, high-level and precise specification languages for capturing monitors
-\item automated synthesis of monitors
+\item easy, high-level, and precise specification languages for capturing monitors
+\item the automated synthesis of monitors
 \item hierarchical monitoring
 \end {itemize}
 
-The result is a hierarchical runtime verification framework which can enable verification on two levels (\cref{fig:intro:concept_component}) The framework is capable of:
-\begin{itemize}
-  \item component level verification by monitors generated from a statechart formalism
-  \item system level verification, that can be done by a complex event processing system
-\end{itemize}
-The monitors can generate messages indicating erroneous operation of the monitored components, while the complex event processing system can use the monitors' messages as atomic events for event patterns.
+The result is a hierarchical runtime verification framework which can enable verification on two levels (\cref{fig:intro:concept_component}).
 
-Additionally, the statechart language developed extends the usual statechart formalism by adding support for statechart templates. This enables users to easily describe systems with homogeneous components. The models can also be mapped to a formally verifiable transition system.
+\subsection{Low level monitoring}
+Low level monitoring of the components is achieved by statechart based monitors. The traditional statechart formalism was expanded by adding support for statechart templates and parametric signals. This enables users to easily describe systems with homogeneous components. Erroneous states and transitions can be marked, allowing the monitors to send messages to higher level verification components of the system. Statecharts can also be formally verified.
+
+\subsection{High level monitoring}
+The entirety of the system is monitored using a complex event processing engine. Additionally to monitoring the messaging between components, the system level monitor also receives input from the component level monitors. If erroneous messaging sequences are detected or error signals are received, the system level monitor can check whether the specified safety criteria are still met, or error handling operations (e.g. restart or shutdown of a component or the whole system) are needed.
 
 \begin{figure}[H]
 	\centering
