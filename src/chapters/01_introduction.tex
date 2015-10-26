@@ -101,11 +101,10 @@ We propose a hierarchical runtime verification approach by combining
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\linewidth]{include/figures/chapter_1/rv_vmodel}
-	\caption{Hierarchical verification based on the V model}
-	\label{fig:intro:rvmodel}
+	\includegraphics[width=0.4\linewidth]{include/figures/chapter_6/overview_1}
+	\caption{Overview of the hierarchical runtime verification system}
+	\label{fig:case_study:fov}
 \end{figure}
-
 
 The goals were:
 \begin{itemize}
@@ -117,16 +116,19 @@ The goals were:
 The result is a hierarchical runtime verification framework which can enable verification on two levels (\cref{fig:intro:concept_component}).
 
 \subsection{Low level monitoring}
-Low level monitoring of the components is achieved by statechart based monitors. The traditional statechart formalism was expanded by adding support for statechart templates and parametric signals. This enables users to easily describe systems with homogeneous components. Erroneous states and transitions can be marked, allowing the monitors to send messages to higher level verification components of the system. Statecharts can also be formally verified.
-To make runtime verification possible, a lightweight \verb!C++! monitoring component can be generated from the statecharts. This monitor can then be deployed to run in parallel with the safety critical component. The monitor has an interface to accept signals from the system, enabling the simulation of the desired behavior. Should a state or a transition that has been marked as an error be reached, the monitor's error signaling interface is called. The user can implement this interface to hook the generated error messages to other monitors and components running the safety, or error handling logic of the system. This function makes hierarchic runtime verification possible.
+Low level monitoring of the components is achieved by monitors which can be generated from statecharts. The traditional formalism was expanded by adding support for statechart templates and parametric signals. This enables users to easily describe systems with homogeneous components. Erroneous states and transitions can be marked and specific handler functions can be written to deal with certain errors locally.
+
+The monitors aim to be lightweight components, and as such use \verb!C++!. After generation, they can be deployed to run in parallel with the safety critical component. The monitor has an interface to accept signals from the system, enabling the simulation of the desired behavior.
 
 \subsection{High level monitoring}
-The entirety of the system is monitored using a complex event processing engine. Additionally to monitoring the messaging between components, the system level monitor also receives input from the component level monitors. If erroneous messaging sequences are detected or error signals are received, the system level monitor can check whether the specified safety criteria are still met, or error handling operations (e.g. restart or shutdown of a component or the whole system) are needed.
+The entirety of the system is monitored using a complex event processing engine. This can monitor the messaging between components and detected errors based on the specification of valid messaging sequences. The approach uses pattern matching to detect faulty operation of the system. Should illegal sequences occur, error handling operations (e.g. restart or shutdown of a component or the whole system) can be applied to avoid the violation of safety criteria.
 
-\subsection{Overview of the approach}
+\subsection{Hierarchical monitoring system}
+The low level components can communicate with the system level monitor. This high level monitor can than base it's decisions not only on the messaging sequences between components but also the the signals received from the component level monitors. This way, the system level monitor can decide whether the specified safety criteria are still met and act accordingly. The complete structure of this hierarchical approach can be seen in \cref{fig:intro:rvmodel}.
+
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.4\linewidth]{include/figures/chapter_6/overview_1}
-	\caption{Overview of the hierarchical runtime verification system}
-	\label{fig:case_study:fov}
+	\includegraphics[width=0.8\linewidth]{include/figures/chapter_1/rv_vmodel}
+	\caption{Hierarchical verification based on the V model}
+	\label{fig:intro:rvmodel}
 \end{figure}
