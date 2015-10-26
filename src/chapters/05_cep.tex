@@ -127,6 +127,32 @@
 		$(a \rightarrow f)\{\ast\}$ which means that an infinite sequences of allocation and release are allowed after each other. This is equivalent to the 
 		regular expression : $(af)\ast$.
 
+		\subsection{Deterministic Finite Automaton}
+			To match Regular Expressions, the most common solution is to make an automaton, there are many algorithms for this.  %% TODO Reference?
+			
+			
+			\begin{dfn}
+				\label{dfn:cep:dfea}
+				An Event Automaton (Deterministic Finite Event Automaton in other words) is a $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where: 
+					\begin{itemize}
+						\item $Q$ is a finite, non empty set. These are the states of the automaton,
+						\item $\Sigma$ is a finite, non empty set. This is the Event set of the automaton,
+						\item $\delta_d$ is a set of $\langle Q \times \Sigma \times Q \rangle$ tuples,
+							and the number of outgoing edges from each state for each event is only one 
+							i.e. $\forall q_0 \in Q$ and $\forall e_0 \in \Sigma$ : $|\langle q_0, e_0, q_1 \rangle| = 1$, where $q_1 \in Q$ 
+						\item $q_0 \in Q$ a start state,
+						\item $F \subseteq Q$ the set of the acceptor states.
+					\end{itemize}	
+			\end{dfn}
+
+			The semantic is the following : 
+			On input $e$, where $e \in \Sigma$, if the token is on State $s$ the next state will be $s'$ where % TODO Remove token from semantics
+			$\delta_d \langle s,e,s' \rangle$. For short, from now we will use $s \rightarrow s'$ to shorten this. 
+			
+			The regular expression of the example can be compiled to this automaton\footnote{TODO ide kell egy abra a resource automatajarol}:
+			
+			
+
 		
 	\section{Timed Regular Expression}
 	
@@ -153,15 +179,15 @@
 		
 		\subsection{Timed Event Automaton}
 			\begin{dfn}
-				\label{dfn:cep:TEA}
+				\label{dfn:cep:tea}
 				A Timed Event Automaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
 				\begin{itemize}
-					\item $Q, \Sigma, q_0,$ and $F$ are the same as in Definition \ref{dfn:cep:dfea},
+					\item $Q, \Sigma, q_0,$ and $F$ are the same as in Definition \ref{dfn:cep:ea},
 					\item $t$ is a global clock variable $t \in \mathbb{R}$,
 					\item $T$ is a set of local timeout clocks, i.e. a set of tuples $\langle Q, \RR \rangle$
 					\item and $\delta$ is the union of discrete and timed transitions i.e. $\delta_t \cup \delta_d$ where
 					\begin{itemize}
-						\item $\delta_d$ is defined as in Definition \ref{dfn:cep:dfea},
+						\item $\delta_d$ is defined as in Definition \ref{dfn:cep:ea},
 						\item and $\delta_t$ represents timed transitions and defined as the set of tuples $\langle Q \times \mathbb{R} \times Q \rangle$ 
 					\end{itemize}
 				\end{itemize}
