@@ -113,9 +113,9 @@ We propose a hierarchical runtime verification approach by combining
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.4\linewidth]{include/figures/chapter_6/overview_1}
+	\includegraphics[width=0.4\linewidth]{include/figures/chapter_1/rv_overview}
 	\caption{Overview of the hierarchical runtime verification system}
-	\label{fig:case_study:fov}
+	\label{fig:intro:concept_component}
 \end{figure}
 
 The goals were:
@@ -138,9 +138,9 @@ The entirety of the system is monitored using a complex event processing engine.
 \subsection{Hierarchical monitoring system}
 The low level components can communicate with the system level monitor. This high level monitor can than base it's decisions not only on the messaging sequences between components but also the the signals received from the component level monitors. This way, the system level monitor can decide whether the specified safety criteria are still met and act accordingly. The complete structure of this hierarchical approach can be seen in \cref{fig:intro:rvmodel}.
 
-%\begin{figure}[h]
-%	\centering
-%	\includegraphics[width=0.35\linewidth]{include/figures/chapter_6/overview_1}
-%	\caption{Overview of the hierarchical runtime verification system}
-%	\label{fig:case_study:fov}
-%\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.55\linewidth]{include/figures/chapter_1/rv_vmodel}
+	\caption{Overview of the hierarchical runtime verification system}
+	\label{fig:intro:rvmodel}
+\end{figure}
