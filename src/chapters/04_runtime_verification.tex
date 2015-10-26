@@ -2,7 +2,7 @@
 \label{chap:runtime_verification}
 We propose a statechart language as the modeling method used for the runtime verification of components. Many software is available for component generation or verification based on statecharts. Unfortunately the available solutions for verification and modeling provide limited syntax, and no error marking methods. Both leads to longer development, harder maintenance, and higher costs. The developed statechart language supports the verification of statecharts with parametric signals and timers, and enables the creation of template based statecharts that can be instantiated with parameters.
 \section{Parametric statechart declarations}
-The language allows a specification to consist of multiple statecharts. This feature led to of the main strength of the language: the definition of statechart templates, which can be instantiated parametrically. This results in short descriptions for otherwise complex, but homogeneous systems with many similar components. Statecharts can be parametrized by values of well known data types. Separate statecharts can communicate with each other using signals or global variables.
+The language allows a specification to consist of multiple statecharts. This feature led to of the main strength of the language: the definition of statechart templates, which can be instantiated parametrically. This results in ` descriptions for otherwise complex, but homogeneous systems with many similar components. Statecharts can be parametrized by values of well known data types. Separate statecharts can communicate with each other using signals or global variables.
 \section{Parametric signals}
 Signals can also be parametrized with integer type variables. These parameters can then be used to discriminate between similarly named signal raises, which results in more readable code, by allowing transitions to use the same signal as their trigger, when their functionality is similar.
 \section{Overview}
@@ -14,7 +14,7 @@ For a brief overview of the basic capabilities of the language, see \cref{fig:ve
 	\label{fig:verif}
 \end{figure}
 
-The description of the whole system is enclosed in a specification, which can have multiple statechart, signals, and global variable declarations. Each statechart consists a region and an optional number of local variable declarations. Regions encapsulate states and transitions. Each region must have at least an initial state. A state itself can have an arbitrary number of inner regions, which will run in parallel. States can also have entry and exit actions associated with them. Transitions must have a source and a target state, and can have triggers, guard conditions, and actions. States and transitions can be marked with an error token to indicate that the execution of the transition or the activation of the state is erroneous behaviour. Actions can be variable assignments and signal raises.
+The description of the whole system is enclosed in a specification, which can have multiple statecharts, signals, and global variable declarations. Each statechart consists of a region and an optional number of local variable declarations. Regions encapsulate states and transitions. Each region must have at least an initial state. A state itself can have an arbitrary number of inner regions, which will run in parallel. States can also have entry and exit actions associated with them. Transitions must have a source and a target state, and optional triggers, guard conditions, and actions. States and transitions can be marked with an error token to indicate that the execution of the transition or the activation of the state is erroneous behaviour. Actions can be variable assignments and signal raises.
 
 \section{Language syntax}
 The language has a textual syntax that was designed to be simple without sacrificing expressiveness. The structure aims to be conform visual statechart languages, allowing one-to-one mapping where possible. Hierarchy is expressed by the scoping of elements. The naming of variables is similar to the conventions used by \verb!C!-style programming languages.
@@ -32,9 +32,10 @@ specification Game {
 \end{lstlisting}
 
   \subsection{Statecharts}
+  %TODO template magyaraz
 The syntax for statechart definition would be in the form of:
 \\\\\verb!statechart Presser_G(!\textit{params}\verb!) {...}!\\\\
-where \textit{params} is an optional parameter list, and \verb!{...}! contains the description of the statechart itself. The braces can be omitted if no parameters were specified. Parametrized statecharts can be created from existing templates by providing a value for each parameter and omitting the description. Definitions without parameters are treated as an instantiation of the statechart. The system described by \cref{fig:verif} has no need for parameters, but should an integer type parameter be required, two statecharts could be instantiated as:
+where \textit{params} is an optional parameter list, and \verb!{...}! contains the description of the statechart itself. The parenthesis can be omitted if no parameters were specified. Parametrized statecharts can be created from existing templates by providing a value for each parameter and omitting the description. Definitions without parameters are treated as an instantiation of the statechart. The system described by \cref{fig:verif} has no need for parameters, but should an integer type parameter be required, two statecharts could be instantiated as:
 
 \begin{lstlisting}
 statechart Presser_Instance1(1) := Presser_G
@@ -43,7 +44,7 @@ statechart Presser_Instance2(2) := Presser_G
 
 A specification must contain at least one instantiated statechart.
   \subsection{Regions}
-Statecharts are structured by the use of regions. At the root of every statechart, a region encloses all of the states. State can have an arbitrary number of inner regions. This plays a fundamental part in the scoping of elements. A region can have both states and transitions. The syntax for regions is:
+Statecharts are structured by the use of regions. At the root of every statechart, a region encloses all of the states. A state can have an arbitrary number of inner regions. This plays a fundamental part in the scoping of elements. A region can have both states and transitions. The syntax for a region is:
 \\\\\verb!region Game {...}!\\\\
 where the \verb!{...}! is the definition of the region's contents. Each region must contain at least an initial state for the model to be valid.
   \subsection{State nodes}
@@ -51,13 +52,8 @@ Regions can contain multiple state nodes. A state node can either be a state or 
 
 \cref{fig:verif} contains a composite state, three initial states, a composite state with two regions, and four simple states and an error state.
 
-\begin{lstlisting}
-statechart Presser_Instance1(1) := Presser_G
-statechart Presser_Instance2(2) := Presser_G
-\end{lstlisting}
-
     \subsubsection{States}
-States can either be atomic states or composite states. An atomic state is a state which does not contain inner regions. All states can contain entry and exit actions, which are executed when entering or exiting the state. Composite states contain one or more inner regions, each with at least an initial state. A state's parent state is it's containing region's containing state, or if the region does not have containing state, the region's containing statechart. Composite states allow users to maintain a clean model by the introduction of hierarchy, and the ability to describe common actions in the parent state.
+States can either be atomic states or composite states. An atomic state is a state which does not contain inner regions. All states can contain entry and exit actions, which are executed when entering or exiting the state. Composite states contain one or more inner regions, each with at least an initial state. A state's parent state is it's containing region's containing state. If the region does not have a containing state, the parent is the region's containing statechart. Composite states allow users to maintain a clean model by the introduction of hierarchy, and the ability to describe common actions in the parent state.
 
 These states could be described without the initial states and inner transitions as:
 
@@ -89,7 +85,7 @@ region P1 {
 \end{lstlisting}
 
     \subsubsection{Choice states}
-Choice states are pseudo states whose outgoing transitions have exactly one guard condition evaluating as true at all times. Choice states let the user create tree-like transition structures with simple guards conditions on each level, instead of rewriting similar, complex guard conditions using a single transition level. This usually results in more readable, modifiable, and expressive models. A choice state could be expressed as:
+Choice states are pseudo states whose outgoing transitions have exactly one of the guard conditions evaluating as true at all times. Choice states let the user create tree-like transition structures with simple guards conditions on each level, instead of rewriting similar, complex guard conditions using a single transition level. This usually results in more readable, modifiable, and expressive models. A choice state could be expressed as:
 
 \begin{lstlisting}
 choice whichPlayerWon
@@ -187,8 +183,8 @@ region P1 {
 An assignment's left hand side has to evaluate to an assignable reference, such as a variable or an array element. The right hand side can be any valid expression.
   \subsection{Timing of transitions and actions}
 Transitions are fired one by one. The firing of a transition means that the triggering signal is consumed. This can result in non-deterministic runs if two transitions share the same trigger and can be enabled simultaneously. Such models can be created but should be avoided, as the order of the transitions is not guaranteed. Actions related to the current transition being taken are all executed in a single step.
-  \subsection{Signalling errors, error propagation}
-States and transitions can be labelled as errors. The syntax is:
+  \subsection{Signaling errors, error propagation}
+States and transitions can be labelled as errors. For states, the syntax is:
 
 \begin{lstlisting}
 region Game {
@@ -198,9 +194,19 @@ region Game {
 }
 \end{lstlisting}
 
-where the \verb!buttonStuck! is a description given by the user. This description is only used for the generation of error messages.
+For transitions, an example would be:
+
+\begin{lstlisting}
+region Game {
+	...
+	transition [Error buttonStuck] from Game to Stuck
+	...
+}
+\end{lstlisting}
+
+The \verb!buttonStuck! string is a description given by the user. This description is only used for the generation of error messages.
   \subsection{Expressions}
-Variables can be used in expressions. Expressions can have an arbitrarily complex structure within the limits of the transition system described in \citep{fapts}. This allows, just to mention a few, the use of array indexing, parenthesis, and common operators in programming languages such as \verb!+!, \verb!-!, \verb!*!, \verb!/!, etc. Assignments' left hand sides must reference a single variable while their right hand side is an expression. Logical expressions are also available (for example expressions using comparison operators). Each expression is a mixture of variables, constants, and operators. For a full reference, see \citep{fapts}.
+Variables can be used in expressions. Expressions can have an arbitrarily complex structure within the limits of the transition system described in \citep{fapts}. This allows the use of array indexing, parenthesis, and common operators in programming languages such as \verb!+!, \verb!-!, \verb!*!, \verb!/! --  just to mention a few. Assignments' left hand sides must reference a single variable while their right hand side is an expression. Logical expressions are also available (for example expressions using comparison operators). Each expression is a mixture of variables, constants, and operators. For a full reference, see \citep{fapts}.
   \subsection{Variables}
 Variables can either be global (accessible to all statecharts) or local (bound to a single statechart in which they were declared). Many types are supported, like characters, integers, and doubles. For a complete list, see \citep{fapts}. Variable declarations are in the form of:
 
@@ -213,31 +219,37 @@ statechart Game {
 
 where local (or global) denotes the scope of the variable of any of the supported types.
 \section{Formal representation}
-To enable formal verification of the defined systems, a mapping tool was developed that can transform specifications to a transition system. This means that the complex concepts of the model have to be flattened out. The transition system used has the following capabilities:
+To enable formal verification of the defined systems, a mapping tool was developed that can generate transition systems (with the syntax described in \citep{fapts}) from statechart specifications. This means that complex concepts of the model have to be flattened out. The transition system used has the following major capabilities:
 \begin{itemize}
   \item multiple independent transition systems can be defined
   \item these systems are enclosed in a specification
   \item transition systems can use local and global variables
   \item the state of a transition system can be defined as a vector of all referenced variables
   \item multiple states can be represented by expressions that restrict certain variables' values and leaves the rest of them unbound
-  \item such restrictions are logical formulas with variables, that may use =, <, >, and, or, etc...
+  \item such restrictions are logical formulas with variables
   \item transition systems have transitions that represent changes of state using the referenced variables previous and current values
 \end{itemize}
   \subsection{Specification}
-The specification of the statechart language is mapped to the specification of the transition system. Global variables cannot be declared in the specification itself, they must be present in all of the transition systems that use them. Signals will be mapped to global variables.
+The specification of the statechart language is mapped to the specification of the transition system. Global variables cannot be declared in the transition specification itself, they must be referenced in each transition system that uses them. Signals will be mapped to global variables.
   \subsection{Statecharts}
-Each statechart is mapped to a separate transition system. As transition systems are treated like they are running in parallel, this models the original behaviour of the statecharts - they define systems that can communicate with each other but are running independently. Local variables have the same representation and need no conversion.
+Each statechart is mapped to a separate transition system. These transition systems model systems running in parallel, which models the behaviour of the separate statecharts - they define systems that can communicate with each other but are running independently. Local variables in statecharts have the same local representation after mapped, and need no conversion.
   \subsection{Regions}
 A transition system does not support hierarchical structures -- they are flat models. This means that all regions, states, and transitions inside a statechart are mapped directly into a transition system.
   \subsection{States}
-States are represented as boolean variables that signal whether the state is currently active or not. As entry and exit actions are unknown concepts in a transition system, these actions are propagated to all of the incoming and outgoing transitions of the state. This way any transition that would result in the entering or exiting of the state executes the appropriate actions.\\
+States are represented as boolean variables that indicate whether a state is currently active or not. As entry and exit actions are unknown concepts in a transition system, these actions are propagated to all of the incoming and outgoing transitions of the state. This way any transition that would result in the entering or exiting of the state executes the appropriate actions.
+
 Composite states entry and exit actions and their incoming and outgoing transitions are propagated to the atomic states inside them. This means that only atomic states are represented in the transition systems.
   \subsection{Transitions}
-Transitions between states are transitions in the formal model too. For a transition to be enabled, guard conditions has to evaluate to \verb!TRUE! for the current state of the system, the source state has to be currently enabled (meaning that the source state's boolean variable is true), and the transition should have no trigger or the triggering signal's boolean variable has to be true (representing that it was raised). When the transition fires in the formal model, the exit actions, the actions associated with the transition, and the needed entry actions of the appropriate states occur.  
+Transitions between states are transitions in the transition system too. For a transition to be enabled, guard conditions have to evaluate as \verb!TRUE! for the current state of the system, the source state has to be enabled (meaning that the source state's boolean variable is true), and the transition should have no trigger or the triggering signal's boolean variable has to be true (representing that it was raised). When the transition fires in the formal model:
+\begin{enumerate}
+  \item the exit actions,
+  \item the actions associated with the transition,
+  \item and the entry actions of the appropriate states occur.
+\end{enumerate}
   \subsection{Signals}
-Signals can be used for communication between statecharts. As such, each transition system that references a signal need to be able to check whether the signal was raised. Therefore, in the formal model signals are represented as a set of global boolean variables. The variable is true if the signal has been raised since the previous timestep was taken. As each statechart referencing the signal might react to it by the firing of a transition triggered by the signal, a separate global boolean is used for each transition system. Since each signal can only trigger a single transition inside any given statechart, more complexer solutions are not needed. The parameters of the signals are stored and can be referenced as global integer variables.
+Signals can be used for communication between statecharts. As such, each transition system that references a signal needs to be able to check whether the signal was raised. Therefore, in the formal model signals are represented as a set of global boolean variables. The variable is true if the signal has been raised since the previous timestep. As each statechart referencing the same signal might react to it by the firing of a transition triggered by the signal, a separate global boolean is used for each transition system. Since each signal can only trigger a single transition inside any given statechart, more complexer solutions are not needed. As signals are stored as booleans, the parameters are stored and can be referenced as global integer variables.
   \subsection{Timeouts}
-Timeouts are signals that are raised with an offset in the time domain. Handling timeouts in a transition system is a well researched area \citep{dutertre2004timed}. A separate timing system is created as a transition system to generate simulate timesteps. The system has a variable that stores the current time and each signal has a helper variable that represents when the signal has to be raised. If a timeout is set, the offset of the timeout is added to the current time and this value is assigned to the helper variable. The timing system has a constantly enabled transition which increments the current time if no timeout can occur. For each timeout a transition is defined that is enabled when the current time is equal to the time stored in the helper variable. When this transition happens, the signal is raised. The helper variables are set to -1 by default to prevent false signal raises based on timeouts.
+Timeouts are signals that are raised with an offset in the time domain. Handling timeouts in a transition system is a well researched area \citep{dutertre2004timed}. A separate timing system is created as a transition system to generate simulate timesteps. The system has a variable that stores the current time and each signal has a helper variable that represents when the signal has to be raised next. If a timeout is set, the offset of the timeout is added to the current time and this value is assigned to the helper variable. The timing system has a constantly enabled transition which increments the current time if no timeout can occur. For each timeout a transition is defined that is enabled when the current time is equal to the time stored in the helper variable. When this transition happens, the signal is raised. The helper variables are set to -1 by default to prevent false signal raises based on timeouts.
   \subsection{Variables and expressions}
 Variable types are the same as in the statechart model. Global variables remain global ones, and local variables that are declared inside statecharts are mapped to local variables inside systems. Expressions need no further flattening as the expression library used by the transition system language and the statechart language is the same.
   \subsection{Verification}
