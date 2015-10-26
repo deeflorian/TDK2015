@@ -9,40 +9,7 @@ The goal of our case study introduced in this chapter is to show the application
 	\item The correctness of the overall system.
 \end{itemize}
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/overview_1}
-	\caption{Overview of the hierarchical runtime verification system}
-	\label{fig:case_study:fov}
-\end{figure}
-
-In this section at first we overview those concepts of the Model Railway Project which are important from our point of view. Then the extended runtime verification architecture is introduced both the hardware and software components.
-
-It's important to notice that our solution is not tailored to this special problem but it is a general approach for any critical system.
-
-\section{Concept}
-
-Our main goal with this study is to develop a method which can integrate multiple safety logic into a global runtime verification, increasing the reliability of the complete system.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/concept_1}
-	\caption{Associations between operation, and runtime verification components}
-	\label{fig:case_study:concept_component}
-\end{figure}
-
-\cref{fig:case_study:concept_component} shows the main relation between the operation, and runtime verification domain. With component level verification -- in out case with embedded monitors -- we can verify each component runtime state. The system level verification observes the overall state of the system. If any of the components reports failure, we can make a decision based on the remaining components abilities to support the system verification. If we can provide safety despite component failures, the system can continue operation.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.75\linewidth]{include/figures/chapter_6/concept_2}
-	\caption{Sensor, and monitor relation}
-	\label{fig:case_study:concept_communication}
-\end{figure}
-
-In our case (\cref{fig:case_study:concept_communication}), there are embedded components, and one system level component.
-
-\section{System level verification with computer vision}
+\section{System level observation with computer vision}
 
 \subsection{Hardware}
 \label{sec:case_study:hardware}
@@ -364,7 +331,7 @@ pattern trainFromDisabled(t: Train) {
 
 \section{Component-monitor integration}
 
-The related study\citep{tdk2014} implemented a model based security logic. With the use of the state chart language presented in \vref{chap:runtime_verification}, we can monitor the state of the model and execution, and verify it on a higher level. In our example, we break the execution of the safety logic in two part:
+The related study \citep{tdk2014} implemented a model based security logic. With the use of the state chart language presented in \vref{chap:runtime_verification}, we can monitor the state of the model and execution, and verify it on a higher level. In our example, we break the execution of the safety logic in two part:
 \begin{itemize}
 	\item \textbf{Monitoring the execution engine}: If an error occurs while executing the generated code, the monitor will notice it. The resolution of the monitoring is set to 1 second.
 	\item \textbf{Monitoring the transitions of the model}: If the safety logic cannot access it's sensors, or communicate, the model execution will stop because the lack of input. We are capable of the detection of this behavior.
@@ -374,9 +341,11 @@ The related study\citep{tdk2014} implemented a model based security logic. With 
 	\centering
 	\includegraphics[width=0.3\linewidth]{include/figures/chapter_6/statecharts/clock}
 	\caption{Clock generation state chart}
-	\label{fig:case_study:fov}
+	\label{fig:case_study:clockgen}
 \end{figure}
 
+\subsection{Monitor statecharts}
+\label{sec:case_study:mon_sc}
 
 \begin{figure}[h]
 	\centering
@@ -387,9 +356,149 @@ The related study\citep{tdk2014} implemented a model based security logic. With 
 		\includegraphics[width=0.9\linewidth]{include/figures/chapter_6/statecharts/ontransition}
 	\end{minipage}
 	\caption{Error detection state machines}
-	\label{fig:case_study:}
+	\label{fig:case_study:errors}
 \end{figure}
 
+\cref{fig:case_study:clockgen}, and \cref{fig:case_study:errors} shows the concept of our monitor statechart. The statechart \emph{clockGen} generate a periodic clock sign of 1~\si{\second}. In the statecharts \emph{aliveSC} and \emph{transitionSC} we use this clock signal as a timing event. If the expected signals not triggered between two clock cycles, we enter the error state.
+
+\begin{lstlisting}[caption={Statechart representation of clock generation},label=lst:case_study:clk_gen]
+specification transitionSpec {
+    signal clk
+    statechart clockSC {
+        region clockSC {
+            initial state i
+            state clock {
+                entry: raise clk after 1000
+            }
+            transition from clock to clock on clk
+        }
+    }
+}
+\end{lstlisting}
+
+\newpage
+\begin{lstlisting}[caption={Statechart representation of hang error detection},label=lst:case_study:hang_error]
+specification transitionSpec {
+    signal clk
+    signal onTransition
+    statechart transitionSC {
+        local x : integer
+        region transitionSC {
+            initial state i
+            state Check
+            state HangError
+            choice errorDetection
+            transition from i to Check
+            transition from Check to errorDetection on clk
+            transition from errorDetection to HangError [x=0]
+            transition from errorDetection to Check [x/=0] / assign x:=0
+            transition from Check to Check on onTransition / assign x:=1
+        }
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Statechart representation of hang error detection},label=lst:case_study:hang_error]
+specification aliveSpec {
+    signal clk
+    signal onAlive
+    statechart aliveSC {
+        local x : integer
+        region aliveSC {
+            initial state i
+            state Check
+            state ExecError
+            choice errorDetection
+            transition from i to Check
+            transition from Check to errorDetection on clk
+            transition from errorDetection to ExecError [x=0]
+            transition from errorDetection to Check [x/=0] / assign x:=0
+            transition from Check to Check on onAlive / assign x:=1
+        }
+    }
+}
+\end{lstlisting}
+
+\newpage
+\subsection{Generated VEPL}
+
+The state charts definitions from \cref{sec:case_study:mon_sc} generates a VEPL pattern on the system monitor component, therefore we can write patterns, and and define actions for the patterns conclusions.
+
+\begin{lstlisting}[caption={Generated VEPL definition},label=lst:case_study:gen_vepl]
+package hu.bme.mit.tdk2015.critcyber.vepl
+
+AtomicEvent ExecError(id: String)
+AtomicEvent HangError(id: String)
+\end{lstlisting}
+
+We can add rules to this stub, defining patterns for the error states in \cref{lst:case_study:gen_vepl}. 
+
+\begin{lstlisting}[caption={Extended VEPL definition},label=lst:case_study:ext_gen_vepl]
+package hu.bme.mit.tdk2015.critcyber.vepl
+
+AtomicEvent ExecError(id: String)
+AtomicEvent HangError(id: String)
+
+rule ExecErrorRule on ExecError {
+	System.out.println("Error source id: " + ruleInstance.atom.parameterTable.parameterBindings.head.value);
+	ErrorHandler::handleExecError(ruleInstance.atom.parameterTable.parameterBindings.head.value)
+}
+
+rule HangErrorRule on HangError {
+	System.out.println("Error source id: " + ruleInstance.atom.parameterTable.parameterBindings.head.value);
+	ErrorHandler::handleHangError(ruleInstance.atom.parameterTable.parameterBindings.head.value)
+}
+\end{lstlisting}
+
+With \cref{lst:case_study:ext_gen_vepl}, we use a very simple pattern to just match the generated events, and handle them. The \verb+ErrorHandler+ class is needed because from the rule we cannot access the model, therefore we need a static class which can modify the state of the model. For example, if this method sets the \verb+safe+ attribute of the \verb+Section+ with the id we informed, the following pattern can match:
+
+\newpage
+\begin{lstlisting}[caption={Collision detection},label=lst:case_study:train_at_next_powerable]
+pattern unsafe(t: Train) {
+	Train.nextGroup(t, ng);
+	Group.safe(ng, safe);
+	check(safe == false);
+} or {
+	Train.currentlyOn(t, co);
+	Group.regions(g, co);
+	
+	Train.nextGroup(t, ng);
+	PowerableGroup(ng);
+	find regionNeighbour(ng, nng);
+	nng != g;
+	
+	Group.safe(nng, nng_safe);
+	nng_safe == true;
+} or {
+	Train.currentlyOn(t, co);
+	Group.regions(g, co);
+	
+	Train.nextGroup(t, ng);
+	SwitchGroup(ng);
+	SwitchGroup.configuration.enabled(ng, enabled);
+	enabled != g;
+	
+	Group.safe(enabled, nng_safe);
+	nng_safe == true;
+}
+\end{lstlisting}
+
+This pattern filters the trains, which second next track is unsafe. This middle buffer rail needed because we cannot be sure about the unsafe track state (\cref{fig:case_study:unsafe}), and if an other train coming toward us, there is a chance we cannot stop it. Because this chance, we need to insert a buffer middle track. This track can stop a train if one comes toward the other (\cref{fig:case_study:safe}). This is one example of runtime verification: we get notified about the component failures, and the higher level logic can act before the catastrophe.
+
+\newpage
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{include/figures/chapter_6/failsafe/safe}
+	\caption{Safe configuration. On the buffer state, the train from the failed group can be stopped}
+	\label{fig:case_study:safe}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/failsafe/unsafe}
+	\caption{Unsafe configuration. If a train coming towards us, we will crash}
+	\label{fig:case_study:unsafe}
+\end{figure}
 
 \section{Summary}
 

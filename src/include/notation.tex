@@ -20,10 +20,8 @@
 %
 
 \lstdefinelanguage{IncQuery}{
-  keywords={pattern},
+  keywords={pattern, specification,signal,statechart,local,region,initial,state,choice,transition,from,to,assign,package,AtomicEvent,import-queries,or},
   keywordstyle=\color{blue}\bfseries,
-  ndkeywords={class, export, boolean, throw, implements, import, this},
-  ndkeywordstyle=\color{darkgray}\bfseries,
   identifierstyle=\color{black},
   sensitive=false,
   comment=[l]{//},
@@ -31,7 +29,8 @@
   commentstyle=\color{purple}\ttfamily,
   stringstyle=\color{red}\ttfamily,
   morestring=[b]',
-  morestring=[b]"
+  morestring=[b]",
+  alsoletter=-
 }
 
 \lstset{
