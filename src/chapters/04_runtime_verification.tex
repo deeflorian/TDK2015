@@ -13,6 +13,9 @@ For a brief overview of the language, see the example statechart and it's textua
 	\caption{A simple statechart}
 	\label{fig:verif}
 \end{figure}
+
+The description of the whole system is enclosed in a specification, which can have multiple statechart, signals, and global variable declarations. Each statechart consists a region and an optional number of local variable declarations. Regions encapsulate states and transitions. Each region must have at least an initial state. A state itself can have an arbitrary number of inner regions, which will run in parallel. States can also have entry and exit actions associated with them. Transitions must have a source and a target state, and can have triggers, guard conditions, and actions. States and transitions can be marked with an error token to indicate that the execution of the transition or the activation of the state is erroneous behaviour. Actions can be variable assignments and signal raises.
+
 \begin{lstlisting}
 specification exSpec {
   global gVar : integer
@@ -38,7 +41,7 @@ specification exSpec {
   }
 }
 \end{lstlisting}
-The description of the whole system is enclosed in a specification, which can have multiple statechart, signals, and global variable declarations. Each statechart consists a region and an optional number of local variable declarations. Regions encapsulate states and transitions. Each region must have at least an initial state. A state itself can have an arbitrary number of inner regions, which will run in parallel. States can also have entry and exit actions associated with them. Transitions must have a source and a target state, and can have triggers, guard conditions, and actions. States and transitions can be marked with an error token to indicate that the execution of the transition or the activation of the state is erroneous behaviour. Actions can be variable assignments and signal raises.
+
 \section{Language syntax}
   \subsection{Specification}
 Modelling the whole system as a single statechart would result in an overly complex statechart. Systems can usually be described as independent components that can communicate with each other. Therefore, an enclosing specification is used for the description of the whole system, within which statecharts can be declared as (mostly) independently operating components. Each specification can contain multiple statecharts. To enable communication between statecharts, global variable declarations and signal declarations are placed in the specification itself.
