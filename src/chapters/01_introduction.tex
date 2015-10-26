@@ -19,7 +19,7 @@ Formal verification can also be used to give proof that the verified parts match
 \subsection{Runtime verification}
 
 Runtime verification is a method for the inspection of running systems. The motivation of the approach is the complexity of design time verification. As systems are getting larger, the application of formal methods are more and more limited as the resources needed for verification cannot be realized. This means that formal verification methods must verify an abstract model, not the deployed system itself. In addition, specifications are rarely complete, and design time methods can rarely handle hardware errors.\\
-Runtime verification uses monitors to observe certain (usually critical) components, checking whether their operation violates properties described by the specification. This has the advantage of detecting the erroneous operation of the system, and allowing systematic safety engineering for handling faults, or trigger an emergency shutdown if necessary.
+Runtime verification uses monitors to observe certain (usually critical) components, checking whether their operation violates properties described by the specification. The usage of monitoring components can result in significantly smaller monitors than the component itself as multiple levels of abstraction can be used, as long as the error states remain distinguishable. This has the advantage of detecting the erroneous operation of the system, and allowing systematic safety engineering for handling faults, or trigger an emergency shutdown if necessary.
 
 \section{Systems engineering methods}
 
@@ -118,19 +118,12 @@ The result is a hierarchical runtime verification framework which can enable ver
 
 \subsection{Low level monitoring}
 Low level monitoring of the components is achieved by statechart based monitors. The traditional statechart formalism was expanded by adding support for statechart templates and parametric signals. This enables users to easily describe systems with homogeneous components. Erroneous states and transitions can be marked, allowing the monitors to send messages to higher level verification components of the system. Statecharts can also be formally verified.
+To make runtime verification possible, a lightweight \verb!C++! monitoring component can be generated from the statecharts. This monitor can then be deployed to run in parallel with the safety critical component. The monitor has an interface to accept signals from the system, enabling the simulation of the desired behavior. Should a state or a transition that has been marked as an error be reached, the monitor's error signaling interface is called. The user can implement this interface to hook the generated error messages to other monitors and components running the safety, or error handling logic of the system. This function makes hierarchic runtime verification possible.
 
 \subsection{High level monitoring}
 The entirety of the system is monitored using a complex event processing engine. Additionally to monitoring the messaging between components, the system level monitor also receives input from the component level monitors. If erroneous messaging sequences are detected or error signals are received, the system level monitor can check whether the specified safety criteria are still met, or error handling operations (e.g. restart or shutdown of a component or the whole system) are needed.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.65\linewidth]{include/figures/chapter_1/rv_overview}
-	\caption{Associations between operation, and runtime verification components}
-	\label{fig:intro:concept_component}
-\end{figure}
-
-With component level verification -- in out case with embedded monitors -- we can check the runtime state of each component. The system level verification observes the overall state of the system. If any of the components reports failure, we can make a decision based on the remaining components abilities to support the system verification. If we can provide safety despite component failures, the system can continue operation.
-
+\subsection{Overview of the approach}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.4\linewidth]{include/figures/chapter_6/overview_1}

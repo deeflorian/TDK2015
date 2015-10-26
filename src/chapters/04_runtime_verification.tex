@@ -1,6 +1,6 @@
-\chapter{Runtime verification of embedded systems}
+\chapter{Statechart language}
 \label{chap:runtime_verification}
-Many software is available for code generation and verification based on statecharts. Unfortunately the available solutions for verification and modeling provide limited syntax, and code generation usually results in poor quality code. Both leads to longer development, harder maintenance, and higher costs. The developed statechart language supports the verification of statecharts with parametric signals and timers, and enables the creation of template based statecharts that can be instantiated with parameters. For monitor generation, our approach was to generate easily readable, extensible, object oriented code, that can run in environments with limited resources -- primarily embedded systems.
+We propose a statechart language as the modeling method used for the runtime verification of components. Many software is available for component generation or verification based on statecharts. Unfortunately the available solutions for verification and modeling provide limited syntax, and no error marking methods. Both leads to longer development, harder maintenance, and higher costs. The developed statechart language supports the verification of statecharts with parametric signals and timers, and enables the creation of template based statecharts that can be instantiated with parameters.
 \section{Parametric statechart declarations}
 The language allows a specification to consist of multiple statecharts. This feature led to of the main strength of the language: the definition of statechart templates, which can be instantiated parametrically. This results in short descriptions for otherwise complex, but homogeneous systems with many similar components. Statecharts can be parametrized by values of well known data types. Separate statecharts can communicate with each other using signals or global variables.
 \section{Parametric signals}
@@ -176,8 +176,9 @@ Timeouts are signals that are raised with an offset in the time domain. Handling
 Variable types are the same as in the statechart model. Global variables remain global ones, and local variables that are declared inside statecharts are mapped to local variables inside systems. Expressions need no further flattening as the expression library used by the transition system language and the statechart language is the same.
 %  \subsection{Verification}
 %The verification of the mapped system is based on LTL expressions. These can be defined at the end of the specification. (TODO?)
-\section{Accepting monitor}
-Runtime verification of safety critical components can be done by a monitoring component that checks the current state. This can result in significantly smaller monitors than the component itself as multiple levels of abstraction can be used as long as the error states remain distinguishable. To make runtime verification possible, a lightweight \verb!C++! monitoring component can be generated from the described statecharts. This monitor can then be deployed to run in parallel with the safety critical component. The monitor has an interface to accept signals from the system, enabling the simulation of the desired behavior. Should a state or a transition that has been marked as an error be reached, the monitor's error signaling interface is called. The user can implement this interface to hook the generated error messages to other monitors and components running the safety, or error handling logic of the system. This function makes hierarchic runtime verification possible.
+\chapter{Synthesis of monitors}
+Current methods for statechart based code generation usually result in poor quality code. We propose a method for monitor generation based on the statechart language described in \vref{runtime_verification}. Our approach was to generate easily readable, extensible, object oriented \verb!C++! code, that can run in environments with limited resources -- primarily embedded systems.
+\section{Mapping of elements}
   \subsection{Specification}
 A specification consists of separate statecharts. To simplifying their handling, a class was created called \verb!StatechartRegistry! that can automatically iterate through each statechart and update their state one timestep at a time. This class is also responsible for the initialization process of the monitor. The name of the class does not represent the whole specification as global variables and signals are handled by utility classes.
   \subsection{Statecharts}
@@ -208,9 +209,10 @@ The assignments and expressions that can be used in the statechart language are 
   \subsection{Variables}
 The variable types of the statechart language are plain old data types in C++. Local variables are converted to global variables with fully qualified names. This allows a variable container class to be created which holds all of the variables and allows unified usage.
 \section{Implementation}
-The implementation of the monitoring component can raise many questions about timing. To generate working, and easily usable code additional helper classes and extra functions for the already described ones are required. The most important ones are described in this section.
+The implementation of the monitoring component can raise many questions about timing issues. To generate working, and easily usable code additional helper classes and extra functions for the already described ones are required. As such, the most important utility classes are also described in this section.
   \subsection{Timing related issues}
-The generated monitoring component will run on a real hardware. This means that the system can only take a limited number of transitions per second. Aiming for a lightweight component, there is a settable sleep and timeout period. The default implementation of the utility classes enables the user to set this period with millisecond precision.\\
+The generated monitoring component will run on a real hardware. This means that the system can only take a limited number of transitions per second. Aiming for a lightweight component, there is a settable sleep and timeout period. The default implementation of the utility classes enables the user to set this period with millisecond precision.
+
 For each timestep, the monitor:
 \begin{enumerate}
   \item wakes up
