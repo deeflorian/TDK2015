@@ -41,40 +41,46 @@
 		\begin{table}
 		\caption{Basic operators}		
 		\label{tab:cep:veplop}
-		\begin{tabular}{lcm{6cm}}
-		\centering
-		Operator name &	Denotation & Meaning \\
-		followed by & p1 $\rightarrow$ p2 & Both patterns have to appear in the specified order. \\
-		or &	p1 OR p2 &	One of the patterns has to appear. \\
-		``infinite'' multiplicity &	p\{*\} &	The pattern can appear 0 to infinite times. \\
-		within timewindow &	p[t] &	Once the first element of the pattern is observed (i.e. the patterns ``starts to build up''), the rest of the pattern has to be observed within t milliseconds.
-		\end{tabular}
+			\begin{tabularx}{\textwidth}{llX}
+				\toprule
+				Operator name &	Denotation & Meaning \\
+				\midrule
+				followed by & p1 $\rightarrow$ p2 & Both patterns have to appear in the specified order. \\
+				or & p1 OR p2 &	One of the patterns has to appear. \\
+				``infinite'' multiplicity & p\{*\} & The pattern can appear 0 to infinite times. \\
+				within timewindow &	p[t] & Once the first element of the pattern is observed (i.e. the patterns ``starts to build up''), the rest of the pattern has to be observed within t milliseconds. \\
+				\bottomrule
+			\end{tabularx}
 		\end{table}
 
 		\begin{table}
 		\caption{Syntax sugars}		
 		\label{tab:cep:veplsugar}
-		\begin{tabular}{lcm{6cm}}
-		\centering
-		Operator name &	Denotation & Meaning \\
-		and &	p1 AND p2 &	Both of the patterns has to appear, but the order does not matter.\\
-		negation &	NOT p &	On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
-		multiplicity &	p\{n\} &	The pattern has to appear n times, where n is a positive integer.\\
-		``at least once" multiplicity &	p\{+\} &	The pattern has to appear at least once. \\
-		\end{tabular}
+		\begin{tabularx}{\textwidth}{llX}
+				\toprule
+				Operator name &	Denotation & Meaning \\
+				\midrule
+				and & p1 AND p2 & Both of the patterns has to appear, but the order does not matter.\\
+				negation & NOT p & On atomic pattern: event instance with the given type must not occur. On complex pattern: the pattern must not match. \\
+				multiplicity & p\{n\} & The pattern has to appear n times, where n is a positive integer.\\
+				``at least once" multiplicity & p\{+\} & The pattern has to appear at least once. \\
+				\bottomrule
+			\end{tabularx}
 		\end{table}
 		
 		\begin{table}
-		\caption{Syntax sugars mapped to basic operators}		
-		\label{tab:cep:veplsugartobasic}
-		\begin{tabular}{lcm{6cm}}
-		\centering
-		Operator name &	Denotation & Equivalent \\
-		and &	p1 AND p2 & ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
-		negation &	NOT $p$ & $\Sigma \setminus p$, where $\Sigma$ is the set of all the possible Events. \\
-		multiplicity &	p\{n\} &	p1 $\rightarrow$ p1 $\rightarrow$ \dots p1, n times. \\
-		``at least once" multiplicity &	p\{+\} & p $\rightarrow p\{\ast\}$ \\
-		\end{tabular}
+			\caption{Syntax sugars mapped to basic operators}		
+			\label{tab:cep:veplsugartobasic}
+			\begin{tabularx}{\textwidth}{llX}
+				\toprule
+				Operator name & Denotation & Equivalent \\
+				\midrule
+				and & p1 AND p2 & ((p1 $\rightarrow$ p2) OR (p2 $\rightarrow$ p1)). \\
+				negation & NOT $p$ & $\Sigma \setminus p$, where $\Sigma$ is the set of all the possible Events. \\
+				multiplicity & p\{n\} & p1 $\rightarrow$ p1 $\rightarrow$ \dots p1, n times. \\
+				``at least once" multiplicity & p\{+\} & p $\rightarrow p\{\ast\}$ \\
+				\bottomrule
+			\end{tabularx}
 		\end{table}
 
 		
