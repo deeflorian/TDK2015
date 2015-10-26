@@ -1,11 +1,11 @@
 \chapter{Introduction}
 \label{chap:intro}
 
+\section{Cyber-physical systems}
+
 The design of complex cyber-physical systems is an interdisciplinary process. From an engineering point of view, defining the requirements, designing sufficiently reliable components, dealing with scalability issues, employing testing processes that result in high test coverage, verifying safety critical components, and maintainability issues are all present at the same time. Systems engineering focuses on how to design and manage such systems. \cite{randomwikipedialink1}
 
-Safety-critical systems are systems whose failure could result in loss of life, significant property damage, or damage to the environment. There are many well known examples for application in areas such as medicine, flight control, weapons industries, and nuclear systems. Many modem information systems are becoming safety-critical in a general sense because financial loss and even loss of life can result from their failure. 
-
-Safety-critical systems will be even more common and more influential in the future. From a software perspective, the growing number of such systems result in the need for faster development cycles, which will require significant advances in areas like specification, architecture, and verification, to meet the safety requirements. \cite{safetycritical}
+Safety-critical systems are systems whose failure could result in loss of life, significant property damage, or damage to the environment. There are many well known examples in areas such as medicine, flight control, weapons industries, and nuclear systems. Many modern information systems are becoming safety-critical in a general sense because financial loss and even loss of life can result from their failure. Safety-critical systems will be even more common and more influential in the future. From a software perspective, the growing number of such systems result in the need for faster development cycles, which will require significant advances in areas like specification, architecture, and verification, to meet the safety requirements. \cite{safetycritical}
 
 \section{Verification techniques}
 
@@ -14,16 +14,16 @@ As modern society is becoming more and more dependent on cyber-physical systems,
 \subsection{Design time verification}
 
 Design time verification is a method used for finding errors of the system before deployment. Traditional software development methodologies usually rely on design time approaches. Verification methods can be applied on multiple levels, from small parts to the whole entirety of the system. These processes check the compliance of the system against the specification of the appropriate level.\\
-Formal verification can also be used to give proof that the verified parts match the behavior described by the (also formal) specification. On the other hand, applying formal methods usually have higher costs, and the verification of complex systems can be impossible due to the problem of state space explosion. As a result, the role of formal methods is to verify the correct behavior of system components, and not the entire system.
+Formal verification can also be used to give proof that the verified parts match the behaviour described by the (also formal) specification. On the other hand, applying formal methods usually have higher costs, and the verification of complex systems can be impossible due to the problem of state space explosion. As a result, the role of formal methods is to verify the correct behavior of system components, and not the entire system.
 
 \subsection{Runtime verification}
 
 Runtime verification is a method for the inspection of running systems. The motivation of the approach is the complexity of design time verification. As systems are getting larger, the application of formal methods are more and more limited as the resources needed for verification cannot be realized. This means that formal verification methods must verify an abstract model, not the deployed system itself. In addition, specifications are rarely complete, and design time methods can rarely handle hardware errors.\\
-Runtime verification uses monitors to observe certain (usually critical) components, checking whether their operation violates properties described by the specification. The usage of monitoring components can result in significantly smaller monitors than the component itself as multiple levels of abstraction can be used, as long as the error states remain distinguishable. This has the advantage of detecting the erroneous operation of the system, and allowing systematic safety engineering for handling faults, or trigger an emergency shutdown if necessary.
+Runtime verification uses monitors to observe certain (usually critical) components, checking whether their operation violates properties described in the specification. The usage of monitoring components can result in significantly smaller monitors than the component itself as multiple levels of abstraction can be used, as long as the error states remain distinguishable. This has the advantage of detecting the erroneous operation of the system, and allows systematic safety engineering to handle faults, or trigger an emergency shutdown if necessary.
 
 \section{Systems engineering methods}
 
-Traditional software development methods often use informal specifications to develop system, architecture, and component level designs which can also be informal. This can easily result in higher verification costs or faulty systems, making them suboptimal choices for safety critical software development. To introduce a level of formality and allow manageable, hierarchical software testing procedures, the V model was developed.
+Traditional software development methods often use informal specifications to develop system, architecture, and component level designs -- which can also be informal. This can easily result in higher verification costs or faulty systems, making them suboptimal choices for safety critical software development. To introduce a level of formality and allow manageable, hierarchical software testing procedures, the V model was developed.
 
 \subsection{V model}
 
@@ -36,10 +36,11 @@ A concept of operations is one of the initial stages in a system life cycle base
 	\label{fig:intro:vmodel}
 \end{figure}
 
-\cref{fig:intro:vmodel} shows the stages of development, with a symbolic “V” showing the progression. The project definition stages on the left side begin with the development of a Concept of Operations, continue with Requirements and Architecture, and Detailed Design. The Implementation stage is shown across the base of the ``V'', with an arrow labeled ``Time'' pointing right to left across the bottom of the ``V''. The right side shows the testing and implementation stages of a system, with an upward-pointing arrow for progression. \cite{vmodel}
+\cref{fig:intro:vmodel} shows the stages of development, with a symbolic “V” showing the progression. The project definition stages on the left side begin with the development of a Concept of Operations, continue with Requirements and Architecture, and Detailed Design. The Implementation stage is shown across the base of the ``V''. The right side shows the testing and implementation stages of a system, with an upward-pointing arrow for progression. \cite{vmodel}
 
-The V model is the basic scheme of a software development. In the left leg, we proceed down by decomposing the specifications into architecture level design, and the architecture design into component level designs. Every level of decomposition have it's own specifications. After the implementation process, we verify every levels of decompositions behavior with it's specification.
+The V model is the basic scheme of software development. In the left of the figure, we proceed by decomposing the specification into an architecture level design, and the architectural design into component level designs. Every level of decomposition has it's own specification. After the implementation process, we verify every level's behavior with it's specification.
 
+\subsection{Model driven software development}
 
 Model driven software development (MDSD) emphasizes problem solving by the development and maintenance of models describing the system being designed. MDSD heavily relies on automated code and documentation generation based on the models of components or the overall model of the system. 
 
@@ -47,18 +48,18 @@ Modeling has the advantage of introducing abstractions, thus reducing the comple
 
 Various methods and tools are available for the generation of test cases and monitoring components from models, as well as for formally verifying certain properties. These tools usually support the modeling formalisms used in their application domain.
 
-MDSD is usually accompanied by the Y model -- a software life cycle model for component based systems \citep{ymodel}, extending the V model.
+MDSD is usually accompanied by the Y model -- a software life cycle model for component based systems \citep{ymodel}, which is based on the V model.
 
 \subsection{Y model} % <3
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\linewidth]{include/figures/chapter_1/YModel}
-	\caption{The Y model}
+	\caption{A section of the Y model}
 	\label{fig:intro:vmodel}
 \end{figure}
 
-The Y model \citep{ymodel} is an extension of the V model (which is in turn an extension of the waterfall model) \citep{randomwikipedialink3}, by using code and test case generation. Much like the V model, the development process is partitioned vertically. Each level contains a model that is transformed to a verification model, on which formal methods can be applied. The results of the verification process can be traced back to the original models making iterative improvement possible. The top level is for high level system models, while the second level contains architectural models, and the third one is for component based models. This provides input for the last step, source code and configuration generation for the individual components. Test cases are paired with the source code and can be generated from the component verification models.
+The Y model \citep{ymodel} is an extension of the V model (which is in turn an extension of the waterfall model) \citep{randomwikipedialink3}, by using code and test case generation. Much like the V model, the development process is partitioned vertically. Each level contains a model that is transformed to a verification model, on which formal methods can be applied. The results of the verification process can be traced back to the original models making iterative improvement possible. The top level is for high level system models, while the second level contains architectural models, and the third one is for component based models. This provides input for the source code and configuration generation for the individual components. Test cases are paired with the source code and can be generated from the component verification models.
 
 \subsection{Modeling languages on different abstraction levels}
 
@@ -67,13 +68,13 @@ As a result, standardized modeling languages were developed like the UML (Unifie
 
 \subsubsection{Finite automaton}
 
-Formal modelling a system with finite state space is often done by using finite automata -- also known as finite state machines. A finite automaton accepts a (finite) list of symbols and produces a computation of the automaton for each input list.
-Although finite automata can be easily visualized, this formalism describes a simple, flat transition system and lacks the support for higher level concepts. The development of finite automata models  are supported by many tools (e.g.: \citep{fsmd}).
+The modeling of systems with finite state space is often done by using finite automata -- also known as finite state machines. A finite automaton accepts a (finite) list of symbols and produces a computation of the automaton for each input list.
+Although finite automata can be easily visualized, this formalism describes a simple, flat transition system and lacks the support for higher level concepts. The development of finite automata models  are supported by many tools (e.g.: Finite State Machine Designer \citep{fsmd}).
 
 \subsubsection{Statechart}
 
 Statecharts, also known as state machines are an extension of finite automata. There are multiple available syntaxes for statecharts (e.g. the one defined by UML \citep{stcuml}). The higher level concepts that were introduced include variables, actions, and hierarchically nested states. Event-driven execution is also possible by using signals as the triggers of transitions. Available variable types heavily depend on the concrete semantics of the chosen statechart language. Actions can usually be variable assignments, signal raises, or the setting of timers. Hierarchy lets users organize system descriptions using a top-down approach. Support for hierarchy is introduced via nested states and parallel regions. States can also have entry and exit actions, which allows the description of common functionality in parent states \citep{stcmove}.\\
-Statecharts are usually created by tools that support the graphical design of the model (e.g.: \citep{yakinduu}, an Eclipse based editor).
+Statecharts are usually created by tools that support the graphical design of the model (e.g.: Yakindu \citep{yakinduu}, an Eclipse based editor).
 
 \subsubsection{Message Sequence Chart}
 
@@ -82,7 +83,7 @@ The formalism of message sequence charts (MSC) describes the communication betwe
 \section{Model based tools}
 
 \subsection{Eclipse Modeling Framework}
-The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.'' \cite{EMF}
+The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor. \cite{EMF}
 
 \subsection{EMF-IncQuery}
 EMF-IncQuery is a framework for defining declarative graph queries over EMF models, and executing them efficiently without manual coding in an imperative programming language such as Java. \cite{IncQuery}
@@ -135,7 +136,7 @@ The monitors aim to be lightweight components, and as such use \verb!C++!. After
 \subsection{High level monitoring}
 The entirety of the system is monitored using a complex event processing engine. This can monitor the messaging between components and detected errors based on the specification of valid messaging sequences. The approach uses pattern matching to detect faulty operation of the system. Should illegal sequences occur, error handling operations (e.g. restart or shutdown of a component or the whole system) can be applied to avoid the violation of safety criteria.
 
-\subsection{Hierarchical monitoring system}
+\subsection{Hierarchical monitoring approach}
 The low level components can communicate with the system level monitor. This high level monitor can than base it's decisions not only on the messaging sequences between components but also the the signals received from the component level monitors. This way, the system level monitor can decide whether the specified safety criteria are still met and act accordingly. The complete structure of this hierarchical approach can be seen in \cref{fig:intro:rvmodel}.
 
 \begin{figure}[h]
