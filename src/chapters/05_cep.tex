@@ -83,18 +83,37 @@
 		formalism is a Regular Expression, where the alphabet is the set of possible events.
 		
 		\begin{dfn}
-			\label{dfn:cep:tre}
+			(Left Derivate).\footnote{reference timed.pdf}
+			For every two sequences $u$ and $v$ the left derivate of $u$ by $v$
+			is a partial function defined as:
+			
+			\[ v \setminus u
+				\begin{cases}
+					w & \text{ if } \exists w,u = vw \\
+					\perp & \text{otherwise}
+				\end{cases}
+			\]
+			
+			In other words, $v \setminus u$ is defined if $v$ is a prefix of $u$,
+			and in that case $v$ is removed.
+		\end{dfn}
+		
+		\begin{dfn}
+			(Absorbing concatenation).
+			The partial operator $u \circ v$ on \mathcal{T} is defined as:
+			\[ u \circ v = u \cdot (\lambda(u) \setminus v) \]
+		\end{dfn}
+		
+		\begin{dfn}
+			\label{dfn:cep:re}
 			Regular Expressions over an alphabet $\Sigma$ (also referred to as $\Sigma$-expressions)
 			are defined using the following families of rules.
 			\begin{enumerate}
 				\item \underline{$a$} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.
 				\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions then
 					$\varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.
-				\item If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi^\circledast$ are
+				\item If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi_1 \wedge \varphi_2 , \varphi^\circledast$ are
 					$\Sigma$-expressions.
-				\item If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
-					for some alphabet $\Sigma_0$, and $\Theta$ : $\Sigma_0 \rightarrow \Sigma$ is
-					a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions.
 			\end{enumerate}
 		\end{dfn}
 		
