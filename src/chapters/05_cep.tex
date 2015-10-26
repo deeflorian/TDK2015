@@ -345,7 +345,7 @@
 			
 			
 			
-			$(a(\mathit{task},\mathit{_resource})\ast r(\mathit{task},\mathit{_resource})\ast a(\mathit{task},\mathit{_resource}))|( \langle a(\mathit{task},\mathit{_resource}) \ast \rangle_{t < 10 s} r(\mathit{task},\mathit{_resource}) \ast)$
+			$(a(\mathit{task},\mathit{\_resource})\ast r(\mathit{task},\mathit{\_resource})\ast a(\mathit{task},\mathit{\_resource}))|( \langle a(\mathit{task},\mathit{\_resource}) \ast \rangle_{t < 10 s} r(\mathit{task},\mathit{\_resource}) \ast)$
 		
 			\subsection{Parametric Timed Region Automaton}
 				
@@ -457,8 +457,8 @@
 						\end{enumerate}			
 				\end{enumerate}
 
-				The automaton of expression $(a(\mathit{task},\mathit{_resource})\ast r(\mathit{task},\mathit{_resource})\ast a(\mathit{task},\mathit{_resource}))|
-				( \langle a(\mathit{task},\mathit{_resource}) \ast \rangle_{t < 10 s} r(\mathit{task},\mathit{_resource}) \ast)$
+				The automaton of expression \[(a(\mathit{task},\mathit{\_resource})\ast r(\mathit{task},\mathit{\_resource})\ast a(\mathit{task},\mathit{\_resource}))|
+				( \langle a(\mathit{task},\mathit{\_resource}) \ast \rangle_{t < 10 s} r(\mathit{task},\mathit{\_resource}) \ast)\]
 				is shown on \cref{fig:cep:ptrea}
 				
 				\begin{figure}[h]
@@ -546,15 +546,23 @@
 		
 			\subsubsection{Finite Automaton}
 				The event automaton is represented with the State, Transition, and EventGuard classes.
-				Every State has a boolean flag 
+				Every State has a flag to show if they are acceptor states.
 			\subsubsection{Timing}
-				The timing is done by Timed Regions
+				The timing is done by Timed Regions. For each $\delta_t$ there is
+				an instance of this class, with the timeout value, the included states and 
+				the state which the token moves on timeout.
 			\subsubsection{Parameters and Bindings}
-			
+				Parameters are implemented with the Parameter class hierarchy,
+				for each token there is a set for every parameters, all of
+				the parameters start as free parameters, and in case of binding, 
+				the tokens split up to two tokens, one with the newly binded
+				FixParameter on the new state, and the old tokens binded value
+				is excluded from the possible values.
+				
+				The token -- event binding is done with the Binding class, which stands for the implementation on this.
 		
 		\subsection{Executor}
 			The algorithm first searches for all the activated transitions.
 			If it finds an activated transition, it iterates over the tokens which are on the state. The first token with matching (non-confronting)
 			parameter list will be split to the next state if there are new parameter bindings from the event, or moved if there are no new bindings.
-			If a token enters an acceptor state it'll 
-			next state 
+			If a token enters an acceptor state it'll call a previously defined method.
