@@ -93,13 +93,11 @@ Complex event processing is a method of tracking and analysing streams of inform
 
 \section{A hierarchical approach to runtime verification}
 
-A hierarchical runtime verification is based on the communication of runtime monitors with a higher level logic instead of a one time verification in design time. By using the V model, the right legs verification steps can be replaces with its runtime verification counterpart (\cref{fig:intro:rvmodel}).
-These replaced elements are:
-\begin{itemize}
-	\item Component monitors which are the smallest, can be implemented into embedded devices.
-	\item Architecture monitors which are verifying the interoperation of components.
-	\item High level logic is a central element for reacting to the states of the monitors.
-\end{itemize}
+We propose a hierarchical runtime verification approach by combining
+\begin{enumerate}
+\item traditional component-level monitors synthesized from statecharts with 
+\item architecture-level monitors driven by complex event processing
+\end{enumerate}
 
 \begin{figure}[h]
 	\centering
@@ -109,13 +107,19 @@ These replaced elements are:
 \end{figure}
 
 
-Our goal was to provide runtime verification methods for all levels of a complex cyber-physical system. These methods should rely on modelling methods already being used be engineers to minimize the steepness of the learning curve and allow quick and efficient development. The result is a hierarchical runtime verification framework which can enable verification on two levels (\cref{fig:intro:concept_component}) The framework is capable of:
+Our goals were to provide:
 \begin{itemize}
-  \item Component level verification as monitors generated from statechart formalism
-  \item System level verification, that can be done by a complex event processing system
-  \item Monitors can generate messages indicating erroneous operation of the monitored components
-  \item The complex event processing system can use the monitors messages
+\item easy, high-level and precise specification languages for capturing monitors
+\item automated synthesis of monitors
+\item hierarchical monitoring
+\end {itemize}
+
+The result is a hierarchical runtime verification framework which can enable verification on two levels (\cref{fig:intro:concept_component}) The framework is capable of:
+\begin{itemize}
+  \item component level verification by monitors generated from a statechart formalism
+  \item system level verification, that can be done by a complex event processing system
 \end{itemize}
+The monitors can generate messages indicating erroneous operation of the monitored components, while the complex event processing system can use the monitors' messages as atomic events for event patterns.
 
 Additionally, the statechart language developed extends the usual statechart formalism by adding support for statechart templates. This enables users to easily describe systems with homogeneous components. The models can also be mapped to a formally verifiable transition system.
 
