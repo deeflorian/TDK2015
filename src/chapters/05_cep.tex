@@ -1,23 +1,23 @@
-\chapter{System Level Runtime Verification}
+\chapter{System level runtime verification}
 	\label{chap:cep}
 		In this chapter we summarize the basic concepts of System Level Runtime Verification,
 		overview of the Complex Event Processing approach and we suggest an intermediate language as a formal framework of our approach
 	
-	\section{Complex Event Processing using technologies}
+	\section{Complex event processing using technologies}
 	
 	
 	
 		In the proposed hierarchical runtime verification approach, the top level of modelling and analysis is supported by a Complex Event Processing Framework.
 		
 		In our project we are going to do so, and define Event Patterns at the system level.
-		Our choice for CEP is the VIATRA CEP, because it's the only open source CEP with 
+		Our choice for CEP is the VIATRA CEP, because it's the only open source CEP with:
 		\begin{itemize}
 			\item a live model integration, 
-			\item where you can define graph patterns to the model, and automatically generate atomic events on the appearance and disappearance of these patterns.
+			\item where the user can define graph patterns on a model, and automatically generate atomic events on the appearance and disappearance of these patterns.
 		\end{itemize}
 		
 		
-		VIATRA CEP uses a language called VIATRA Event Pattern Language (VEPL for short).
+		VIATRA CEP uses a language called VIATRA Event Pattern Language (VEPL).
 		This language is perfect for our approach, it has intuitive syntax, and the event patterns can be defined in
 		a very high level. However, it is not easy to formalize as the
 		execution of the patterns are dependent on so called ``event contexts'' which makes formalization extremely difficult.
@@ -38,8 +38,8 @@
 		The syntactic sugars are shown in \cref{tab:cep:veplsugar},
 		but we are going to ignore these, since they can be translated to the basic operators as shown in \cref{tab:cep:veplsugartobasic}.
 		
-		We are going to introduce every step through an example, which is about the runtime verification of a two phase lock algorithm. %% TODO Reference
-		In the two phase locking algorithm there are two rules :
+		This chapter going to introduce every step through an example, which is about the runtime verification of a two phase lock algorithm. %% TODO Reference
+		In the two phase locking algorithm there are two rules:
 		\begin{enumerate}
 			\item Resources must be allocated in a previously defined sequence, which is the same for all tasks
 			\item If a task releases a resource, it's not allowed to allocate anything anymore.
