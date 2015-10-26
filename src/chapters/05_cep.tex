@@ -1,26 +1,37 @@
-\chapter{Complex event processing}
+\chapter{System Level Runtime Verification}
 	\label{chap:cep}
+		In this chapter we summarize the basic concepts of System Level Runtime Verification,
+		overview of the Complex Event Processing approach and we suggest an intermediate language as a formal framework of our approach
+	
 	\section{Complex Event Processing using technologies}
+	
+	
+	
 		In the proposed hierarchical runtime verification approach, the top level of modelling and analysis is supported by a Complex Event Processing Framework.
 		
-		In our project we are going to do so, and define Event Patterns for the top level.
+		In our project we are going to do so, and define Event Patterns at the system level.
 		Our choice for CEP is the VIATRA CEP, because it's the only open source CEP with 
-		a live model integration, where you can define graph patterns to the model, and automatically generate atomic events
-		on the appearance and disappearance of these patterns.
+		\begin{itemize}
+			\item a live model integration, 
+			\item where you can define graph patterns to the model, and automatically generate atomic events on the appearance and disappearance of these patterns.
+		\end{itemize}
 		
-		VIATRA CEP uses a language called VIATRA Event Pattern Language, or VEPL for short.
-		This language is perfect for our approach, it has a very simple syntax, and the event patterns can be defined in
-		a very high level way, but the automaton which it translates the patterns to are not well-formalized, and the
-		execution of the patterns are dependent on so called ``event contexts'' which makes the verification extremely hard.
 		
-		We propose an intermediate language, to which we can translate our patterns to. This language has to be 
-		formalized.
+		VIATRA CEP uses a language called VIATRA Event Pattern Language (VEPL for short).
+		This language is perfect for our approach, it has intuitive syntax, and the event patterns can be defined in
+		a very high level way, ??? not well-formalized, and the
+		execution of the patterns are dependent on so called ``event contexts'' which makes formalization extremely difficult.
 		
-		TODO abra : Harom doboz, High level -> Intermediate language (Regular Expressions) -> Executable code (Automatons)
-
-		The operators of the language is show on \cref{tab:cep:veplop}. 
-		The syntax sugars are shown on \cref{tab:cep:veplsugar},
-		but we are going to ignore these, since they can be translated to the basic operators as show on \cref{tab:cep:veplsugartobasic}.
+		We propose an intermediate language, to formalize the system level Runtime Verification task.
+		The proposed formalism supports the formalization of the used CEP language.
+		In addition, it also makes the framework more extensible as other engineering models can be integrated above the intermediate language.
+		
+		TODO abra Harom doboz abra
+		
+		
+		The operators of the language are shown in \cref{tab:cep:veplop}. 
+		The syntactic sugars are shown in \cref{tab:cep:veplsugar},
+		but we are going to ignore these, since they can be translated to the basic operators as shown in \cref{tab:cep:veplsugartobasic}.
 		
 		We are going to introduce every step through an example, which is about the runtime verification of a two phase lock algorithm. %% TODO Reference
 		In the two phase locking algorithm there are two rules :
@@ -32,7 +43,8 @@
 		Since this example uses resources, we have to define the following behaviour:
 		each resource can be allocated once before every release, and can be released once before every allocation.
 		
-		To further increase our effectiveness, we will define the following : The first phase must finish after 10 seconds,
+		To show the usefulness of the expressiveness of our language in usage critical system, where timeouts are common, we will extend the requirements:
+		The first phase must finish after 10 seconds,
 		i.e. the time between the first allocation and the first release must be less than 10 seconds\footnote{In the final 
 		example we are going to change this, to ``A resource can not be in allocated state for more than 10 sec'', but to 
 		only have one automaton, we will use this rule right now.}.
@@ -85,7 +97,9 @@
 
 		
 	\section{Formal Intermediate language}
+		TODO TEXT
 		
+		TODO TEXT
 		\subsection{Regular Expression}
 		
 			In this particular example, we need a language to describe event sequences. To do so, one of the most common
@@ -131,13 +145,13 @@
 				\end{enumerate}
 			\end{dfn}
 			
-			Using Regular Expressions we can describe an event sequence as $ab$, if $a,b \in \Sigma$ and the meaning of this is that ``an $a$ event will happen,
-			and a $b$ event will follow it''. In the two phase locking example we are going to describe the behaviour of one resource with a simple VEPL pattern:
-			$(a \rightarrow f)\{\ast\}$ which means that an infinite sequences of allocation and release are allowed after each other. This is equivalent to the 
+			To illustrate the usage of the Regular Expressions in the two phase locking example we are going to describe the behaviour of one resource with a simple VEPL pattern:
+			$(a \rightarrow f)\{\ast\}$\note{$a$ stands for  } which means that an infinite sequences of allocation and release are allowed after each other. This is equivalent to the 
 			regular expression : $(af)\ast$.
 
 			\subsubsection{Deterministic Finite Automaton}
-				To match Regular Expressions, the most common solution is to construct an automaton, there are many algorithms for this.  %%{TODO ref, more text}
+				To match regular expressions, the most common solution is to construct an automaton accepting the language generated by the regular expressions. Variuous algorithms
+				exist for the generation of Deterministic Finite Automaton from Regular Expressions
 				
 				
 				\begin{dfn}
@@ -154,26 +168,25 @@
 						\end{itemize}	
 				\end{dfn}
 				
-				
-				
-				The active state 
-				
 				Just to illustrate the operation of the Finite Automata we can use a token assigned to the active state.
 
 				The semantic is the following : 
-				At initialization the token is at state $f_0$
+				At initialization the token is at state $f_0$.
 				If the token enters state $s'$ where $s' \in F$ then we accept the event trace. 
-				On input $e$, where $e \in \Sigma$, if the token\footnote{define} is on State $s$ the next state will be $s'$ where % Define token from semantics
+				When receiving input $e$, where $e \in \Sigma$, if the token\footnote{define} is on state $s$ the next state will be $s'$ where % Define token from semantics
 				$\delta_d \langle s,e,s' \rangle$. For short, from now we will use the notation $s \rightarrow s'$. 
 				
-				The regular expression of the example can be compiled to this automaton\footnote{TODO ide kell egy abra a resource automatajarol}:
+				The regular expression of the example can be compiled to this automaton.
 				
+				$a\ast r \ast a$
+				
+				TODO add picture.
 				
 
 			
 		\subsection{Timed Regular Expression}
 		
-			Using the previously defined semantics we can not express timed statements,
+			Using the previously defined semantics we can not express timed properties,
 			but regular expressions can be expanded to a formalism which can do so : 
 			the Timed Regular Expressions
 			
@@ -181,7 +194,7 @@
 			\begin{dfn}
 				\label{dfn:cep:tre}
 				Timed Regular Expressions over an alphabet $\Sigma$ (also referred to as $\Sigma$-expressions)
-				are defined using the following families of rules~\citep{tre}~.
+				are defined using the following rules~\citep{tre}~.
 				\begin{enumerate}
 					\item \underline{$a$} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.
 					\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions then %
@@ -198,13 +211,15 @@
 			\end{dfn}
 			
 			\subsubsection{Timed Event Automaton}
+				For accepting languages generated by timed regular expressions, we introduce the timed event automaton.
+				
 				\begin{dfn}
 					\label{dfn:cep:tea}
 					A Timed Event Automaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
 					\begin{itemize}
 						\item $Q, \Sigma, q_0,$ and $F$ are the same as in Definition \ref{dfn:cep:ea},
 						\item $t$ is a global clock variable $t \in \mathbb{R}$,
-						\item $T$ is a set of local timeout clocks, i.e. a set of tuples $\langle Q, \RR \rangle$
+						\item $T$ is a set of local timeout clocks, i.e. a subset of tuples $\langle Q, \RR \rangle$ assigning timeouts to states.
 						\item and $\delta$ is the union of discrete and timed transitions i.e. $\delta_t \cup \delta_d$ where
 						\begin{itemize}
 							\item $\delta_d$ is defined as in Definition \ref{dfn:cep:ea},
@@ -218,7 +233,7 @@
 				
 				
 				$Q_t \subseteq Q$ is the set of states with outgoing timed transitions, 
-				i.e. $\forall s \in Q_t$ : there exist $ \delta_t\langle s, t, s' \rangle$ where $t \in \RR$ and $s' \in Q$.
+				i.e. $\forall s \in Q_t$ : $ \exists \delta_t\langle s, t, s' \rangle$, where $t \in \RR$ and $s' \in Q$.
 				We have to define rules for entering states with timed outgoing transitions and we also define the general rules of changing states. 
 				
 				\begin{enumerate}
@@ -229,11 +244,11 @@
 						$t_s\coloneqq t+t_{timeout}$
 						where $T\langle s,t_s \rangle$ and $\delta_t\langle s,t_{timeouts},s' \rangle$ where $t_{timeout}$ is minimal from the set of possible $t_{timeouts}$ 
 					
-					\item Firing Transitions Rule: Non deterministically choose an enabled transition from the set of enabled discrete or timed transitions. 
-						$s$ is the state we currently in, and $s'$ is the state we are moving to.
+					\item Firing Transitions Rule: Non-deterministically choose an enabled transition from the set of enabled discrete or timed transitions. 
+						$s$ is the currently active state, and $s'$ is the next state according to $\delta$.
 						We have two cases, the chosen transition is:
 						\begin{enumerate}
-							\item Discrete Transition: In case of $s' \notin Q_t$ than the execution of the transition is as in described formerly. 
+							\item Discrete Transition: In case of $s' \notin Q_t$ than the execution of the transition is as described formerly. 
 							If we exit state $s \in Q_t$ by a transition in $\delta_d$, 
 							then the following rule extends the firing rule of discrete transitions by invalidating the corresponding timeout values:
 								$t_s \coloneqq \infty$, where $T \langle t_s, s \rangle$
@@ -250,32 +265,34 @@
 					A Timed Region Event Automaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
 					\begin{itemize}
 						\item $Q, \Sigma, q_0, F,$ and  $t$ are the same as in Definition \ref{dfn:cep:tea},
-						\item $T$ is a set of timeout clocks for sets of states, i.e. a set of tuples $\langle 2^Q, \RR \rangle$
+						\item $T$ is a set of timeout clocks for sets of states, i.e. a set of tuples $\langle \mathit{Reg}, \RR \rangle$
 						\item and $\delta$ is the union of discrete and timed transitions i.e. $\delta_t \cup \delta_d$ where
 						\begin{itemize}
 							\item $\delta_d$ is defined as in Definition \ref{dfn:cep:tea},
-							\item and $\delta_t$ represents timed transitions and defined as the set of tuples $\langle 2^Q , \mathbb{R} , Q \rangle$ 
+							\item and $\delta_t$ represents timed transitions and defined as the set of tuples $\langle R , \mathbb{R} , Q \rangle$ 
 						\end{itemize}
+						\item For Syntactic sugar we are going to use $R$ as short for Regions, the set of which have outgoing timed transitions 
+						i.e. $ \forall R_i \in R , \exists t, \exists q  \subseteq \delta_t \langle R_i, t, q \rangle$ 
 					\end{itemize}
 				\end{dfn}
 				
 				The semantic of the Timed Region Automaton is defined as follows:
 				$Q_t \subseteq Q$ is the set of states with outgoing timed transitions, 
-				i.e. $\forall q \in Q_t$ : there exist $ \delta_t\langle s, t, s' \rangle$ where $t \in \RR$ and $s' \in Q$.
+				i.e. $\forall q \in Q_t$ : $ q \in R $. CHECK THIS
 				Let us use the following notations: 
 			
-				$s$ is the state we are currently on, and $s'$ is the state we move to after the transition
+				$s$ is the currently active state, and $s'$ is the state the next state according to $\delta$.
 			
-				$r$ is the set of zones we are currently in, 
-				i.e. $r \subseteq 2^Q$ where $\exists r_s : r_s \in r, s \in r_s $ 
+				$r$ is the set of currently active regions, 
+				i.e. $r \subseteq R$ where $\exists r_s : r_s \in r, s \in r_s $ 
 				
-				$r'$ is the set of zones we enter,
-				i.e. $r \subseteq 2^Q$ where $\exists r_s :  r_s \in r, s' \in r_s $ 
+				$r'$ is the set of regions we enter,
+				i.e. $r \subseteq R$ where $\exists r_s :  r_s \in r, s' \in r_s $ 
 				
-				$r^+ \subseteq 2^Q$ is a set of new timed regions we just entered,
+				$r^+ \subseteq R$ is a set of new timed regions we just entered,
 				i.e. $r^+ = r' \setminus r$ 
 				
-				$r^- \subseteq 2^Q$ is a set of timed zones we just left
+				$r^- \subseteq R$ is a set of timed regions we just left
 				i.e. $r^- = r \setminus r'$
 			
 				We have to define rules for the initialization of the automaton,
@@ -283,8 +300,8 @@
 				and we also define the general rules of changing states. 
 				
 				\begin{enumerate}
-					\item Initialization Rule : On initialization of the automaton, we have to set all clocks to $\infty$ 
-					i.e. $\forall t_i, \forall q_i, T \langle r_i, t_i \rangle, t_i \coloneqq \infty $, where $r_i \in 2^Q$
+					\item Initialization Rule : At the initialization  of the automaton, we have to set all clock variables to $\infty$ 
+					i.e. $\forall t_i, \forall q_i, T \langle r_i, t_i \rangle, t_i \coloneqq \infty $, where $r_i \in R$
 				
 					\item Entering new timed region rule :
 					If we enter a new set of timed regions, 
@@ -292,11 +309,11 @@
 					we set the timers according to the timeouts, 
 					i.e. $\forall t_{timeout} : t_{timeout} \coloneqq t + t_i $ where $ r_t \in r^+, \exists q ,\delta_t\langle  r_t,t_i,q \rangle, T \langle r_t, t_{timeout} \rangle$
 					
-					\item Firing Transitions Rule: Choose an enabled transition from the set of enabled\footnote{non defined} discrete or timed transitions. 
+					\item Firing Transition Rule: Choose an enabled transition from the set of enabled\footnote{non defined} discrete or timed transitions. 
 					We have two cases, the chosen transition is:
 						\begin{enumerate}
 							\item Discrete Transition: In case of $r^- = \emptyset$ than the execution of the transition is as in described formerly. 
-								If else if we exit a zone i.e. $r^- = \emptyset$, 
+								If we exit a region i.e. $r^- \neq \emptyset$, 
 								then the following rule extends the firing rule of discrete transitions:
 								$\forall t_s, \forall q_s$ in $ \delta_t \langle r_i, t_s, q_s \rangle$ where $r_i \in r^-$, the timer of the regions are invalidated i.e.
 								$t_s \coloneqq \infty$
@@ -312,11 +329,12 @@
 
 			
 		\subsection{Parametric Timed Regular Expression}
-			To process event from multiple source from the same type, as we need to do so in the example (There are multiple tasks and resources with the same behaviour),
-			we can extend our formalism towards the parametric 
+			Complex systems usually have parametric behaviours, which can be expressed by formalisms extended with parameters. In this section we overview such formalisms
+			that generate the parametric timed regular languages and an automaton formalism accepting them.
 			
 			\begin{dfn}
-			A Parametric Timed Regular Expression is \dots %TODO
+			A Parametric Timed Regular Expression is a timed regular expression where the set of events are defined as a set of tuples. $\langle \Simgma P \rangle$,
+			where $\Sigma$ is defined as formerly and P is a set of parameters.
 			\end{dfn}
 		
 			\subsection{Parametric Timed Region Automaton}
@@ -386,11 +404,11 @@
 					A Parametric Timed Region Event Automaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
 					\begin{itemize}
 						\item $Q, \Sigma, q_0, F,$ and  $t$ are the same as in Definition \ref{dfn:cep:trea},
-						\item $T$ is a set of timeout clocks for sets of states, for each token, i.e. a set of tuples $\langle 2^Q, \RR, B \rangle$, where $B$ is a binding
+						\item $T$ is a set of timeout clocks for sets of states, for each token, i.e. a set of tuples $\langle R, \RR, B \rangle$, where $B$ is a binding
 						\item and $\delta$ is the union of discrete and timed transitions i.e. $\delta_t \cup \delta_d$ where
 						\begin{itemize}
 							\item $\delta_d$ is defined as in Definition \ref{dfn:cep:trea},
-							\item and $\delta_t$ represents timed transitions and defined as the set of tuples $\langle 2^Q \times \mathbb{R} \times Q \rangle$ 
+							\item and $\delta_t$ represents timed transitions and defined as the set of tuples $\langle R \times \mathbb{R} \times Q \rangle$ 
 						\end{itemize}
 					\end{itemize}
 				\end{dfn}
