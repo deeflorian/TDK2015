@@ -1,9 +1,9 @@
 \chapter{Runtime verification of embedded systems}
 \label{chap:runtime_verification}
 Many software is available for code generation and verification based on statecharts. Unfortunately the available solutions for verification and modelling provide limited syntax, and code generation usually results in poor quality code. Both leads to longer development, harder maintenance, and higher costs. The developed statechart language supports the verification of statecharts with parametric signals and timers, and enables the creation of template based statecharts that can be instantiated with parameters. For monitor generation, our approach was to generate easily readable, extendible, object oriented code, that can run in environments with limited resources -- primarily embedded systems.
-  \subsection{Parametric statechart declarations}
+\section{Parametric statechart declarations}
 The language allows a specification to consist of multiple statecharts. This feature led to of the main strength of the language: the definition of statechart templates, which can be instantiated parametrically. This results in short descriptions for otherwise complex, but homogeneous systems with many similar components. Statecharts can be parametrized by values of well known data types. Separate statecharts can communicate with each other using signals or global variables.
-  \subsection{Parametric signals}
+\section{Parametric signals}
 Signals can also be parametrized with integer type variables. These parameters can then be used to discriminate between similarly named signal raises, which results in more readable code, by allowing transitions to use the same signal as their trigger, when their functionality is similar.
 \section{Overview}
 For a brief overview of the language, see the example statechart and it's textual specification below (\cref{fig:verif}).
@@ -159,7 +159,7 @@ The assignments and expressions that can be used in the statechart language are 
   \subsection{Variables}
 The variable types of the statechart language are plain old data types in C++. Local variables are converted to global variables with fully qualified names. This allows a variable container class to be created which holds all of the variables and allows unified usage.
 \section{Implementation}
-The implementation of the monitoring component can raise many questions about timing. To generate working, and easily usable code additional helper classes and extra functions for the already described ones are required. The most important ones are described in this section. It should also be noted that the generated \verb!C++! code heavily relies on the new features of \verb!C++11!.
+The implementation of the monitoring component can raise many questions about timing. To generate working, and easily usable code additional helper classes and extra functions for the already described ones are required. The most important ones are described in this section.
   \subsection{Timing related issues}
 The generated monitoring component will run on a real hardware. This means that the system can only take a limited number of transitions per second. Aiming for a lightweight component, there is a settable sleep and timeout period. The default implementation of the utility classes enables the user to set this period with millisecond precision.\\
 For each timestep, the monitor:
