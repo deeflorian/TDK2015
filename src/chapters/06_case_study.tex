@@ -41,9 +41,9 @@ One of the steps of the \textls{CV} implementation was the design of the markers
 
 The first step was to consider the usage of an external library, named \textls{ArUco}\footnote{\url{http://www.uco.es/investiga/grupos/ava/node/26}}. This library provides the generation and detection library of markers. The problem with the library was the lack of tolerance in quality, and motion blur. Because these negative properties of the existing libraries, we implemented a marker detection algorithm for our needs.
 
-After the implementation was in our hands, we could make markers which suits our needs. The chosen size of the marker was the size of the model railroad car as it will provide the proper accuracy.
+After the implementation was in our hands, we could make markers which suits our needs. The chosen size of the markers was the size of the model railroad car's width as it provides the proper accuracy.
 
-As explained in \cref{fig:case_study:opencv_math}, circular patterns are well suited for these applications. The final design consists two detection circle, and a color circle for identification between the detection circles (\cref{fig:case_study:final_marker}).
+As explained in \cref{fig:case_study:opencv_math}, circular patterns are well suited for CV recognition applications. The final design consists of two detection circles, with a colored circle for the purpose of identification between them (\cref{fig:case_study:final_marker}).
 
 \begin{figure}[h]
 	\centering
@@ -57,24 +57,22 @@ As explained in \cref{fig:case_study:opencv_math}, circular patterns are well su
 
 %According to the various conditions, the marker detection has to be robust.
 
-According to the various condition in lighting, and used materials, the marker detection has to be robust.
+According to the various lighting conditions and used materials, the marker detection has to be robust. Also, the fact that these markers have perspective distortion when they are near the edges of the visible region of the camera, required the application of signal processing techniques.
 
-This problem, and the fact that these markers have perspective distortion when they are near to the visible region of the camera motived us to develop a processing technique coming from signal processing.
-
-This method is the commonly used technique of transforming and processing a signal -- in our case a picture -- in frequency domain.
+This method is commonly used for transforming and processing a signal -- in our case a picture -- in the frequency domain.
 
 \subsubsection{Convolution method}
 \label{sec:case_study:convolution}
 
-Our method is based on the convolution of two bitmap images, one from the camera, and one generated pattern.
+Our method is based on the convolution of two bitmap images, one from the camera, and one from the generated pattern.
 
-The theorem says, we can multiply two spectrums, and apply an inverse Fourier transform to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}, applying the convolution results in an image where every pixel represents a value how much the two spectrums match.
+According to the theorem, we can multiply two spectrums and apply an inverse Fourier transformation to get the convoluted image. If one image is the pattern, the other image is the raw\footnote{In our application raw (or raw image) means the unprocessed image from the camera}. Applying the convolution results in an image where every pixel represents the value how much the two spectrums match.
 
 \subsubsection{Pattern bitmap properties}
 
-The prerequisite of the pattern is the pattern must be the same size of the raw image, and the raw image must be a grayscale image.
+The prerequisite for the pattern is that the size of the pattern and the size of the raw image must match, and the raw must be a grayscale image.
 
-The pattern itself needs to be generated with values according to the shape we would like to match (\cref{fig:case_study:convoluter_image}). The raw pixels are multiplied by this value. The meaning of these values in the bitmap are the following: 
+The pattern itself needs to be generated with values in accordance to the shape we would like to match (\cref{fig:case_study:convoluter_image}). The raw pixels are multiplied by this value. The meaning of the resulting values are the following: 
 \begin{itemize}
 	\item \bm{$value = 0$}: Doesn't affect the match.
 	\item \bm{$value > 0$}: The multiplied raw pixel summed positively to the result of the convolution.
@@ -91,15 +89,15 @@ The pattern itself needs to be generated with values according to the shape we w
 		\tikz \node [minimum width=1ex,minimum height=1ex,fill=white,draw=black] {}; & $1$ \\
 		\bottomrule
 	\end{tabular}}
-	\caption{Pattern bitmap placement and value example}
+	\caption{Example for pattern bitmap placement and value}
 	\label{fig:case_study:convoluter_image}
 \end{figure}
 
 \subsection{Software}
 
-With the OpenCV library, we implemented a processing pipeline which can process the live video feed from the camera. We forward this data to the high level safety logic, which can decide the following actions. The \cref{table:case_study:pipeline} shows all the essential steps in the processing pipeline of the computer vision.
+With the OpenCV library, we implemented a processing pipeline which can process the live video feed of the camera. The data is forwarded to the high level safety logic, which can decide what actions should be taken. The \cref{table:case_study:pipeline} shows all the essential steps in the processing pipeline of computer vision.
 
-We used GPU acceleration trough pipeline stage 1--4. The acceleration is implemented by OpenCV, and can be used with CUDA capable NVidia video accelerators.
+We used GPU acceleration through pipeline stage 1--4. The acceleration is implemented by OpenCV, and can be used with CUDA capable NVidia video accelerators.
 
 \begin{table}[p]
 	\caption{Computer vision processing pipeline}
@@ -122,27 +120,27 @@ We used GPU acceleration trough pipeline stage 1--4. The acceleration is impleme
 		4 & Applying a threshold to filter the brightest spots \\
 		5 & Finding the contours of the enclosed shapes \\
 		6 & Calculating the center point of the contours \\
-		7 & Find possible markers by distance \\
-		8 & ID the marker by the center \\
+		7 & Finding possible markers by distance \\
+		8 & Identifying the marker by the center \\
 		\bottomrule
 	\end{tabularx}
 \end{table}
 
 \subsection{Summary}
-With this implementation, we can follow the system real-time, providing the high-level logic another independent source of information. This can lead to a more robust system with added redundancy.
+With this implementation, we can follow the system in real-time, providing the high-level logic with an additional, independent source of information. This leads to a more robust system with added redundancy.
 
 \newpage
 \section{Model railroad}
-In this section we briefly overview the structure of the railroad and the controlling hardware.
+In the following section, a briefly overview of the structure of the railroad and the controlling hardware is given.
 
 \subsection{Overview}
 
 \noindent The model railroad (\cref{fig:case_study:total_map}) contains the following hardware elements:
 \begin{itemize}
-	\item 15 powerable section
-	\item 6 railroad switch
+	\item 15 powerable sections
+	\item 6 railroad switchs
 	\item 6 Arduino controllers for each switch
-	\item 3 remotely controllable train
+	\item 3 remotely controllable trains
 \end{itemize}
 
 \begin{figure}[h]
@@ -153,7 +151,7 @@ In this section we briefly overview the structure of the railroad and the contro
 \end{figure}
 
 \subsection{Hardware}
-The core of the railroad hardware are the Arduino microcontrollers which collects information, and control the sections. For every railroad switch there is an associated controller which can control the power of the sections nearby with the slave units connected to it (\cref{fig:case_study:master_slave}).
+The core of the hardware are the Arduino microcontrollers, which collect information and control the sections. For every railroad switch there is an associated controller which can control the power of the sections nearby, using the slave units connected to it (\cref{fig:case_study:master_slave}).
 
 \begin{figure}[h]
 	\centering
@@ -163,18 +161,18 @@ The core of the railroad hardware are the Arduino microcontrollers which collect
 \end{figure}
 
 \section{Metamodel design}
-In this section we proceed through the design of the physical to metamodel mapping. We operate our safety on this logical model, so it is very important to map all the details of the physical world we need correctly in this model.
+In this section we develop the metamodel of the system for the physical hardware. The safety logic is based on this logical model -- as a result, a model with many details of the physical world is needed.
 
 \subsection{Physical elements}
-The only external system level source of information is the computer vision. The CV forwards a train ID (determined by marker color) and position (x, y coordinates) to the model, and we must discretize these informations to make it searchable by our safety logic for hazardous events.
+The computer vision provides an external source of information for the system level logics. The CV forwards a train ID (determined by the marker color) and a position (x-y coordinates) to the model, and we must discretize this information in order to make it searchable by the safety logic for hazardous events.
 
-Let us take a look on the main components of the physical system, and what challenges we face:
+The main components of the physical system are:
 \begin{itemize}
-	\item \textbf{Section}: Either a rail, or railroad switch. Every section has a distinctive identifier.
-	\item \textbf{Rail}: The rail is a variable length curve. The main challenge is the determination of the next section. Only the rail can be powered down, so our safety logic must act, when the train is on a rail.
-	\item \textbf{Railroad switch}: The switch is a region, where we know the entry and outgoing section by its setting. The switch is always powered, so we cannot affect the train on the switch. There are some basic concept:
+	\item \textbf{Section}: Either a rail or a railroad switch. Every section has a distinctive identifier.
+	\item \textbf{Rail}: A rail is a variable length curve. The main challenge is the determination of the next section. Only rails can be powered down, so the safety logic must act when the train is on a rail.
+	\item \textbf{Railroad switch}: The switch is a region, where we know the entry and exit section by its setting. The switch is always powered, which means that the trains cannot be affected while on the switch. The basic concepts are:
 	\begin{itemize}
-		\item A switch consists of three rails: the central rail, and two rails we can choose of, a divergent and a straight rail.
+		\item A switch consists of three rails: a central, a divergent and a straight rail.
 		\item \textbf{Straight rail}: The straight rail follows the central rail without a curve.
 		\item \textbf{Divergent rail}: The divergent rail moves away from the imaginary line of the central rail.
 	\end{itemize}
@@ -183,7 +181,7 @@ Let us take a look on the main components of the physical system, and what chall
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/metamodel_switch_basics}
-	\caption{Switch straight, and divergent rails}
+	\caption{The switch's straight, and divergent rails}
 	\label{fig:case_study:metamodel_switch_basics}
 \end{figure}
 
@@ -196,21 +194,21 @@ Let us take a look on the main components of the physical system, and what chall
 
 \subsection{Metamodeling the physical elements}
 \label{sec:case_study:logical_breakdown}
-After we designated the physical elements, and their properties, we started to build a logical concept what are our model elements, and what are the connections between them.
+After specifying the physical elements and their properties, the logical concept of the model elements and their connections had to be uncovered.
 
-We will follow a bottom-up structure because it helps the graph search (\cref{sec:case_study:pattern_building}), and review the main components of the logical elements.
+A bottom-up structure was followed because it aids the graph search (\cref{sec:case_study:pattern_building}), and helps the review of the main components of the logical elements.
 
 \begin{enumerate}
-	\item \textbf{SectionModel}: The root of the board model. It is separated from trains because this root element is persisted, and loaded at every start of the application, while the \emph{TrainModel} is dynamic (\cref{fig:case_study:sectionmodel})(\cref{fig:case_study:trainmodel})(\cref{fig:case_study:groupmodel}).
+	\item \textbf{SectionModel}: The root of the board model. It is separated from trains as the root element is persisted, and loaded at every start of the application, while the \emph{TrainModel} is dynamic (\cref{fig:case_study:sectionmodel})(\cref{fig:case_study:trainmodel})(\cref{fig:case_study:groupmodel}).
 	\begin{enumerate}
-		\item \textbf{Configuration}: Contains the enabled \emph{groups} of the switch. The \emph{DivergentConfiguration} and \emph{StraightConfiguration} are the exactly same as the \emph{Configuration}, they only presented in the metamodel because the ease of use with the IncQuery patterns (\cref{sec:case_study:pattern_building}) (\cref{fig:case_study:settingmodel}).
-		\item \textbf{SwitchSetting}: Contains a straight, and divergent \emph{configuration} (\cref{fig:case_study:settingmodel}).
-		\item \label{itm:case_study:region} \textbf{Region}: The atomic abstract element of our model, the \emph{region} is the smallest unit of measurement (\cref{fig:case_study:sectionmodel}).
-		\item \textbf{SectionRegion}: Specialized region, which is a part of a \emph{powerable group}. Only powerable section can stop a train (\cref{fig:case_study:sectionmodel}). 
-		\item \textbf{RailRegion}: Specialized region. Because we did not interested in the position inside the switch, we declare the entire area of the switch as one region (\cref{fig:case_study:sectionmodel}).
-		\item \label{itm:case_study:group} \textbf{Group}: The group is a collection of regions (\cref{fig:case_study:sectionmodel}).
-		\item \textbf{PowerableGroup}: A collection of \emph{regions} which can shut of. The equivalent to one rail of the modelled study (\cref{fig:case_study:sectionmodel}).
-		\item \textbf{SwitchGroup}: A group of exactly one \emph{SwichRegion}. Have a reference to a \emph{Configuration}, describing the current switch settings (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{Configuration}: Contains the enabled \emph{groups} of the switch. The \emph{DivergentConfiguration} and \emph{StraightConfiguration} are exactly the same as the \emph{Configuration}. They are only presented in the metamodel because they allow the easier use of IncQuery patterns (\cref{sec:case_study:pattern_building}) (\cref{fig:case_study:settingmodel}).
+		\item \textbf{SwitchSetting}: Contains a straight, and a divergent \emph{configuration} (\cref{fig:case_study:settingmodel}).
+		\item \label{itm:case_study:region} \textbf{Region}: The atomic abstract element of the model. The \emph{region} is the smallest unit of measurement (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{SectionRegion}: Specialized region, which is a part of a \emph{powerable group}. Only powerable sections can stop a train (\cref{fig:case_study:sectionmodel}). 
+		\item \textbf{RailRegion}: Specialized region. Because the exact position inside a switch is unessential, the entire area of the switch is declared as one region (\cref{fig:case_study:sectionmodel}).
+		\item \label{itm:case_study:group} \textbf{Group}: A group is a collection of regions (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{PowerableGroup}: A collection of \emph{regions} which can be shut of. The equivalent to one rail in the modelled study (\cref{fig:case_study:sectionmodel}).
+		\item \textbf{SwitchGroup}: A group of exactly one \emph{SwichRegion}. Has a reference to a \emph{Configuration}, describing the current switch settings (\cref{fig:case_study:sectionmodel}).
 	\end{enumerate}
 	\newpage
 	\item \textbf{TrainModel}: The root of all train elements (\cref{fig:case_study:trainmodel}).
@@ -238,14 +236,14 @@ We will follow a bottom-up structure because it helps the graph search (\cref{se
 	\hspace*{-1in}
 	\centering
 	\includegraphics[width=1.0\linewidth]{include/figures/chapter_6/metamodels/trainmodel}
-	\caption{The train view of the  of the \emph{Model Railway Project} model} 
+	\caption{The train view of the \emph{Model Railway Project} model} 
 	\label{fig:case_study:trainmodel}
 \end{figure}
 \newpage
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.2\linewidth]{include/figures/chapter_6/metamodels/settingmodel}
-	\caption{The settings view of the  of the \emph{Model Railway Project} model} 
+	\caption{The settings view of the \emph{Model Railway Project} model} 
 	\label{fig:case_study:settingmodel}
 \end{figure}
 
@@ -253,24 +251,24 @@ We will follow a bottom-up structure because it helps the graph search (\cref{se
 
 \subsection{Using the Eclipse Modeling Framework}
 
-We used the EMF framework to create the metamodel of the railway. The main reason for the usage of this modeling tool is the dependency to IncQuery, but other reasons motivated the use of it:
+We used EMF to develop the metamodel of the railway. The main reason for the usage of this modeling tool is that it allows the use of IncQuery. A few other reasons are:
 \begin{itemize}
-	\item Besides the POJO\footnote{Plain Old Java Object}, EMF can generate an Eclipse based editor for the model, where we can add/remove/edit all the elements, and their properties easily. The editor always checks the model well formed property, and marks the problematic elements.
-	\item The framework ensure all the references are valid, by updating them automatically.
-	\item We can make opposite edges, which are forward/backward references across two object. The framework will maintain these references e.g. we assign object A to object B, if they have a bidirectional reference between them, the EMF will automatically update the other side of the reference, in our case the reference from A to B.
+	\item Besides the POJO\footnote{Plain Old Java Object}, EMF can generate an Eclipse based editor for the model, where we can add/remove/edit all of the elements and their properties easily. The editor always checks the whether the model is well formed, and marks any problematic elements.
+	\item The framework ensures that all of the used references are valid by updating them automatically.
+	\item The declaration of opposing edges are also valid -- these are two-way references between objects. The framework will maintain these references e.g. if we assign object A to object B, if they have a bidirectional reference between them, the EMF will automatically update the other side of the reference, in our case the reference from A to B.
 \end{itemize}
 
 \subsection{Building the EMF model}
 
-After the conceptual design of the model, the following step was the design of the EMF model.
+After the conceptual design of the model, the EMF model had to be designed.
 
-It's important while building the EMF model that every element must be a part of exactly one containment tree. If an element is not in a tree or it is in multiple tree, it causes failure while serializing. In \cref{sec:case_study:logical_breakdown} the \emph{TrainModel} and \emph{SectionModel} represents the root of the model.
+When building EMF models, it is important that every element must be a part of exactly one containment tree. If an element is not in a tree or it is in multiple tree, the serialization process fails. In \cref{sec:case_study:logical_breakdown} the \emph{TrainModel} and \emph{SectionModel} represents the root of the model.
 
 \subsection{Using EMF-IncQuery}
 
-The motivation of using IncQuery can be found in the nature of our problem. The railway can be depicted as a graph, and we can describe hazardous patterns e.g. two trains next section is the opposite trains next section. These scenarios can be declaratively described by IncQuery patterns, reducing the possibility of a coding failure. 
+The motivation for the use of IncQuery is the graph based nature of the problem. The railway can be depicted as a graph, and hazardous patterns can be described e.g. a train's next section is the next section of an opposing train. These scenarios can be described declaratively by IncQuery patterns, reducing the possibility of a coding failure. 
 
-The other advantage of using the IncQuery framework is scalability. The IncQuery framework -- as its name suggest: incremental query -- is a fast, caching engine based on the RETE algorithm. This framework can follow changes in a very large environment. 
+The other advantage of using the IncQuery framework is it's scalability. The IncQuery framework -- as its name suggest: incremental query -- is a fast, caching query engine based on the RETE algorithm. The framework can effectively follow changes in huge environments. 
 
 \subsection{Building the IncQuery patterns}
 \label{sec:case_study:pattern_building}
@@ -290,9 +288,9 @@ pattern trainAtNextGroup(t1: Train) {
 }
 \end{lstlisting}
 
-\cref{lst:case_study:train_will_collide} shows an IncQuery example. This pattern matches \verb+t1+ which next group -- if not null, e.g. the train is stationary -- has a different train on it (\verb+t2+).
+\cref{lst:case_study:train_will_collide} shows an IncQuery example. This pattern matches  the next group of \verb+t1+ -- if not null, e.g. the train is stationary -- which has a different train on it (\verb+t2+).
 
-This example clearly presents the advantage of this declarative expression. With the right metamodel we designed an incrementally executed scalable pattern only with 5 lines of code.
+This example clearly represents the advantages of a declarative approach. With the right metamodel an incrementally executed scalable pattern can be designed with only 5 lines of code.
 \\[1ex]
 
 \begin{lstlisting}[caption={Collision detection},label=lst:case_study:train_at_next_powerable]
@@ -314,7 +312,7 @@ pattern trainAtNextPowerable(t1: Train) {
 \end{lstlisting}
 
 \newpage
-\cref{lst:case_study:train_at_next_powerable} is a pattern for finding the next powerable group in the direction of. We must do that because the property of the switch group: a train cannot stop on that. With \cref{lst:case_study:train_will_collide} we can filter the hazards in the next group, but if we are on a switch, the train cannot be stopped; the trains might crash. This pattern is specialized in case of a train going towards a switch. We are virtually going through it, and examine the other side. If any train is present, the pattern will match, switching the power off the section.
+\cref{lst:case_study:train_at_next_powerable} is a pattern for finding the next powerable group in the direction of travel. This is a necessity as trains cannot stop on switch groups. With \cref{lst:case_study:train_will_collide} hazardous situations in the next group can be filtered, but if the train is on a switch, it might crash. This pattern is specialized in the case of a train going towards a switch. The other side of the switch is examined. If any train is present, the pattern will match, switching the power off the section.
 \\[1ex]
 
 \begin{lstlisting}[caption={Collision detection},label=lst:case_study:train_at_next_powerable]
@@ -331,10 +329,10 @@ pattern trainFromDisabled(t: Train) {
 
 \section{Component-monitor integration}
 
-The related study \citep{tdk2014} implemented a model based security logic. With the use of the state chart language presented in \vref{chap:runtime_verification}, we can monitor the state of the model and execution, and verify it on a higher level. In our example, we break the execution of the safety logic in two part:
+The related study \citep{tdk2014} implemented a model based security logic. With the use of the statechart language presented in \vref{chap:runtime_verification}, we can monitor the state and execution of the model, and verify it on a higher level. In this example, we break the execution of the safety logic into two parts:
 \begin{itemize}
-	\item \textbf{Monitoring the execution engine}: If an error occurs while executing the generated code, the monitor will detect it. The resolution of the monitoring is set to 1 second.
-	\item \textbf{Monitoring the transitions of the model}: If the safety logic cannot access it's sensors, or communicate, the model execution will stop because of the lack of input. We are capable of the detection of this behavior.
+	\item \textbf{Monitoring the execution engine}: Execution errors (entry to error states) are detected by the monitors. The resolution of the monitoring is set to 1 second.
+	\item \textbf{Monitoring the transitions of the model}: If the safety logic cannot access it's sensors, or communicate, the model execution will stop because of the lack of input. This behavior can be detected.
 \end{itemize}
 
 \begin{figure}[h]
@@ -359,7 +357,7 @@ The related study \citep{tdk2014} implemented a model based security logic. With
 	\label{fig:case_study:errors}
 \end{figure}
 
-\cref{fig:case_study:clockgen}, and \cref{fig:case_study:errors} shows the concept of our monitor statechart. The statechart \emph{clockGen} generate a periodic clock sign of 1\si{\second}. In the statecharts \emph{aliveSC} and \emph{transitionSC} we use this clock signal as a timing event. If the expected signals not triggered between two clock cycles, the statechart step into error state.
+\cref{fig:case_study:clockgen}, and \cref{fig:case_study:errors} show the concept of our monitor statechart. The statechart \emph{clockGen} generates a periodic clock sign of 1\si{\second}. In the statecharts \emph{aliveSC} and \emph{transitionSC} we use this clock signal as a timing event. If the expected signals are not triggered between two clock cycles, the statechart steps into an error state.
 
 \begin{lstlisting}[caption={Statechart representation of clock generation},label=lst:case_study:clk_gen]
 specification transitionSpec {
@@ -422,7 +420,7 @@ specification aliveSpec {
 \newpage
 \subsection{Generated VEPL}
 
-The statecharts definitions from \cref{sec:case_study:mon_sc} generates a VEPL pattern of the system monitor component, therefore we can write patterns, and define actions for the patterns matches.
+The statecharts' definitions from \cref{sec:case_study:mon_sc} generates a VEPL pattern for the system monitor component, therefore we can write patterns, and define actions for pattern matches.
 
 \begin{lstlisting}[caption={Generated VEPL definition},label=lst:case_study:gen_vepl]
 package hu.bme.mit.tdk2015.critcyber.vepl
@@ -431,7 +429,7 @@ AtomicEvent ExecError(id: String)
 AtomicEvent HangError(id: String)
 \end{lstlisting}
 
-\nohyphenation The generated stub (\cref{lst:case_study:gen_vepl}) contains the error states of the statechart as AtomicEvents. With these events, we can build a complex event processing pattern.
+\nohyphenation The generated stub (\cref{lst:case_study:gen_vepl}) contains the error states of the statechart as AtomicEvents. With these events, a complex event processing pattern can be built.
 \\[1ex]
 
 \begin{lstlisting}[caption={Extended VEPL definition},label=lst:case_study:ext_gen_vepl]
@@ -451,7 +449,7 @@ rule HangErrorRule on HangError {
 }
 \end{lstlisting}
 
-With \cref{lst:case_study:ext_gen_vepl}, we use a very simple pattern to match the generated events, and handle them by defining rules without any condition. We can parametrize the events, so an event itself can mark the source of the validation error. The \verb+ErrorHandler+ class is needed because from the rule, we cannot access the model, therefore we need a static class which can modify the state of the model. For example, if the static method \verb+handleHangError+ sets the \verb+safe+ attribute of the \verb+Group+ with the id we can fetch from the event representing the error state, the \cref{lst:case_study:trainReachUnsafe} pattern can match.
+With \cref{lst:case_study:ext_gen_vepl}, a very simple pattern is used to match the generated events, and handle them by defining rules without any conditions. Events can be parametrized, so an event itself can mark the source of the validation error. The \verb+ErrorHandler+ class is needed because the model cannot be accessed from the rule, therefore a static class is needed which can modify the state of the model. For example, if the static method \verb+handleHangError+ sets the \verb+safe+ attribute of the \verb+Group+ with the id we can fetch from the event representing the error state, the \cref{lst:case_study:trainReachUnsafe} pattern can match.
 
 \newpage
 \begin{lstlisting}[caption={Collision detection},label=lst:case_study:trainReachUnsafe]
@@ -484,23 +482,23 @@ pattern trainReachUnsafe(t: Train) {
 }
 \end{lstlisting}
 
-This pattern filters the trains, which second next track is unsafe. This middle buffer rail needed because we cannot be sure about the unsafe track state (\cref{fig:case_study:unsafe}), and if an other train coming toward us, there is a chance we cannot stop it. Because this chance, we need to insert a buffer middle track. This track can stop a train if one comes toward the other (\cref{fig:case_study:safe}). This is one example of runtime verification: we get notified about the component failures, and the higher level logic can act before the catastrophe.
+This pattern filters those trains whose second next track is unsafe. The middle rail is needed for buffering because we cannot be sure about the unsafe track state (\cref{fig:case_study:unsafe}), and if another train is coming in the opposing direction, there is a chance that it cannot be stopped. As a result, the insertion of the middle track is a necessity to prevent collisions (\cref{fig:case_study:safe}). This is an example of runtime verification: we get notified about the component failures, and the higher level logic can act before the catastrophe.
 
 \newpage
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{include/figures/chapter_6/failsafe/safe}
-	\caption{Safe configuration. On the buffer state, the train from the failed group can be stopped}
+	\caption{Safe configuration. The train from the failed group can be stopped on the buffer rail.}
 	\label{fig:case_study:safe}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.5\linewidth]{include/figures/chapter_6/failsafe/unsafe}
-	\caption{Unsafe configuration. If a train coming towards us, we will crash}
+	\caption{Unsafe configuration. If a train comes in the opposing direction, they will crash.}
 	\label{fig:case_study:unsafe}
 \end{figure}
 
 \section{Summary}
 
-The Train Benchmark\cite{TrainBenchmark} shows a similar railroad approach application with IncQuery based pattern matching. Their benchmark showed IncQuery can match pattern on a similar railroad model with element sizes over 80 million under 100 milliseconds after initial caching.
+The Train Benchmark\cite{TrainBenchmark} shows a similar railroad application with IncQuery based pattern matching. Their benchmark showed IncQuery can match patterns on a similar railroad model with element sizes over 80 million under 100 milliseconds after the initial caching.
