@@ -9,7 +9,7 @@ The design of complex cyber-physical systems is an interdisciplinary process. Fr
 
 Safety-critical systems are systems whose failure could result in loss of life, significant property damage, or damage to the environment. There are many well known examples for application in areas such as medicine, flight control, weapons industries, and nuclear systems. Many modem information systems are becoming safety-critical in a general sense because financial loss and even loss of life can result from their failure. Safety-critical systems will be even more common and more influential in the future. From a software perspective, the growing number of such systems result in fast paced development cycles, which will require significant advances in areas like specification, architecture, and verification, to meet the safety requirements. \cite{safetycritical}
 
-\section{Verification}
+\section{Verification techniques}
 
 As modern society is becoming more and more dependent on cyber-physical systems, the need for faultlessly working hardware and software increases. The development of safety critical systems require extensive testing efforts. Validation and verification methodologies have been present in the development processes of such systems for a long time \citep{ieee1012}, but faster and more reliable approaches are needed. Validation checks that the requirements specified for the software meet the needs of the user -- as such, validation usually can be aided, but can’t entirely be done by software. The point of verification is to analyse whether the specified requirements are met. Methods for verification can be divided into two groups: design time verification and runtime verification. These approaches aren't exclusive, instead their mutual use can support a more robust verification process.
 
@@ -61,7 +61,7 @@ The V model is the basic scheme of a software development. In the left leg, we p
 
 The Y model \citep{ymodel} is an extension of the V model (which is in turn an extension of the waterfall model) \citep{randomwikipedialink3}, by using code and test case generation. Much like the V model, the development process is partitioned vertically. Each level contains a model that is transformed to a verification model, on which formal methods can be applied. The results of the verification process can be traced back to the original models making iterative improvement possible. The top level is for high level system models, while the second level contains architectural models, and the third one is for component based models. This provides input for the last step, source code and configuration generation for the individual components. Test cases are paired with the source code and can be generated from the component verification models.
 
-\subsection{Modeling methods on different levels}
+\subsection{Modeling methods on different abstraction levels}
 
 MDSD methods require modeling languages to describe the behavior of systems and components. Engineering practices developed a wide range of such languages over the years to support fast paced product development. This allows the use of domain specific languages, which leads to a shorter modeling process but challenges formal verification software, as their input is usually stricter and in a more general format. The result is the need for complex model transformations before the verification can begin, which can lead to higher development costs, or -- if the transformation contains errors -- even faulty behaviour.\\
 As a result, standardized modeling languages were developed like the UML (Unified Modeling Language \citep{uml}) and SysML (Systems Modeling Language \citep{sysml}) languages.
@@ -90,7 +90,7 @@ The formalism of message sequence charts (MSC) describes the communication betwe
 	\label{fig:intro:vmodel}
 \end{figure}
 
-Complex event processing is a method of tracking and analysis streams of information and deriving conclusions. In a complex event processing environment, there can be multiple event sources, and with logical patterns given by a formalism, we can find patterns in the incoming stream, e.g. events followed by another events in some sequence: \citep{epbas}
+Complex event processing is a method of tracking and analysing streams of information and deriving conclusions. In a complex event processing environment, there can be multiple event sources, and with logical patterns given by a formalism, we can find patterns in the incoming stream, e.g. events followed by another events in some sequence: \citep{epbas}
 
 \section{A hierarchical approach to runtime verification}
 
