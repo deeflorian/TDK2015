@@ -176,7 +176,7 @@ Timeouts are signals that are raised with an offset in the time domain. Handling
 Variable types are the same as in the statechart model. Global variables remain global ones, and local variables that are declared inside statecharts are mapped to local variables inside systems. Expressions need no further flattening as the expression library used by the transition system language and the statechart language is the same.
 %  \subsection{Verification}
 %The verification of the mapped system is based on LTL expressions. These can be defined at the end of the specification. (TODO?)
-\chapter{Synthesis of monitors}
+\section{Synthesis of monitors}
 Current methods for statechart based code generation usually result in poor quality code. We propose a method for monitor generation based on the statechart language described in \vref{runtime_verification}. Our approach was to generate easily readable, extensible, object oriented \verb!C++! code, that can run in environments with limited resources -- primarily embedded systems.
 \section{Mapping of elements}
   \subsection{Specification}

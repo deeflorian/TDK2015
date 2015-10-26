@@ -39,7 +39,7 @@ We can distinguish three levels, representing the hierarchy of our approach:
 \begin{itemize}
 	\item \textbf{Local verification with state chart}: With the generated monitor, we could handle the error states locally, e.g. if we detect an error in the generated code, the monitor can react and shut down the system as a precaution.
 	\item \textbf{Communication verification with state/sequence chart}: The monitor can verify the communication with the higher level logic, reacting to e.g. loss of communication.
-	\item \textbf{Integrating multiple system level monitor}: TODO
+	\item \textbf{Integrating multiple system level monitor}: One way to increase robustness is to connect multiple, independent source of information into the logic. In this way,  
 \end{itemize}
 
 If we specify a high level specification to our overall system, which can have many monitored, communicating components, we can build a high level logic on top of these components offering another level of monitoring, and robustness.
