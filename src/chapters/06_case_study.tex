@@ -9,6 +9,13 @@ The goal of our case study introduced in this chapter is to show the application
 	\item The correctness of the overall system.
 \end{itemize}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.85\linewidth]{include/figures/chapter_6/concept_1}
+	\caption{The configuration of this case study}
+	\label{fig:case_study:final_marker} 
+\end{figure}
+
 \section{System level observation with computer vision}
 
 \subsection{Hardware}
@@ -212,35 +219,39 @@ We will follow a bottom-up structure because it helps the graph search (\cref{se
 	\end{enumerate}
 \end{enumerate}
 
-\begin{figure}[h]
+\begin{figure}[H]
+	\hspace*{-1in}
 	\centering
-	\includegraphics[width=\linewidth]{include/figures/chapter_6/metamodels/sectionmodel}
-	\caption{The section view of the metamodel of the \emph{Model Railway Project} model} 
-	\label{fig:case_study:sectionmodel}
-\end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=\linewidth]{include/figures/chapter_6/metamodels/groupmodel}
+	\includegraphics[width=1.2\linewidth]{include/figures/chapter_6/metamodels/groupmodel}
 	\caption{The group view of the metamodel of the \emph{Model Railway Project} model} 
 	\label{fig:case_study:groupmodel}
 \end{figure}
-\begin{figure}[h]
+\newpage
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{include/figures/chapter_6/metamodels/trainmodel}
+	\includegraphics[width=1.2\linewidth]{include/figures/chapter_6/metamodels/sectionmodel}
+	\caption{The section view of the metamodel of the \emph{Model Railway Project} model} 
+	\label{fig:case_study:sectionmodel}
+\end{figure}
+\newpage
+\begin{figure}[H]
+	\hspace*{-1in}
+	\centering
+	\includegraphics[width=1.0\linewidth]{include/figures/chapter_6/metamodels/trainmodel}
 	\caption{The train view of the  of the \emph{Model Railway Project} model} 
 	\label{fig:case_study:trainmodel}
 \end{figure}
-\begin{figure}[h]
+\newpage
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{include/figures/chapter_6/metamodels/settingmodel}
+	\includegraphics[width=1.2\linewidth]{include/figures/chapter_6/metamodels/settingmodel}
 	\caption{The settings view of the  of the \emph{Model Railway Project} model} 
 	\label{fig:case_study:settingmodel}
 \end{figure}
 
-\subsection{Introducing to Eclipse Modeling Framework}
-\begin{quotation}
-	``The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.'' \cite{EMF}
-\end{quotation}
+\newpage
+
+\subsection{Using the Eclipse Modeling Framework}
 
 We used the EMF framework to create the metamodel of the railway. The main reason for the usage of this modeling tool is the dependency to IncQuery, but other reasons motivated the use of it:
 \begin{itemize}
@@ -255,25 +266,11 @@ After the conceptual design of the model, the following step was the design of t
 
 It's important while building the EMF model that every element must be a part of exactly one containment tree. If an element is not in a tree or it is in multiple tree, it causes failure while serializing. In \cref{sec:case_study:logical_breakdown} the \emph{TrainModel} and \emph{SectionModel} represents the root of the model.
 
-\begin{samepage}
-\subsection{Introducing the IncQuery}
-\begin{quotation}
-EMF-IncQuery is a framework for defining declarative graph queries over EMF models, and executing them efficiently without manual coding in an imperative programming language such as Java.
+\subsection{Using EMF-IncQuery}
 
-With EMF-IncQuery, you can:
-\begin{itemize}
-	\item Define model queries using a high level yet powerful query language (supported by state-of-the-art Xtext-based development tools)
-	\item Execute the queries efficiently and incrementally, with proven scalability for complex queries over large instance models
-	\item Integrate queries into your applications using essential feature APIs including IncQuery Viewers, Databinding, Validation and Query-based derived features with notifications.
-\end{itemize}
-\end{quotation}
-\end{samepage}
-
-\begin{samepage}
 The motivation of using IncQuery can be found in the nature of our problem. The railway can be depicted as a graph, and we can describe hazardous patterns e.g. two trains next section is the opposite trains next section. These scenarios can be declaratively described by IncQuery patterns, reducing the possibility of a coding failure. 
 
 The other advantage of using the IncQuery framework is scalability. The IncQuery framework -- as its name suggest: incremental query -- is a fast, caching engine based on the RETE algorithm. This framework can follow changes in a very large environment. 
-\end{samepage}
 
 \subsection{Building the IncQuery patterns}
 \label{sec:case_study:pattern_building}

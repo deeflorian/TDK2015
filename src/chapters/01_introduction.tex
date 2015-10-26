@@ -75,21 +75,33 @@ Although finite automata can be easily visualized, this formalism describes a si
 Statecharts, also known as state machines are an extension of finite automata. There are multiple available syntaxes for statecharts (e.g. the one defined by UML \citep{stcuml}). The higher level concepts that were introduced include variables, actions, and hierarchically nested states. Event-driven execution is also possible by using signals as the triggers of transitions. Available variable types heavily depend on the concrete semantics of the chosen statechart language. Actions can usually be variable assignments, signal raises, or the setting of timers. Hierarchy lets users organize system descriptions using a top-down approach. Support for hierarchy is introduced via nested states and parallel regions. States can also have entry and exit actions, which allows the description of common functionality in parent states \citep{stcmove}.\\
 Statecharts are usually created by tools that support the graphical design of the model (e.g.: \citep{yakinduu}, an Eclipse based editor).
 
-
 \subsubsection{Message Sequence Chart}
 
 The formalism of message sequence charts (MSC) describes the communication between components -- the order in which messages can occur \citep{msc} \citep{msc2}. The message interchange is usually represented by a graphical model. These charts can be used for high level specification, design, trace based testing, or documentation. A collection of possible sequence charts can also describe a complete communication protocol between components. UML sequence diagrams were inspired by MSCs, but their semantics differ regarding some of the basic elements of the language such as lifelines and arrows \citep{mscuml}.
 
-\subsubsection{Complex event processing}
+\section{Model based tools}
+
+\subsection{Eclipse Modeling Framework}
+The EMF project is a modeling framework and code generation facility for building tools and other applications based on a structured data model. From a model specification described in XMI, EMF provides tools and runtime support to produce a set of Java classes for the model, along with a set of adapter classes that enable viewing and command-based editing of the model, and a basic editor.'' \cite{EMF}
+
+\subsection{EMF-IncQuery}
+EMF-IncQuery is a framework for defining declarative graph queries over EMF models, and executing them efficiently without manual coding in an imperative programming language such as Java. \cite{IncQuery}
+
+\section{Complex event processing}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\linewidth]{include/figures/chapter_1/CEP}
+	\includegraphics[width=0.6\linewidth]{include/figures/chapter_1/CEP}
 	\caption{Complex event processing overview}
 	\label{fig:intro:vmodel}
 \end{figure}
 
 Complex event processing is a method of tracking and analysing streams of information and deriving conclusions. In a complex event processing environment, there can be multiple event sources, and with logical patterns given by a formalism, we can find patterns in the incoming stream, e.g. events followed by another events in some sequence.
+
+\subsection{VIATRA-CEP}
+CEP plays an important role in the model-driven engineering (MDE) as a supporting technique in various scenarios. The VIATRA project delivers a state-of-the-art event processing framework for the MDE scene, called VIATRA-CEP. \cite{CEP}
+
+The VIATRA-CEP is using the EMF models, and the EMF-IncQuery graph search engine to deliver a high throughput, model based complex event processing framework.
 
 \section{A hierarchical approach to runtime verification}
 
@@ -126,9 +138,9 @@ The entirety of the system is monitored using a complex event processing engine.
 \subsection{Hierarchical monitoring system}
 The low level components can communicate with the system level monitor. This high level monitor can than base it's decisions not only on the messaging sequences between components but also the the signals received from the component level monitors. This way, the system level monitor can decide whether the specified safety criteria are still met and act accordingly. The complete structure of this hierarchical approach can be seen in \cref{fig:intro:rvmodel}.
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.8\linewidth]{include/figures/chapter_1/rv_vmodel}
-	\caption{Hierarchical verification based on the V model}
-	\label{fig:intro:rvmodel}
-\end{figure}
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=0.35\linewidth]{include/figures/chapter_6/overview_1}
+%	\caption{Overview of the hierarchical runtime verification system}
+%	\label{fig:case_study:fov}
+%\end{figure}
