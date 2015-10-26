@@ -1,6 +1,6 @@
 \chapter{Complex event processing}
 	\label{chap:cep}
-	\section{Complex Event Processing with the current technologies}
+	\section{Complex Event Processing with using technologies}
 		In the proposed hierarchical runtime verification approach, the top level of modelling and analysis is supported by a Complex Event Processing Framework.
 		
 		In our project we are going to do so, and define Event Patterns for the top level.
@@ -122,17 +122,17 @@
 			\end{enumerate}
 		\end{dfn}
 		
-		Using Regular Expressions we can describe an event sequence as $ab$, if $a,b \in \Sigma$ and the meaning of this is that ``an $a$ event will happened,
+		Using Regular Expressions we can describe an event sequence as $ab$, if $a,b \in \Sigma$ and the meaning of this is that ``an $a$ event will happen,
 		and a $b$ event will follow it''. In the two phase locking example we are going to describe the behaviour of one resource with a simple VEPL pattern:
 		$(a \rightarrow f)\{\ast\}$ which means that an infinite sequences of allocation and release are allowed after each other. This is equivalent to the 
 		regular expression : $(af)\ast$.
 
 		\subsection{Deterministic Finite Automaton}
-			To match Regular Expressions, the most common solution is to make an automaton, there are many algorithms for this.  %% TODO Reference?
+			To match Regular Expressions, the most common solution is to make an automaton, there are many algorithms for this. \bf{TODO ref, more text} %% TODO Reference?
 			
 			
 			\begin{dfn}
-				\label{dfn:cep:dfea}
+				\label{dfn:cep:ea}
 				An Event Automaton (Deterministic Finite Event Automaton in other words) is a $\langle Q,\Sigma,\delta_d,q_0, F \rangle$ tuple where: 
 					\begin{itemize}
 						\item $Q$ is a finite, non empty set. These are the states of the automaton,
@@ -146,8 +146,8 @@
 			\end{dfn}
 
 			The semantic is the following : 
-			On input $e$, where $e \in \Sigma$, if the token is on State $s$ the next state will be $s'$ where % TODO Remove token from semantics
-			$\delta_d \langle s,e,s' \rangle$. For short, from now we will use $s \rightarrow s'$ to shorten this. 
+			On input $e$, where $e \in \Sigma$, if the token\footnote{define} is on State $s$ the next state will be $s'$ where % Define token from semantics
+			$\delta_d \langle s,e,s' \rangle$. For short, from now we will use the notation $s \rightarrow s'$. 
 			
 			The regular expression of the example can be compiled to this automaton\footnote{TODO ide kell egy abra a resource automatajarol}:
 			
@@ -166,14 +166,17 @@
 			Timed Regular Expressions over an alphabet $\Sigma$ (also referred to as $\Sigma$-expressions)
 			are defined using the following families of rules~\citep{tre}~.
 			\begin{enumerate}
-				\item \underline{a} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.
-				\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions and $I$ is an integer-bounded interval then
-					$\langle\varphi\rangle_I, \varphi_1~\cdot~\varphi_2, \varphi_1 \vee \varphi_2,$ and $\varphi^\ast$ are $\Sigma$-expressions.
-				\item If $\varphi, \varphi_1$ and $\varphi_2$ are $\Sigma$-expressions then $\varphi_1 \circ \varphi_2, \varphi^\circledast$ are
-					$\Sigma$-expressions.
-				\item If $\varphi_1$ and $\varphi_2$ are $\Sigma$-expressions, $\varphi_0$ is a $\Sigma_0$-expression
-					for some alphabet $\Sigma_0$, and $\Theta$ : $\Sigma_0 \rightarrow \Sigma$ is
-					a renaming, then $\varphi_1 \wedge \varphi_2$ and $\Theta(\varphi_0)$ are $\Sigma$-expressions.
+				\item \underline{$a$} for every letter $a \in \Sigma$ and the special symbol $\varepsilon$ are expressions.
+				\item If $\varphi, \varphi_1, \varphi_2$ are $\Sigma$-expressions then %
+					$ %
+					\varphi_1~\cdot~\varphi_2,
+					\varphi_1 \vee \varphi_2,
+					\varphi_1 \circ \varphi_2,
+					\varphi_1 \wedge \varphi_2,
+					\varphi^\ast,
+					\varphi^\circledast,
+					\langle \varphi \rangle_I$, 
+					where $I$ is an Interval, are $\Sigma$-expressions.
 			\end{enumerate}
 		\end{dfn}
 		
@@ -226,14 +229,14 @@
 		
 		\subsection{Timed Region Automaton}
 			\begin{dfn}
-				\label{dfn:cep:TREA}
+				\label{dfn:cep:trea}
 				A Timed Region Event Automaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
 				\begin{itemize}
 					\item $Q, \Sigma, q_0, F,$ and  $t$ are the same as in Definition \ref{dfn:cep:tea},
 					\item $T$ is a set of timeout clocks for sets of states, i.e. a set of tuples $\langle 2^Q, \RR \rangle$
 					\item and $\delta$ is the union of discrete and timed transitions i.e. $\delta_t \cup \delta_d$ where
 					\begin{itemize}
-						\item $\delta_d$ is defined as in Definition \ref{dfn:cep:dfea},
+						\item $\delta_d$ is defined as in Definition \ref{dfn:cep:tea},
 						\item and $\delta_t$ represents timed transitions and defined as the set of tuples $\langle 2^Q , \mathbb{R} , Q \rangle$ 
 					\end{itemize}
 				\end{itemize}
@@ -283,7 +286,9 @@
 						\item Timed Transition: The transition with the minimal timeout value is selected, 
 							 i.e. transition $\exists t_i, \exists s_i, \delta_t \langle r_i, t_i, s_i \rangle$ where $ r_i \in r$ and $t_{min}$ is the minimum from all $t_i$,
 							 than the following rules apply:
-							 the global time is set $t \coloneqq t_{min}$, the local clock is set to infinity: $t_s \coloneqq \infty$ and move to the next state according to $\delta_t$.
+							 the global time is set $t \coloneqq t_{min}$, 
+							 the local clock is set to infinity: $t_s \coloneqq \infty$ 
+							 and move to the next state according to $\delta_t$.
 					\end{enumerate}			
 			\end{enumerate}
 
@@ -360,37 +365,56 @@
 			
 			
 			\begin{dfn}
-				\label{dfn:cep:PTREA}
+				\label{dfn:cep:ptrea}
 				A Parametric Timed Region Event Automaton $\langle Q,\Sigma,\delta,q_0, F, t, T \rangle$ where
 				\begin{itemize}
-					\item $Q, \Sigma, q_0, F,$ and  $t$ are the same as in Definition \ref{dfn:cep:tea},
-					\item $T$ is a set of timeout clocks for sets of states, i.e. a set of tuples $\langle 2^Q, \RR, B \rangle$, where $B$ is a binding
+					\item $Q, \Sigma, q_0, F,$ and  $t$ are the same as in Definition \ref{dfn:cep:trea},
+					\item $T$ is a set of timeout clocks for sets of states, for each token, i.e. a set of tuples $\langle 2^Q, \RR, B \rangle$, where $B$ is a binding
 					\item and $\delta$ is the union of discrete and timed transitions i.e. $\delta_t \cup \delta_d$ where
 					\begin{itemize}
-						\item $\delta_d$ is defined as in Definition \ref{dfn:cep:dfea},
+						\item $\delta_d$ is defined as in Definition \ref{dfn:cep:trea},
 						\item and $\delta_t$ represents timed transitions and defined as the set of tuples $\langle 2^Q \times \mathbb{R} \times Q \rangle$ 
 					\end{itemize}
 				\end{itemize}
 			\end{dfn}
+			
+			We give the following semantics to the Parametric Timed Region Automaton:
+			
+			We have to define rules for the initialization of the automaton,
+			entering states with timed outgoing transitions 
+			and we also define the general rules of changing states. 
+			
+			\begin{enumerate}
+				\item Initialization Rule : On initialization of the automaton, $T$ is an empty set
+				i.e. $T = \emptyset$
+			
+				\item Entering new timed region rule :
+				If we enter a new set of timed regions, with a token with binding $b$ 
+				i.e. $r^+ \neq \emptyset$, 
+				we set the timers according to the timeouts, 
+				i.e. $\forall t_{timeout} : t_{timeout} \coloneqq t + t_i $ where $ r_t \in r^+, \exists q ,\delta_t\langle  r_t,t_i,q \rangle, T \langle r_t,b, t_{timeout} \rangle$
+				
+				\item Firing Transitions Rule: Choose an enabled transition from the set of enabled\footnote{non defined} discrete or timed transitions. 
+				We have two cases, the chosen transition is:
+					\begin{enumerate}
+						\item Discrete Transition: In case of $r^- = \emptyset$ than the execution of the transition is as in described formerly. 
+							If else if we exit a zone i.e. $r^- = \emptyset$, 
+							then the following rule extends the firing rule of discrete transitions:
+							$\forall t_s, \forall q_s$ in $ \delta_t \langle r_i, t_s, q_s \rangle$ where $r_i \in r^-$, the timer of the regions are invalidated i.e.
+							$t_s \coloneqq \infty$
+						\item Timed Transition: The transition with the minimal timeout value is selected, 
+							 i.e. transition $\exists t_i, \exists s_i, \delta_t \langle r_i, t_i, s_i \rangle$ where $ r_i \in r$ and $t_{min}$ is the minimum from all $t_i$,
+							 than the following rules apply:
+							 the global time is set $t \coloneqq t_{min}$, 
+							 the local clock is set to infinity: $t_s \coloneqq \infty$ 
+							 and move to the next state according to $\delta_t$.
+					\end{enumerate}			
+			\end{enumerate}
 
 			
 		
 		PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. PRE REFACTOR. 
 		After this comment, the whole chapter is obsolete, must rewrite it.
-	
-				
-			\begin{dfn}
-				(Parametric Timed Region Automaton).
-				PTRA$\langle Q, \Sigma, \delta, f_0, F, t, T \rangle$
-				\begin{itemize}
-					\item where $\delta = \delta_t \cup \delta_d$
-					\item and $Q, \Sigma, \delta_d, f_0, F$ and $t$ are defined as in Definition \ref{dfn:cep:TEA}
-					\item $\delta_t \langle R, Q, \RR \rangle $ where $R \subseteq 2^Q$
-					\item $T\langle R, B, \RR \rangle$ where $B$ is a set of binding and  $R \subseteq 2^Q$
-
-				\end{itemize}
-				
-			\end{dfn}
 			
 			The semantic of the Parametric Timed Region Automaton is defined as follows:
 			$Q_t \subseteq Q$ is the set of states with outgoing timed transitions, i.e. $\forall s \in Q_t$ : there exist $ \delta_t\langle r, t, s' \rangle$ where $t \in \RR$ and $s' \in Q$, and $r \subseteq 2^Q$ and $s \in r$
@@ -495,18 +519,17 @@
 			\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.9\linewidth]{include/figures/chapter_5/model}
-			\caption{Automaton of the file example}
+			\caption{Metamodel of the Impementation in EMF}
 			\label{fig:cep:model}
 			\end{figure}
 		
-			\subsubsection{Basic Automaton}
+			\subsubsection{Finite Automaton}
 				The Event Automaton is represented with the State, Transition, and EventGuard classes.
 				Every State has a boolean flag 
 			\subsubsection{Timing}
 			
-			\subsubsection{Parameter}
+			\subsubsection{Parameters and Bindings}
 			
-			\subsubsection{Binding}
 		
 		\subsection{Executor}
 			The algorithm first searches for all the activated transitions.
